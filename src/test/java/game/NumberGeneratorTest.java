@@ -1,23 +1,23 @@
 package game;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class NumberGeneratorTest {
+class NumberGeneratorTest {
     private NumberGenerator numberGenerator;
 
-    @Before
-    public void setUp(){
+    @BeforeEach
+    void setUp() {
         numberGenerator = new NumberGenerator();
     }
 
     @Test
-    public void generateNumber() {
-        int firstGenerated = numberGenerator.generateNumber();
-        int secondGenerated = numberGenerator.generateNumber();
-        int thirdGenerated = numberGenerator.generateNumber();
-        assertTrue(firstGenerated != secondGenerated || secondGenerated != thirdGenerated);
+    void generateNumber() {
+        for (int i = 0; i < 1000; i++) {
+            int generatedNumber = numberGenerator.generateNumber();
+            assertTrue(generatedNumber >= 1 && generatedNumber <= 10);
+        }
     }
 }
