@@ -1,17 +1,13 @@
 package game;
 
 public class GameEntity {
-    private int guessCount;
-    private int generatedNumber;
+    private final int guessCount;
+    private final int generatedNumber;
 
-    public GameEntity(){
-        guessCount = 0;
-        generatedNumber = 0;
+    public GameEntity(int guessCount, int generatedNumber) {
+        this.guessCount = guessCount;
+        this.generatedNumber = generatedNumber;
     }
-
-    public void setGuessCount(int guessCount){ this.guessCount = guessCount; }
-
-    public void setGeneratedNumber(int generatedNumber) { this.generatedNumber = generatedNumber; }
 
     public int returnGuessCount(){
         return guessCount;
