@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class GameLogic {
     private int guessCount;
     private int generatedNumber;
@@ -8,18 +10,18 @@ public class GameLogic {
     }
 
     public int generateNumber(){
-
-        return 1;
+        Random randomNumberGenerator = new Random();
+        generatedNumber = randomNumberGenerator.nextInt(Constants.MAX_NUMBER_TO_GUESS);
+        return generatedNumber;
     }
 
     public boolean isGuessCorrect(int guessedNumber){
-
-        return true;
+        guessCount++;
+        return guessedNumber == generatedNumber;
     }
 
     public boolean isGuessBiggerThanGenerated(int guessedNumber){
-
-        return true;
+        return guessedNumber > generatedNumber;
     }
 
     public int returnGuessCount(){
