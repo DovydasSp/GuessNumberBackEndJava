@@ -1,3 +1,5 @@
+package game;
+
 public class GameEntity {
     private int guessCount;
     private int generatedNumber;
