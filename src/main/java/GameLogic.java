@@ -24,6 +24,10 @@ public class GameLogic {
         return guessedNumber > generatedNumber;
     }
 
+    public void setGuessCount(int guessCount){ this.guessCount = guessCount; }
+
+    public void setGeneratedNumber(int generatedNumber) { this.generatedNumber = generatedNumber; }
+
     public int returnGuessCount(){
         return guessCount;
     }
