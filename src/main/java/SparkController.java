@@ -1,19 +1,19 @@
 import static spark.Spark.post;
 
 public class SparkController {
-    private InteractorInterface interactor;
+    private final UseCaseFactory factory;
 
-    public SparkController() {
-        FactoryInterface factory = new Factory();
-        interactor = factory.buildInteractor();
+    public SparkController(UseCaseFactory factory) {
+        this.factory = factory;
     }
 
-    public void requests() {
-        post("/play", (request, response) -> {
+    public void matchRoutes() {
+        post("/games", (request, response) -> {
             return 0;
+            //GameUseCase interactor = factory.buildInteractor(); //Kurti su kiekvienu routu
         });
 
-        post("/games/:id/guess", (request, response) -> {
+        post("/games/:id/guesses", (request, response) -> {
             return request.params(":id");
         });
     }
