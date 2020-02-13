@@ -7,11 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GuessValidatorTest {
-    private GuessValidatorGateway guessValidator;
+    private GuessValidator guessValidator;
 
     @BeforeEach
     void setUp() {
-        guessValidator = new GuessValidatorGateway();
+        guessValidator = new GuessValidator();
     }
 
     @Test

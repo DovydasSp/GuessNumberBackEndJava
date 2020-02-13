@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NumberGeneratorTest {
-    private NumberGeneratorGateway numberGenerator;
+    private RandomNumberGateway numberGenerator;
 
     @BeforeEach
     void setUp() {
-        numberGenerator = new NumberGeneratorGateway();
+        numberGenerator = new RandomNumberGateway();
     }
 
     @Test

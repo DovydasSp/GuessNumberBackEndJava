@@ -1,9 +1,9 @@
-import game.GuessValidatorGatewayInterface;
+import game.GuessValidator;
 
 public class GuessNumberInteractor implements GuessNumberUseCase {
-    private final GuessValidatorGatewayInterface gateway;
+    private final GuessValidator gateway;
 
-    public GuessNumberInteractor(GuessValidatorGatewayInterface gateway) {
+    public GuessNumberInteractor(GuessValidator gateway) {
         this.gateway = gateway;
     }
 }

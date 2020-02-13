@@ -1,6 +1,6 @@
 package game;
 
-public class GuessValidatorGateway implements GuessValidatorGatewayInterface {
+public class GuessValidator {
     public boolean isGuessCorrect(int guessedNumber, int generatedNumber){
         return guessedNumber == generatedNumber;
     }
