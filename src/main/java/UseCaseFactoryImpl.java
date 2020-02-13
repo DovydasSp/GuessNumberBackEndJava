@@ -12,7 +12,6 @@ public class UseCaseFactoryImpl implements UseCaseFactory {
     }
 
     public GenerateNumberUseCase buildGenerateNumberInteractor() {
-        NumberGateway gateway = new RandomNumberGateway();
         return new GenerateNumberInteractor(numberGateway);
     }
 
