@@ -1,8 +1,8 @@
 import org.junit.jupiter.api.Test;
 
-class PostGameTest {
+class GuessNumberInteractorTest {
 
     @Test
-    void handle() {
+    void execute() {
     }
 }

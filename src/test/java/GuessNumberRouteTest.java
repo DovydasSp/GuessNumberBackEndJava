@@ -10,14 +10,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GuessNumberTest {
+class GuessNumberRouteTest {
 
+    private GuessNumberRoute guessNumberRoute;
     @Mock
     private UseCaseFactory useCaseFactory;
     @Mock
     private GuessNumberUseCase guessNumberUseCase;
-    private GuessNumberRoute guessNumberRoute;
-
     @Mock
     private Request request;
     @Mock

@@ -11,11 +11,9 @@ public class GuessNumberRoute implements Route {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        response.body();
         String id = request.params("id");
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberInteractor();
         interactor.execute(id);
-        //GenerateNumberUseCase interactor = factory.buildInteractor(); //Kurti su kiekvienu routu
-        return null;
+        return response.body();
     }
 }

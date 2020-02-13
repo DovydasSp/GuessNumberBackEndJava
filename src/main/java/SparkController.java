@@ -1,8 +1,5 @@
 import spark.Service;
 
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.port;
-
 public class SparkController {
     private final UseCaseFactory factory;
     private final Service ignite;
@@ -13,11 +10,13 @@ public class SparkController {
     }
 
     public void matchRoutes() {
-        port(4568);
+        ignite.port(4568);
 
-        ignite.post("/games", new PostGame(factory));
+        ignite.post("/games", new PostGameRoute(factory));
         ignite.post("/games/:id/guesses", new GuessNumberRoute(factory));
 
-        awaitInitialization();
+        System.out.println(ignite.port());
+        ignite.awaitInitialization();
+
     }
 }
