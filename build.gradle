@@ -8,6 +8,7 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 test{
@@ -19,4 +20,6 @@ dependencies {
     testCompile "org.junit.jupiter:junit-jupiter-params:5.6.0"
     testCompile "org.junit.jupiter:junit-jupiter-engine:5.6.0"
     compile "com.sparkjava:spark-core:2.9.1"
+    testCompile "org.mockito:mockito-core:3.2.0"
+    testCompile "org.mockito:mockito-junit-jupiter:3.2.0"
 }

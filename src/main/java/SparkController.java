@@ -1,22 +1,23 @@
-import static spark.Spark.post;
+import spark.Service;
+
+import static spark.Spark.awaitInitialization;
+import static spark.Spark.port;
 
 public class SparkController {
     private final UseCaseFactory factory;
+    private final Service ignite;
 
     public SparkController(UseCaseFactory factory) {
         this.factory = factory;
+        ignite = Service.ignite();
     }
 
     public void matchRoutes() {
-        post("/games", (request, response) -> {
-            return 0;
-            //GenerateNumberUseCase interactor = factory.buildInteractor(); //Kurti su kiekvienu routu
-        });
+        port(4568);
 
-        post("/games/:id/guesses", (request, response) -> {
-            return request.params(":id");
-        });
+        ignite.post("/games", new PostGame(factory));
+        ignite.post("/games/:id/guesses", new GuessNumberRoute(factory));
+
+        awaitInitialization();
     }
-
-
 }
