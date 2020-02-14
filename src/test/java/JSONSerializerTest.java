@@ -1,23 +1,25 @@
-import game.RestGameEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JSONSerializerTest {
-    private Object gameEntity;
     private JacksonJSONSerializer serializer;
 
     @BeforeEach
     void setUp() {
-        gameEntity = new RestGameEntity(1);
         serializer = new JacksonJSONSerializer();
     }
 
     @Test
     void serialize() {
-        String expected = serializer.serialize(gameEntity);
-        String actual = "{\"response\":1}";
+        Map<String, Integer> values = new HashMap<>();
+        values.put("gameId", 456);
+        String expected = serializer.serialize(values);
+        String actual = "{\"gameId\":456}";
         assertEquals(expected, actual);
     }
 }

@@ -1,7 +1,9 @@
-import game.RestGameEntity;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GuessNumberRoute implements Route {
     private final UseCaseFactory useCaseFactory;
@@ -16,12 +18,14 @@ public class GuessNumberRoute implements Route {
     public Object handle(Request request, Response response) throws Exception {
         String id = request.params("id");
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberInteractor();
-        Object responseObj = interactor.execute(id);
-        response.body(serializer.serialize(convertGameEntity(responseObj)));
+        Object result = interactor.execute(id);
+        response.body(serializer.serialize(convertToValueMap(result)));
         return response.body();
     }
 
-    private RestGameEntity convertGameEntity(Object gameId) {
-        return new RestGameEntity(gameId);
+    private Map<String, Object> convertToValueMap(Object result) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("result", result);
+        return values;
     }
 }

@@ -6,13 +6,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import spark.Request;
 import spark.Response;
 
-import static org.mockito.ArgumentMatchers.any;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class PostGameRouteTest {
-    private PostGameRoute postGameRoute;
+class CreateGameRouteTest {
+    private CreateGameRoute postGameRoute;
     @Mock
     private UseCaseFactory useCaseFactory;
     @Mock
@@ -27,14 +29,28 @@ class PostGameRouteTest {
     @BeforeEach
     void setUp() {
         when(useCaseFactory.buildGenerateNumberInteractor()).thenReturn(generateNumberUseCase);
-        when(generateNumberUseCase.execute()).thenReturn(1);
-        postGameRoute = new PostGameRoute(useCaseFactory, serializer);
+        postGameRoute = new CreateGameRoute(useCaseFactory, serializer);
     }
 
     @Test
-    void handle() {
+    void handle1() {
+        when(generateNumberUseCase.execute()).thenReturn(8);
         postGameRoute.handle(request, response);
         verify(generateNumberUseCase).execute();
-        verify(serializer).serialize(any());
+        verify(serializer).serialize(createResponseMap(8));
+    }
+
+    @Test
+    void handle2() {
+        when(generateNumberUseCase.execute()).thenReturn(78578);
+        postGameRoute.handle(request, response);
+        verify(generateNumberUseCase).execute();
+        verify(serializer).serialize(createResponseMap(78578));
+    }
+
+    private Map<String, Integer> createResponseMap(int gameId) {
+        Map<String, Integer> values = new HashMap<>();
+        values.put("gameId", gameId);
+        return values;
     }
 }
