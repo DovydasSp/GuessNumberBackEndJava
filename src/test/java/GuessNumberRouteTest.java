@@ -16,7 +16,7 @@ class GuessNumberRouteTest {
     @Mock
     private UseCaseFactory useCaseFactory;
     @Mock
-    private GameEntitySerializer serializer;
+    private JSONSerializer serializer;
     @Mock
     private GuessNumberUseCase guessNumberUseCase;
     @Mock

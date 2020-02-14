@@ -6,12 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JSONSerializerTest {
     private Object gameEntity;
-    private JSONSerializer serializer;
+    private JacksonJSONSerializer serializer;
 
     @BeforeEach
     void setUp() {
         gameEntity = new RestGameEntity(1);
-        serializer = new JSONSerializer();
+        serializer = new JacksonJSONSerializer();
     }
 
     @Test

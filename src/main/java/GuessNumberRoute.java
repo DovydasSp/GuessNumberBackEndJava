@@ -5,9 +5,9 @@ import spark.Route;
 
 public class GuessNumberRoute implements Route {
     private final UseCaseFactory useCaseFactory;
-    private final GameEntitySerializer serializer;
+    private final JSONSerializer serializer;
 
-    public GuessNumberRoute(UseCaseFactory useCaseFactory, GameEntitySerializer serializer) {
+    public GuessNumberRoute(UseCaseFactory useCaseFactory, JSONSerializer serializer) {
         this.useCaseFactory = useCaseFactory;
         this.serializer = serializer;
     }
@@ -16,7 +16,8 @@ public class GuessNumberRoute implements Route {
     public Object handle(Request request, Response response) throws Exception {
         String id = request.params("id");
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberInteractor();
-        interactor.execute(id);
+        Object responseObj = interactor.execute(id);
+        response.body(serializer.serialize(convertGameEntity(responseObj)));
         return response.body();
     }
 

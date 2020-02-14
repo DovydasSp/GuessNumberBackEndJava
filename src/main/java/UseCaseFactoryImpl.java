@@ -11,8 +11,8 @@ public class UseCaseFactoryImpl implements UseCaseFactory {
         gameEntityRepository = new InMemoryGameEntityRepo();
     }
 
-    public GenerateNumberUseCase buildGenerateNumberInteractor() {
-        return new GenerateNumberInteractor(numberGateway, gameEntityRepository);
+    public CreateGameUseCase buildGenerateNumberInteractor() {
+        return new CreateGameInteractor(numberGateway, gameEntityRepository);
     }
 
     public GuessNumberUseCase buildGuessNumberInteractor() {

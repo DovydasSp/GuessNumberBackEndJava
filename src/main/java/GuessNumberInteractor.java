@@ -11,7 +11,7 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
     }
 
     @Override
-    public void execute(String s) {
-
+    public Object execute(String s) {
+        return null;
     }
 }

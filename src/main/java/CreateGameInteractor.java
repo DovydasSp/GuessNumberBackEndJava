@@ -1,18 +1,17 @@
-import game.GameEntity;
 import game.GameEntityRepository;
 import game.NumberGateway;
 
-public class GenerateNumberInteractor implements GenerateNumberUseCase {
+public class CreateGameInteractor implements CreateGameUseCase {
     private final NumberGateway gateway;
     private final GameEntityRepository gameEntityRepository;
 
-    public GenerateNumberInteractor(NumberGateway gateway, GameEntityRepository gameEntityRepository) {
+    public CreateGameInteractor(NumberGateway gateway, GameEntityRepository gameEntityRepository) {
         this.gateway = gateway;
         this.gameEntityRepository = gameEntityRepository;
     }
 
     @Override
-    public GameEntity execute() {
-        return null;
+    public int execute() {
+        return 0;
     }
 }

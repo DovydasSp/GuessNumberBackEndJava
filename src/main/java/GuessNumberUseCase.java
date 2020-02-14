@@ -1,3 +1,3 @@
 public interface GuessNumberUseCase {
-    void execute(String s);
+    Object execute(String s);
 }

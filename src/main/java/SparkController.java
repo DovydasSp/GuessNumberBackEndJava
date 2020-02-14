@@ -3,9 +3,9 @@ import spark.Service;
 public class SparkController {
     private final UseCaseFactory factory;
     private final Service ignite;
-    private final GameEntitySerializer serializer;
+    private final JSONSerializer serializer;
 
-    public SparkController(UseCaseFactory factory, GameEntitySerializer serializer) {
+    public SparkController(UseCaseFactory factory, JSONSerializer serializer) {
         this.factory = factory;
         this.serializer = serializer;
         ignite = Service.ignite();
