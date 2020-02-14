@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test;
 
-class GenerateNumberInteractorTest {
+class CreateGameInteractorTest {
 
     @Test
     void execute() {

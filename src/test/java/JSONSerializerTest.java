@@ -18,8 +18,19 @@ class JSONSerializerTest {
     void serialize() {
         Map<String, Integer> values = new HashMap<>();
         values.put("gameId", 456);
-        String expected = serializer.serialize(values);
         String actual = "{\"gameId\":456}";
+
+        String expected = serializer.serialize(values);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void serializeNull() {
+        Map<String, Integer> values = null;
+        String actual = "";
+        String expected = serializer.serialize(values);
+
         assertEquals(expected, actual);
     }
 }

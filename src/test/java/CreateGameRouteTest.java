@@ -44,10 +44,18 @@ class CreateGameRouteTest {
 
     private void routeReceivesGameIdAndCallsSerializerWithIt(int gameId) {
         when(generateNumberUseCase.createGameAndReturnGameId()).thenReturn(gameId);
+        mockSerializer(gameId);
+        postGameRoute.handle(request, response);
+        verifyCalls(gameId);
+    }
+
+    private void mockSerializer(int gameId) {
         Map<String, Integer> values = new HashMap<>();
         values.put("gameId", gameId);
         when(serializer.serialize(values)).thenReturn("\"gameId\":" + gameId);
-        postGameRoute.handle(request, response);
+    }
+
+    private void verifyCalls(int gameId) {
         verify(generateNumberUseCase).createGameAndReturnGameId();
         verify(serializer).serialize(createResponseMap(gameId));
         verify(response).body("\"gameId\":" + gameId + "");

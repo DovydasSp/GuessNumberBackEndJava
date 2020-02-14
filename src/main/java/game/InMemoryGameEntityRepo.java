@@ -16,7 +16,8 @@ public class InMemoryGameEntityRepo implements GameEntityRepository {
 
     @Override
     public void save(GameEntity gameEntity) {
-        inMemoryDb.put(gameEntity.returnGameId(), gameEntity);
+        if (gameEntity != null)
+            inMemoryDb.put(gameEntity.returnGameId(), gameEntity);
     }
 
     @Override

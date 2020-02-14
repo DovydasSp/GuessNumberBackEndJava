@@ -15,8 +15,7 @@ class InMemoryGameEntityRepoTest {
 
     @BeforeEach
     void setUp() {
-        inMemoryDb = new HashMap<Integer, GameEntity>() {
-        };
+        inMemoryDb = new HashMap<>();
         gameEntity = new GameEntity(1, 2, 3);
         inMemoryDb.put(gameEntity.returnGameId(), gameEntity);
         gameRepo = new InMemoryGameEntityRepo(inMemoryDb);
@@ -28,14 +27,22 @@ class InMemoryGameEntityRepoTest {
     }
 
     @Test
-    void save() {
+    void saveNewEntityWithSameId() {
         GameEntity newGameEntity = new GameEntity(gameEntity.returnGameId(), 3, 4);
-        gameRepo.save(newGameEntity);
-        assertEquals(gameRepo.getEntity(newGameEntity.returnGameId()), newGameEntity);
-        newGameEntity = new GameEntity(3, 3, 4);
         gameRepo.save(newGameEntity);
         assertEquals(gameRepo.getEntity(newGameEntity.returnGameId()), newGameEntity);
     }
 
+    @Test
+    void saveNewEntityWithNewId() {
+        GameEntity newGameEntity = new GameEntity(3, 3, 4);
+        gameRepo.save(newGameEntity);
+        assertEquals(gameRepo.getEntity(newGameEntity.returnGameId()), newGameEntity);
+    }
 
+    @Test
+    void saveNull() {
+        GameEntity newGameEntity = null;
+        gameRepo.save(newGameEntity);
+    }
 }

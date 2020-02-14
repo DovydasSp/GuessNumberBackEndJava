@@ -11,6 +11,8 @@ public class JacksonJSONSerializer implements JSONSerializer {
     }
 
     public String serialize(Object input) {
+        if (input == null)
+            return "";
         try {
             return objectMapper.writeValueAsString(input);
         } catch (JsonProcessingException e) {
