@@ -7,8 +7,7 @@ public class InMemoryGameEntityRepo implements GameEntityRepository {
     private final Map<Integer, GameEntity> inMemoryDb;
 
     public InMemoryGameEntityRepo() {
-        inMemoryDb = new HashMap<Integer, GameEntity>() {
-        };
+        inMemoryDb = new HashMap<>();
     }
 
     public InMemoryGameEntityRepo(Map<Integer, GameEntity> db) {

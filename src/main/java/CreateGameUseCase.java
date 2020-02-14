@@ -1,3 +1,3 @@
 public interface CreateGameUseCase {
-    int execute();
+    int createGameAndReturnGameId();
 }

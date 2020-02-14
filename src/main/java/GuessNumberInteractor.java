@@ -1,4 +1,5 @@
 import game.GameEntityRepository;
+import game.GuessResponseEntity;
 import game.GuessValidator;
 
 public class GuessNumberInteractor implements GuessNumberUseCase {
@@ -11,7 +12,7 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
     }
 
     @Override
-    public Object execute(String s) {
-        return 0;
+    public GuessResponseEntity checkGuessAndReturnResponse(String id) {
+        return null;
     }
 }

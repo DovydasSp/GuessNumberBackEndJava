@@ -16,13 +16,13 @@ public class CreateGameRoute implements Route {
 
     @Override
     public Object handle(Request request, Response response) {
-        CreateGameUseCase interactor = useCaseFactory.buildGenerateNumberInteractor();
-        int gameId = interactor.execute();
-        response.body(serializer.serialize(convertToValueMap(gameId)));
+        CreateGameUseCase interactor = useCaseFactory.buildCreateGameInteractor();
+        int gameId = interactor.createGameAndReturnGameId();
+        response.body(serializer.serialize(convertToResponseMap(gameId)));
         return response.body();
     }
 
-    private Map<String, Integer> convertToValueMap(int gameId) {
+    private Map<String, Integer> convertToResponseMap(int gameId) {
         Map<String, Integer> values = new HashMap<>();
         values.put("gameId", gameId);
         return values;

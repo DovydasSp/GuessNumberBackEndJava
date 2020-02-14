@@ -1,3 +1,5 @@
+import game.GuessResponseEntity;
+
 public interface GuessNumberUseCase {
-    Object execute(String s);
+    GuessResponseEntity checkGuessAndReturnResponse(String id);
 }

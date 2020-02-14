@@ -11,7 +11,7 @@ public class CreateGameInteractor implements CreateGameUseCase {
     }
 
     @Override
-    public int execute() {
+    public int createGameAndReturnGameId() {
         return 0;
     }
 }

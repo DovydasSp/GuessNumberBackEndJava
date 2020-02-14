@@ -31,10 +31,10 @@ class GuessNumberRouteTest {
     }
 
     @Test
-    void handle() throws Exception {
+    void routeReceivesGameIdAndCallsCheckerWithIt() throws Exception {
         when(request.params("id")).thenReturn("37");
         guessNumberRoute.handle(request, response);
         verify(request).params("id");
-        verify(guessNumberUseCase).execute("37");
+        verify(guessNumberUseCase).checkGuessAndReturnResponse("37");
     }
 }

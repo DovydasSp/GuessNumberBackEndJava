@@ -28,24 +28,29 @@ class CreateGameRouteTest {
 
     @BeforeEach
     void setUp() {
-        when(useCaseFactory.buildGenerateNumberInteractor()).thenReturn(generateNumberUseCase);
+        when(useCaseFactory.buildCreateGameInteractor()).thenReturn(generateNumberUseCase);
         postGameRoute = new CreateGameRoute(useCaseFactory, serializer);
     }
 
     @Test
-    void handle1() {
-        when(generateNumberUseCase.execute()).thenReturn(8);
-        postGameRoute.handle(request, response);
-        verify(generateNumberUseCase).execute();
-        verify(serializer).serialize(createResponseMap(8));
+    void routeReceivesGameId8AndCallsSerializerWithIt() {
+        routeReceivesGameIdAndCallsSerializerWithIt(8);
     }
 
     @Test
-    void handle2() {
-        when(generateNumberUseCase.execute()).thenReturn(78578);
+    void routeReceivesGameId78578AndCallsSerializerWithIt() {
+        routeReceivesGameIdAndCallsSerializerWithIt(78578);
+    }
+
+    private void routeReceivesGameIdAndCallsSerializerWithIt(int gameId) {
+        when(generateNumberUseCase.createGameAndReturnGameId()).thenReturn(gameId);
+        Map<String, Integer> values = new HashMap<>();
+        values.put("gameId", gameId);
+        when(serializer.serialize(values)).thenReturn("\"gameId\":" + gameId);
         postGameRoute.handle(request, response);
-        verify(generateNumberUseCase).execute();
-        verify(serializer).serialize(createResponseMap(78578));
+        verify(generateNumberUseCase).createGameAndReturnGameId();
+        verify(serializer).serialize(createResponseMap(gameId));
+        verify(response).body("\"gameId\":" + gameId + "");
     }
 
     private Map<String, Integer> createResponseMap(int gameId) {
