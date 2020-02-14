@@ -1,3 +1,5 @@
+import game.GameEntity;
+
 public interface GenerateNumberUseCase {
-    void execute();
+    GameEntity execute();
 }

@@ -15,6 +15,8 @@ class PostGameRouteTest {
     @Mock
     private UseCaseFactory useCaseFactory;
     @Mock
+    private GameEntitySerializer serializer;
+    @Mock
     private GenerateNumberUseCase generateNumberUseCase;
     @Mock
     private Request request;
@@ -24,11 +26,11 @@ class PostGameRouteTest {
     @BeforeEach
     void setUp() {
         when(useCaseFactory.buildGenerateNumberInteractor()).thenReturn(generateNumberUseCase);
-        postGameRoute = new PostGameRoute(useCaseFactory);
+        postGameRoute = new PostGameRoute(useCaseFactory, serializer);
     }
 
     @Test
-    void handle() throws Exception {
+    void handle() {
         postGameRoute.handle(request, response);
         verify(generateNumberUseCase).execute();
     }
