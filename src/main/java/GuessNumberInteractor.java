@@ -1,6 +1,5 @@
 import game.GameEntityRepository;
 import game.GuessValidator;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class GuessNumberInteractor implements GuessNumberUseCase {
     private final GuessValidator gateway;
@@ -13,6 +12,6 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
 
     @Override
     public void execute(String s) {
-        throw new NotImplementedException();
+
     }
 }

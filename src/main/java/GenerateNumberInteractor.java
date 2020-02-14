@@ -1,7 +1,6 @@
 import game.GameEntity;
 import game.GameEntityRepository;
 import game.NumberGateway;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class GenerateNumberInteractor implements GenerateNumberUseCase {
     private final NumberGateway gateway;
@@ -14,6 +13,6 @@ public class GenerateNumberInteractor implements GenerateNumberUseCase {
 
     @Override
     public GameEntity execute() {
-        throw new NotImplementedException();
+        return null;
     }
 }

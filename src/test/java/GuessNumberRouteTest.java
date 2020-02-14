@@ -16,6 +16,8 @@ class GuessNumberRouteTest {
     @Mock
     private UseCaseFactory useCaseFactory;
     @Mock
+    private GameEntitySerializer serializer;
+    @Mock
     private GuessNumberUseCase guessNumberUseCase;
     @Mock
     private Request request;
@@ -25,7 +27,7 @@ class GuessNumberRouteTest {
     @BeforeEach
     void setUp() {
         when(useCaseFactory.buildGuessNumberInteractor()).thenReturn(guessNumberUseCase);
-        guessNumberRoute = new GuessNumberRoute(useCaseFactory);
+        guessNumberRoute = new GuessNumberRoute(useCaseFactory, serializer);
     }
 
     @Test

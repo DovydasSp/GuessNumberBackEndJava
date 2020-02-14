@@ -17,12 +17,11 @@ public class PostGameRoute implements Route {
     public Object handle(Request request, Response response) {
         GenerateNumberUseCase interactor = useCaseFactory.buildGenerateNumberInteractor();
         GameEntity gameEntity = interactor.execute();
-        response.body(serializer.serialize(convertGameEntity(gameEntity)));
+        response.body(serializer.serialize(convertGameEntity(gameEntity.returnGameId())));
         return response.body();
     }
 
-    private RestGameEntity convertGameEntity(GameEntity gameEntity) {
-        return new RestGameEntity(gameEntity.returnGameId(),
-                gameEntity.returnGuessCount(), gameEntity.returnGeneratedNumber());
+    private RestGameEntity convertGameEntity(Object gameId) {
+        return new RestGameEntity(gameId);
     }
 }

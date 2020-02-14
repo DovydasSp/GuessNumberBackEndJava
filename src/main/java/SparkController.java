@@ -15,7 +15,7 @@ public class SparkController {
         ignite.port(4568);
 
         ignite.post("/games", new PostGameRoute(factory, serializer));
-        ignite.post("/games/:id/guesses", new GuessNumberRoute(factory));
+        ignite.post("/games/:id/guesses", new GuessNumberRoute(factory, serializer));
 
         System.out.println(ignite.port());
         ignite.awaitInitialization();

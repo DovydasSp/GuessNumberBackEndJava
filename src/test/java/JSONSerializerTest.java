@@ -10,14 +10,14 @@ class JSONSerializerTest {
 
     @BeforeEach
     void setUp() {
-        gameEntity = new RestGameEntity(1, 2, 3);
+        gameEntity = new RestGameEntity(1);
         serializer = new JSONSerializer();
     }
 
     @Test
     void serialize() {
         String expected = serializer.serialize(gameEntity);
-        String actual = "{\"gameId\":1,\"guessCount\":2,\"generatedNumber\":3}";
+        String actual = "{\"response\":1}";
         assertEquals(expected, actual);
     }
 }
