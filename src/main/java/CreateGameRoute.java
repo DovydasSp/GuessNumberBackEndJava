@@ -18,7 +18,12 @@ public class CreateGameRoute implements Route {
     public Object handle(Request request, Response response) {
         CreateGameUseCase interactor = useCaseFactory.buildCreateGameUseCase();
         int gameId = interactor.createGameAndReturnGameId();
-        response.body(serializedGameId(gameId));
+        String serializedGameId = serializeGameId(gameId);
+        if (serializedGameId.equals("")) {
+            response.status(500);
+            response.body("Serialization failed.");
+        }
+        response.body(serializeGameId(gameId));
         return response.body();
     }
 
@@ -28,7 +33,7 @@ public class CreateGameRoute implements Route {
         return values;
     }
 
-    private String serializedGameId(int gameId) {
+    private String serializeGameId(int gameId) {
         return serializer.serialize(convertToResponseMap(gameId))
                 .orElse("");
     }
