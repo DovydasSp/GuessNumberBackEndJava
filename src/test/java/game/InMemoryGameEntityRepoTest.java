@@ -41,7 +41,7 @@ class InMemoryGameEntityRepoTest {
     }
 
     @Test
-    void saveNull() {
+    void savingNullDoesNotThrowException() {
         GameEntity newGameEntity = null;
         gameRepo.save(newGameEntity);
     }

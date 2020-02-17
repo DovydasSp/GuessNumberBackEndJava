@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CreateGameAcceptanceTest {
     private NumberGateway numberGateway;
@@ -30,11 +29,9 @@ public class CreateGameAcceptanceTest {
     }
 
     @Test
-    void name() {
+    void createNewGameWithId0() {
         HttpResponse<String> response = Unirest.post("http://localhost:4568/games").asString();
 
         assertThatJson(response.getBody()).node("gameId").isEqualTo(BigDecimal.valueOf(0));
-        assertEquals(gameEntityRepository.getEntity(0).returnGeneratedNumber(), 3);
-        assertEquals(gameEntityRepository.getEntity(0).returnGuessCount(), 0);
     }
 }

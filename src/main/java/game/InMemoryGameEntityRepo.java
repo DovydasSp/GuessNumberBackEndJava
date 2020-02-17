@@ -3,6 +3,8 @@ package game;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Objects.nonNull;
+
 public class InMemoryGameEntityRepo implements GameEntityRepository {
     private final Map<Integer, GameEntity> inMemoryDb;
 
@@ -16,7 +18,7 @@ public class InMemoryGameEntityRepo implements GameEntityRepository {
 
     @Override
     public void save(GameEntity gameEntity) {
-        if (gameEntity != null)
+        if (nonNull(gameEntity))
             inMemoryDb.put(gameEntity.returnGameId(), gameEntity);
     }
 

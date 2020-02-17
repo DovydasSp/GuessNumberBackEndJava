@@ -33,8 +33,9 @@ class GuessNumberRouteTest {
     @Test
     void routeReceivesGameIdAndCallsCheckerWithIt() throws Exception {
         when(request.params("id")).thenReturn("37");
+        when(request.body()).thenReturn("{\"guessNumber\":\"5\"}");
         guessNumberRoute.handle(request, response);
         verify(request).params("id");
-        verify(guessNumberUseCase).checkGuessAndReturnResponse("37");
+        verify(guessNumberUseCase).checkGuessAndReturnResponse(37, 5);
     }
 }

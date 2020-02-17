@@ -12,7 +12,7 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
     }
 
     @Override
-    public GuessResponseEntity checkGuessAndReturnResponse(String id) {
+    public GuessResponseEntity checkGuessAndReturnResponse(int id, int guessNumber) {
         return null;
     }
 }
