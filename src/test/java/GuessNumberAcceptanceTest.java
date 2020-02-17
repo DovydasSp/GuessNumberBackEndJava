@@ -1,5 +1,11 @@
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 public class GuessNumberAcceptanceTest {
     @BeforeEach
@@ -11,9 +17,9 @@ public class GuessNumberAcceptanceTest {
 
     @Test
     void name() {
-        /*HttpResponse<String> response = Unirest.post("http://localhost:4568/games")
+        HttpResponse<String> response = Unirest.post("http://localhost:4568/games")
                 .asString();
         System.out.println(response.getBody());
-        assertThatJson(response.getBody()).node("gameId").isEqualTo(BigDecimal.valueOf(0));*/
+        assertThatJson(response.getBody()).node("gameId").isEqualTo(BigDecimal.valueOf(0));
     }
 }
