@@ -1,3 +1,5 @@
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import game.*;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
@@ -12,7 +14,7 @@ public class GuessNumberAcceptanceTest {
     private static NumberGateway numberGateway;
     private static GuessValidator guessValidator;
     private static GameEntityRepository gameEntityRepository;
-    private static IIdProvider idProvider;
+    private static GameIdProvider gameIdProvider;
     private static UseCaseFactory factory;
     private static JSONSerializer serializer;
 
@@ -21,16 +23,18 @@ public class GuessNumberAcceptanceTest {
         numberGateway = new FakeNumberGateway();
         guessValidator = new GuessValidator();
         gameEntityRepository = new InMemoryGameEntityRepo();
-        idProvider = new FakeIdProvider();
+        gameIdProvider = new FakeGameIdProvider();
 
-        factory = new UseCaseFactoryImpl(numberGateway, guessValidator, gameEntityRepository, idProvider);
-        serializer = new JacksonJSONSerializer();
-        new SparkController(factory, serializer).matchRoutes();
+        factory = new UseCaseFactoryImpl(numberGateway, guessValidator, gameEntityRepository, gameIdProvider);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        serializer = new JacksonJSONSerializer(objectMapper);
+        new SparkController(factory, serializer).matchRoutes(4569);
     }
 
     @Test
     void checkGuessedNumber() {
-        HttpResponse<String> response = Unirest.post("http://localhost:4568/games").asString();
+        HttpResponse<String> response = Unirest.post("http://localhost:4569/games").asString();
 
         assertThatJson(response.getBody()).node("gameId").isEqualTo(BigDecimal.valueOf(0));
     }

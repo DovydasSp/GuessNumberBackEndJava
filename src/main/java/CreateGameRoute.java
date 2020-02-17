@@ -16,9 +16,9 @@ public class CreateGameRoute implements Route {
 
     @Override
     public Object handle(Request request, Response response) {
-        CreateGameUseCase interactor = useCaseFactory.buildCreateGameInteractor();
+        CreateGameUseCase interactor = useCaseFactory.buildCreateGameUseCase();
         int gameId = interactor.createGameAndReturnGameId();
-        response.body(serializer.serialize(convertToResponseMap(gameId)));
+        response.body(serializedGameId(gameId));
         return response.body();
     }
 
@@ -26,5 +26,10 @@ public class CreateGameRoute implements Route {
         Map<String, Integer> values = new HashMap<>();
         values.put("gameId", gameId);
         return values;
+    }
+
+    private String serializedGameId(int gameId) {
+        return serializer.serialize(convertToResponseMap(gameId))
+                .orElse("");
     }
 }

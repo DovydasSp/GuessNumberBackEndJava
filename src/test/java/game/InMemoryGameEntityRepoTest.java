@@ -9,9 +9,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryGameEntityRepoTest {
-    GameEntityRepository gameRepo;
-    Map<Integer, GameEntity> inMemoryDb;
-    GameEntity gameEntity;
+    private GameEntityRepository gameRepo;
+    private Map<Integer, GameEntity> inMemoryDb;
+    private GameEntity gameEntity;
 
     @BeforeEach
     void setUp() {
@@ -23,21 +23,21 @@ class InMemoryGameEntityRepoTest {
 
     @Test
     void getEntity() {
-        assertEquals(gameRepo.getEntity(gameEntity.returnGameId()), gameEntity);
+        assertEquals(gameRepo.fetchGameEntity(gameEntity.returnGameId()), gameEntity);
     }
 
     @Test
     void saveNewEntityWithSameId() {
         GameEntity newGameEntity = new GameEntity(gameEntity.returnGameId(), 3, 4);
         gameRepo.save(newGameEntity);
-        assertEquals(gameRepo.getEntity(newGameEntity.returnGameId()), newGameEntity);
+        assertEquals(gameRepo.fetchGameEntity(newGameEntity.returnGameId()), newGameEntity);
     }
 
     @Test
     void saveNewEntityWithNewId() {
         GameEntity newGameEntity = new GameEntity(3, 3, 4);
         gameRepo.save(newGameEntity);
-        assertEquals(gameRepo.getEntity(newGameEntity.returnGameId()), newGameEntity);
+        assertEquals(gameRepo.fetchGameEntity(newGameEntity.returnGameId()), newGameEntity);
     }
 
     @Test

@@ -8,6 +8,7 @@ import spark.Response;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,7 +29,7 @@ class CreateGameRouteTest {
 
     @BeforeEach
     void setUp() {
-        when(useCaseFactory.buildCreateGameInteractor()).thenReturn(generateNumberUseCase);
+        when(useCaseFactory.buildCreateGameUseCase()).thenReturn(generateNumberUseCase);
         postGameRoute = new CreateGameRoute(useCaseFactory, serializer);
     }
 
@@ -50,9 +51,7 @@ class CreateGameRouteTest {
     }
 
     private void mockSerializer(int gameId) {
-        Map<String, Integer> values = new HashMap<>();
-        values.put("gameId", gameId);
-        when(serializer.serialize(values)).thenReturn("\"gameId\":" + gameId);
+        when(serializer.serialize(createResponseMap(gameId))).thenReturn(Optional.of("\"gameId\":" + gameId));
     }
 
     private void verifyCalls(int gameId) {
@@ -65,5 +64,16 @@ class CreateGameRouteTest {
         Map<String, Integer> values = new HashMap<>();
         values.put("gameId", gameId);
         return values;
+    }
+
+    @Test
+    void routeReceivesGameIdNullAndCallsSerializerWithIt() {
+        int gameId = 0;
+        when(generateNumberUseCase.createGameAndReturnGameId()).thenReturn(gameId);
+        when(serializer.serialize(createResponseMap(gameId))).thenReturn(Optional.empty());
+        postGameRoute.handle(request, response);
+        verify(generateNumberUseCase).createGameAndReturnGameId();
+        verify(serializer).serialize(createResponseMap(gameId));
+        verify(response).body("");
     }
 }

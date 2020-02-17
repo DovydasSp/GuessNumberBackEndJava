@@ -1,3 +1,5 @@
+import java.util.Optional;
+
 public interface JSONSerializer {
-    String serialize(Object input);
+    Optional<String> serialize(Object input);
 }

@@ -1,6 +1,6 @@
 import game.GameEntity;
 import game.GameEntityRepository;
-import game.IIdProvider;
+import game.GameIdProvider;
 import game.NumberGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,21 +20,21 @@ class CreateGameInteractorTest {
     @Mock
     private GameEntityRepository gameEntityRepository;
     @Mock
-    private IIdProvider idProvider;
+    private GameIdProvider gameIdProvider;
     private CreateGameUseCase createGameInteractor;
 
     @BeforeEach
     void setUp() {
-        createGameInteractor = new CreateGameInteractor(gateway, gameEntityRepository, idProvider);
+        createGameInteractor = new CreateGameInteractor(gateway, gameEntityRepository, gameIdProvider);
     }
 
     @Test
     void execute() {
-        when(idProvider.getNextId()).thenReturn(2);
+        when(gameIdProvider.getNextId()).thenReturn(2);
         when(gateway.generateNumber()).thenReturn(123);
         int id = createGameInteractor.createGameAndReturnGameId();
         assertEquals(id, 2);
-        verify(idProvider).getNextId();
+        verify(gameIdProvider).getNextId();
         verify(gateway).generateNumber();
         ArgumentCaptor<GameEntity> captor = ArgumentCaptor.forClass(GameEntity.class);
         verify(gameEntityRepository).save(captor.capture());

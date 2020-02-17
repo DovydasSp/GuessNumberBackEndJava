@@ -1,24 +1,30 @@
+import game.Constants;
 import spark.Service;
 
 public class SparkController {
     private final UseCaseFactory factory;
-    private final Service ignite;
+    private final Service service;
     private final JSONSerializer serializer;
 
     public SparkController(UseCaseFactory factory, JSONSerializer serializer) {
         this.factory = factory;
         this.serializer = serializer;
-        ignite = Service.ignite();
+        service = Service.ignite();
     }
 
-    public void matchRoutes() {
-        ignite.port(4568);
+    public void matchRoutes(int port) {
+        service.port(port);
 
-        ignite.post("/games", new CreateGameRoute(factory, serializer));
-        ignite.post("/games/:id/guesses", new GuessNumberRoute(factory, serializer));
+        service.path(Constants.CREATE_GAME_POST_PATH, () -> {
+            service.post("", new CreateGameRoute(factory, serializer));
+            service.post(Constants.GUESS_NUMBER_POST_PATH, new GuessNumberRoute(factory, serializer));
+        });
 
-        System.out.println(ignite.port());
-        ignite.awaitInitialization();
+        service.awaitInitialization();
 
+    }
+
+    public void stop() {
+        service.stop();
     }
 }

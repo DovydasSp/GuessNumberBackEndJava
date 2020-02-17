@@ -1,6 +1,6 @@
 package game;
 
-public class FakeIdProvider implements IIdProvider {
+public class FakeGameIdProvider implements GameIdProvider {
     @Override
     public int getNextId() {
         return 0;

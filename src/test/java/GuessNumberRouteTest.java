@@ -26,16 +26,27 @@ class GuessNumberRouteTest {
 
     @BeforeEach
     void setUp() {
-        when(useCaseFactory.buildGuessNumberInteractor()).thenReturn(guessNumberUseCase);
+        when(useCaseFactory.buildGuessNumberUseCase()).thenReturn(guessNumberUseCase);
         guessNumberRoute = new GuessNumberRoute(useCaseFactory, serializer);
     }
 
     @Test
     void routeReceivesGameIdAndCallsCheckerWithIt() throws Exception {
-        when(request.params("id")).thenReturn("37");
-        when(request.body()).thenReturn("{\"guessNumber\":\"5\"}");
+        int gameId = 37;
+        int guessNumber = 5;
+        when(request.params("id")).thenReturn(String.valueOf(gameId));
+        when(request.body()).thenReturn("{\"guessNumber\":\"" + String.valueOf(guessNumber) + "\"}");
         guessNumberRoute.handle(request, response);
         verify(request).params("id");
-        verify(guessNumberUseCase).checkGuessAndReturnResponse(37, 5);
+        verify(guessNumberUseCase).checkGuessAndReturnResponse(gameId, guessNumber);
+    }
+
+    @Test
+    void routeReceivesGameIdNullAndCallsCheckerWithIt() throws Exception {
+        when(request.params("id")).thenReturn(null);
+        when(request.body()).thenReturn(null);
+        guessNumberRoute.handle(request, response);
+        verify(request).params("id");
+        verify(guessNumberUseCase).checkGuessAndReturnResponse(0, 0);
     }
 }

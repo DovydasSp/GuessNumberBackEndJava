@@ -1,5 +1,5 @@
 public interface UseCaseFactory {
-    CreateGameUseCase buildCreateGameInteractor();
+    CreateGameUseCase buildCreateGameUseCase();
 
-    GuessNumberUseCase buildGuessNumberInteractor();
+    GuessNumberUseCase buildGuessNumberUseCase();
 }

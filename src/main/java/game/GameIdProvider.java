@@ -1,5 +1,5 @@
 package game;
 
-public interface IIdProvider {
+public interface GameIdProvider {
     int getNextId();
 }

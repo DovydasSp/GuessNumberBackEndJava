@@ -3,5 +3,5 @@ package game;
 public interface GameEntityRepository {
     void save(GameEntity gameEntity);
 
-    GameEntity getEntity(int gameId);
+    GameEntity fetchGameEntity(int gameId);
 }

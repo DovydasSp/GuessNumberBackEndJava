@@ -1,23 +1,27 @@
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.Optional;
 
 public class JacksonJSONSerializer implements JSONSerializer {
     private final ObjectMapper objectMapper;
 
-    public JacksonJSONSerializer() {
-        objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    public JacksonJSONSerializer(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
-    public String serialize(Object input) {
-        if (input == null)
-            return "";
+    public Optional<String> serialize(Object input) {
+        return Optional.ofNullable(input)
+                .map(object -> serializeObject(input));
+    }
+
+    private String serializeObject(Object object) {
+        //TODO logger
         try {
-            return objectMapper.writeValueAsString(input);
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 }

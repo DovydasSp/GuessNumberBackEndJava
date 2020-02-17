@@ -12,7 +12,8 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
     }
 
     @Override
-    public GuessResponseEntity checkGuessAndReturnResponse(int id, int guessNumber) {
-        return null;
+    public GuessResponseEntity checkGuessAndReturnResponse(int gameId, int guessNumber) {
+        //TODO complete
+        throw new UnsupportedOperationException();
     }
 }
