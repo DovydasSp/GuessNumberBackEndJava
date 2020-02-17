@@ -23,8 +23,18 @@ public class GuessNumberRoute implements Route {
         int id = 0;
         if (nonNull(idStr))
             id = Integer.parseInt(idStr);
+        else {
+            response.status(400);
+            response.body("Invalid Game ID");
+            return response;
+        }
 
         int guessNumber = getGuessNumber(request);
+        if (guessNumber == 0) {
+            response.status(400);
+            response.body("Guess invalid");
+            return response;
+        }
 
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberUseCase();
         GuessResponseEntity result = interactor.checkGuessAndReturnResponse(id, guessNumber);
