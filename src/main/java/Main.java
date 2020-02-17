@@ -8,8 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
         UseCaseFactory factory = new UseCaseFactoryImpl();
-        final ObjectMapper objectMapper = createObjectMapper();
-        JSONSerializer serializer = new JacksonJSONSerializer(objectMapper);
+        JSONSerializer serializer = createSerializer();
         sparkController = new SparkController(factory, serializer);
         sparkController.matchRoutes(4568);
 
@@ -22,9 +21,10 @@ public class Main {
             sparkController.stop();
     }
 
-    private static ObjectMapper createObjectMapper() {
+    private static JSONSerializer createSerializer() {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        return objectMapper;
+        JSONSerializer serializer = new JacksonJSONSerializer(objectMapper);
+        return serializer;
     }
 }

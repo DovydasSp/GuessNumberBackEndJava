@@ -43,37 +43,33 @@ class CreateGameRouteTest {
         routeReceivesGameIdAndCallsSerializerWithIt(78578);
     }
 
+    @Test
+    void routeReceivesGameIdNullAndCallsSerializerWithIt() {
+        int gameId = 0;
+        when(generateNumberUseCase.createGameAndReturnGameId()).thenReturn(gameId);
+        postGameRoute.handle(request, response);
+        verifyCalls(gameId, "");
+    }
+
     private void routeReceivesGameIdAndCallsSerializerWithIt(int gameId) {
         when(generateNumberUseCase.createGameAndReturnGameId()).thenReturn(gameId);
         mockSerializer(gameId);
         postGameRoute.handle(request, response);
-        verifyCalls(gameId);
+        verifyCalls(gameId, "\"gameId\":" + gameId + "");
     }
 
     private void mockSerializer(int gameId) {
         when(serializer.serialize(createResponseMap(gameId))).thenReturn(Optional.of("\"gameId\":" + gameId));
     }
 
-    private void verifyCalls(int gameId) {
+    private void verifyCalls(int gameId, String body) {
         verify(generateNumberUseCase).createGameAndReturnGameId();
-        verify(serializer).serialize(createResponseMap(gameId));
-        verify(response).body("\"gameId\":" + gameId + "");
+        verify(response).body(body);
     }
 
     private Map<String, Integer> createResponseMap(int gameId) {
         Map<String, Integer> values = new HashMap<>();
         values.put("gameId", gameId);
         return values;
-    }
-
-    @Test
-    void routeReceivesGameIdNullAndCallsSerializerWithIt() {
-        int gameId = 0;
-        when(generateNumberUseCase.createGameAndReturnGameId()).thenReturn(gameId);
-        when(serializer.serialize(createResponseMap(gameId))).thenReturn(Optional.empty());
-        postGameRoute.handle(request, response);
-        verify(generateNumberUseCase).createGameAndReturnGameId();
-        verify(serializer).serialize(createResponseMap(gameId));
-        verify(response).body("");
     }
 }

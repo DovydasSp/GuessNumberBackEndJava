@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryGameEntityRepoTest {
@@ -22,7 +23,7 @@ class InMemoryGameEntityRepoTest {
     }
 
     @Test
-    void getEntity() {
+    void fetchGameEntityReturnsFromRepository() {
         assertEquals(gameRepo.fetchGameEntity(gameEntity.returnGameId()), gameEntity);
     }
 
@@ -43,6 +44,6 @@ class InMemoryGameEntityRepoTest {
     @Test
     void savingNullDoesNotThrowException() {
         GameEntity newGameEntity = null;
-        gameRepo.save(newGameEntity);
+        assertDoesNotThrow(() -> gameRepo.save(newGameEntity));
     }
 }

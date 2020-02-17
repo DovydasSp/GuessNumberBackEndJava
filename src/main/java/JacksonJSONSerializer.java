@@ -24,4 +24,8 @@ public class JacksonJSONSerializer implements JSONSerializer {
             return null;
         }
     }
+
+    public ObjectMapper fetchObjectMapper() {
+        return objectMapper;
+    }
 }

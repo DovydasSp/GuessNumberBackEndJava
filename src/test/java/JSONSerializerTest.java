@@ -22,9 +22,8 @@ class JSONSerializerTest {
 
     @Test
     void serialize() {
-        Map<String, Integer> values = new HashMap<>();
-        values.put("gameId", 456);
-        String expected = "{\"gameId\":456}";
+        Map<String, Integer> values = createInputMap("gameId", 456);
+        String expected = "{\"gameId456\":456}";
 
         Optional<String> actual = serializer.serialize(values);
 
@@ -33,8 +32,6 @@ class JSONSerializerTest {
 
     @Test
     void getEmptyStringWhenSerializingNull() {
-        Map<String, Integer> values = null;
-        String expected = null;
         Optional<String> actual = serializer.serialize(null);
 
         assertFalse(actual.isPresent());
@@ -42,13 +39,20 @@ class JSONSerializerTest {
 
     @Test
     void doNotSerializeNullValues() {
-        Map<String, Integer> values = new HashMap<>();
-        values.put("gameId", 456);
-        values.put("gameId2", null);
-        String expected = "{\"gameId\":456}";
+        Map<String, Integer> values = createInputMap("gameId", 456, null);
+
+        String expected = "{\"gameId456\":456}";
 
         Optional<String> actual = serializer.serialize(values);
 
         assertThat(actual).hasValue(expected);
+    }
+
+    private Map<String, Integer> createInputMap(String name, Integer... values) {
+        Map<String, Integer> map = new HashMap<>();
+        for (Integer i : values) {
+            map.put(name + i, i);
+        }
+        return map;
     }
 }

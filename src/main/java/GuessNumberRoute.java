@@ -1,4 +1,4 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import game.GuessResponseEntity;
 import spark.Request;
 import spark.Response;
@@ -42,10 +42,10 @@ public class GuessNumberRoute implements Route {
         return response.body();
     }
 
-    private int getGuessNumber(Request request) throws com.fasterxml.jackson.core.JsonProcessingException {
+    private int getGuessNumber(Request request) throws JsonProcessingException {
         String guessNumberStr = null;
         if (nonNull(request.body())) {
-            Map map = new ObjectMapper().readValue(request.body(), Map.class);
+            Map map = serializer.fetchObjectMapper().readValue(request.body(), Map.class);
             guessNumberStr = (String) map.get("guessNumber");
         }
         if (nonNull(guessNumberStr))
