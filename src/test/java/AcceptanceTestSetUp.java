@@ -5,8 +5,8 @@ import game.FakeNumberGateway;
 import game.GuessValidator;
 import game.InMemoryGameEntityRepo;
 
-public class AcceptanceTestSetUp {
-    public SparkController setUpAndReturnSparkController(int port) {
+class AcceptanceTestSetUp {
+    SparkController setUpAndReturnSparkController(int port) {
         UseCaseFactory factory = new UseCaseFactoryImpl(new FakeNumberGateway(), new GuessValidator(),
                 new InMemoryGameEntityRepo(), new FakeGameIdProvider());
 

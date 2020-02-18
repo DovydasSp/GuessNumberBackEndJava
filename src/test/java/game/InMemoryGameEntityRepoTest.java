@@ -11,12 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryGameEntityRepoTest {
     private GameEntityRepository gameRepo;
-    private Map<Integer, GameEntity> inMemoryDb;
     private GameEntity gameEntity;
 
     @BeforeEach
     void setUp() {
-        inMemoryDb = new HashMap<>();
+        Map<Integer, GameEntity> inMemoryDb = new HashMap<>();
         gameEntity = new GameEntity(1, 2, 3);
         inMemoryDb.put(gameEntity.returnGameId(), gameEntity);
         gameRepo = new InMemoryGameEntityRepo(inMemoryDb);
@@ -43,7 +42,6 @@ class InMemoryGameEntityRepoTest {
 
     @Test
     void savingNullDoesNotThrowException() {
-        GameEntity newGameEntity = null;
-        assertDoesNotThrow(() -> gameRepo.save(newGameEntity));
+        assertDoesNotThrow(() -> gameRepo.save(null));
     }
 }

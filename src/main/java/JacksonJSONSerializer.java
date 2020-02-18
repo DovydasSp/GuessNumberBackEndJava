@@ -1,6 +1,7 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Map;
 import java.util.Optional;
 
 public class JacksonJSONSerializer implements JSONSerializer {
@@ -25,7 +26,8 @@ public class JacksonJSONSerializer implements JSONSerializer {
         }
     }
 
-    public ObjectMapper fetchObjectMapper() {
-        return objectMapper;
+    @Override
+    public Map deserializeRequestBody(String body) throws JsonProcessingException {
+        return objectMapper.readValue(body, Map.class);
     }
 }

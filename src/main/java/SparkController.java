@@ -15,13 +15,12 @@ public class SparkController {
     public void matchRoutes(int port) {
         service.port(port);
 
-        service.path(Constants.CREATE_GAME_POST_PATH, () -> {
+        service.path(Constants.GAMES_PATH, () -> {
             service.post("", new CreateGameRoute(factory, serializer));
-            service.post(Constants.GUESS_NUMBER_POST_PATH, new GuessNumberRoute(factory, serializer));
+            service.post(Constants.GAMES_GUESSES_PATH, new GuessNumberRoute(factory, serializer));
         });
 
         service.awaitInitialization();
-
     }
 
     public void stop() {

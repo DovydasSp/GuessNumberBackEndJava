@@ -1,30 +1,36 @@
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class JSONSerializerTest {
     private JacksonJSONSerializer serializer;
 
+    @Mock
+    private static ObjectMapper objectMapper;
+
     @BeforeEach
     void setUp() {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         serializer = new JacksonJSONSerializer(objectMapper);
     }
 
     @Test
-    void serialize() {
-        Map<String, Integer> values = createInputMap("gameId", 456);
+    void serialize() throws JsonProcessingException {
+        Map<String, Integer> values = createInputMap(456);
         String expected = "{\"gameId456\":456}";
 
+        when(objectMapper.writeValueAsString(values)).thenReturn(expected);
         Optional<String> actual = serializer.serialize(values);
 
         assertThat(actual).hasValue(expected);
@@ -34,24 +40,25 @@ class JSONSerializerTest {
     void getEmptyStringWhenSerializingNull() {
         Optional<String> actual = serializer.serialize(null);
 
-        assertFalse(actual.isPresent());
+        assertThat(actual).isNotPresent();
     }
 
     @Test
-    void doNotSerializeNullValues() {
-        Map<String, Integer> values = createInputMap("gameId", 456, null);
+    void doNotSerializeNullValues() throws JsonProcessingException {
+        Map<String, Integer> values = createInputMap(456, null);
 
         String expected = "{\"gameId456\":456}";
 
+        when(objectMapper.writeValueAsString(values)).thenReturn(expected);
         Optional<String> actual = serializer.serialize(values);
 
         assertThat(actual).hasValue(expected);
     }
 
-    private Map<String, Integer> createInputMap(String name, Integer... values) {
+    private Map<String, Integer> createInputMap(Integer... values) {
         Map<String, Integer> map = new HashMap<>();
         for (Integer i : values) {
-            map.put(name + i, i);
+            map.put("gameId" + i, i);
         }
         return map;
     }

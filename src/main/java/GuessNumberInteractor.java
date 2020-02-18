@@ -3,12 +3,8 @@ import game.GuessResponseEntity;
 import game.GuessValidator;
 
 public class GuessNumberInteractor implements GuessNumberUseCase {
-    private final GuessValidator gateway;
-    private final GameEntityRepository gameEntityRepository;
 
-    public GuessNumberInteractor(GuessValidator gateway, GameEntityRepository gameEntityRepository) {
-        this.gateway = gateway;
-        this.gameEntityRepository = gameEntityRepository;
+    GuessNumberInteractor(GuessValidator gateway, GameEntityRepository gameEntityRepository) {
     }
 
     @Override

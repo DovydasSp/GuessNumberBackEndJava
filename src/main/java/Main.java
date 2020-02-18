@@ -13,7 +13,6 @@ public class Main {
         sparkController.matchRoutes(4568);
 
         Runtime.getRuntime().addShutdownHook(new Thread(Main::stop));
-
     }
 
     private static void stop() {
@@ -24,7 +23,6 @@ public class Main {
     private static JSONSerializer createSerializer() {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        JSONSerializer serializer = new JacksonJSONSerializer(objectMapper);
-        return serializer;
+        return new JacksonJSONSerializer(objectMapper);
     }
 }

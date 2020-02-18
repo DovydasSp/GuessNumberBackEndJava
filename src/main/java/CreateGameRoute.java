@@ -20,11 +20,11 @@ public class CreateGameRoute implements Route {
         int gameId = interactor.createGameAndReturnGameId();
         String serializedGameId = serializeGameId(gameId);
         if (serializedGameId.equals("")) {
-            response.status(500);
-            response.body("Serialization failed.");
+            return changeResponseOnInvalidRequest(response).body();
+        } else {
+            response.body(serializedGameId);
+            return response.body();
         }
-        response.body(serializeGameId(gameId));
-        return response.body();
     }
 
     private Map<String, Integer> convertToResponseMap(int gameId) {
@@ -36,5 +36,18 @@ public class CreateGameRoute implements Route {
     private String serializeGameId(int gameId) {
         return serializer.serialize(convertToResponseMap(gameId))
                 .orElse("");
+    }
+
+    private Response changeResponseOnInvalidRequest(Response response) {
+        response.status(500);
+        response.body(serializer.serialize(convertToResponseMap())
+                .orElse(""));
+        return response;
+    }
+
+    private Map<String, String> convertToResponseMap() {
+        Map<String, String> values = new HashMap<>();
+        values.put("message", "Serialization failed.");
+        return values;
     }
 }

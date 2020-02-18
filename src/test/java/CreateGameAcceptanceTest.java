@@ -22,7 +22,7 @@ class CreateGameAcceptanceTest {
 
     @Test
     void createNewGameWithId0() {
-        HttpResponse<String> response = Unirest.post("http://localhost:4567" + Constants.CREATE_GAME_POST_PATH).asString();
+        HttpResponse<String> response = Unirest.post("http://localhost:4567" + Constants.GAMES_PATH).asString();
 
         assertThatJson(response.getBody()).node("gameId").isEqualTo(0);
     }

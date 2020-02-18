@@ -4,6 +4,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.nonNull;
@@ -20,21 +21,16 @@ public class GuessNumberRoute implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
         String idStr = request.params("id");
-        int id = 0;
-        if (nonNull(idStr))
+        int id;
+        try {
             id = Integer.parseInt(idStr);
-        else {
-            response.status(400);
-            response.body("Invalid Game ID");
-            return response;
+        } catch (Exception e) {
+            return changeResponseOnInvalidRequest(response, "Invalid Game ID").body();
         }
 
         int guessNumber = getGuessNumber(request);
-        if (guessNumber == 0) {
-            response.status(400);
-            response.body("Guess invalid");
-            return response;
-        }
+        if (guessNumber == 0)
+            return changeResponseOnInvalidRequest(response, "Guess invalid").body();
 
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberUseCase();
         GuessResponseEntity result = interactor.checkGuessAndReturnResponse(id, guessNumber);
@@ -43,18 +39,35 @@ public class GuessNumberRoute implements Route {
     }
 
     private int getGuessNumber(Request request) throws JsonProcessingException {
-        String guessNumberStr = null;
-        if (nonNull(request.body())) {
-            Map map = serializer.fetchObjectMapper().readValue(request.body(), Map.class);
-            guessNumberStr = (String) map.get("guessNumber");
+        String body = request.body();
+        if (nonNull(body)) {
+            Map map = serializer.deserializeRequestBody(body);
+            String guessNumberStr = (String) map.get("guessNumber");
+            if (nonNull(guessNumberStr))
+                try {
+                    return Integer.parseInt(guessNumberStr);
+                } catch (NumberFormatException ex) {
+                    return 0;
+                }
         }
-        if (nonNull(guessNumberStr))
-            return Integer.parseInt(guessNumberStr);
         return 0;
     }
 
     private String serializedResult(GuessResponseEntity result) {
         return serializer.serialize(result)
                 .orElse("");
+    }
+
+    private Response changeResponseOnInvalidRequest(Response response, String message) {
+        response.status(400);
+        response.body(serializer.serialize(convertToResponseMap(message))
+                .orElse(""));
+        return response;
+    }
+
+    private Map<String, String> convertToResponseMap(String message) {
+        Map<String, String> values = new HashMap<>();
+        values.put("message", message);
+        return values;
     }
 }

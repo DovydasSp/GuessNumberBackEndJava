@@ -1,29 +1,33 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import spark.Request;
 import spark.Response;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Optional.of;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GuessNumberRouteTest {
 
-    private GuessNumberRoute guessNumberRoute;
+    private static GuessNumberRoute guessNumberRoute;
     @Mock
-    private UseCaseFactory useCaseFactory;
+    private static UseCaseFactory useCaseFactory;
     @Mock
-    private JSONSerializer serializer;
+    private static JSONSerializer serializer;
     @Mock
-    private GuessNumberUseCase guessNumberUseCase;
+    private static GuessNumberUseCase guessNumberUseCase;
     @Mock
-    private Request request;
+    private static Request request;
     @Mock
-    private Response response;
+    private static Response response;
 
     @BeforeEach
     void setUp() {
@@ -34,26 +38,36 @@ class GuessNumberRouteTest {
     void routeReceivesGameIdAndCallsCheckerWithIt() throws Exception {
         int gameId = 37;
         int guessNumber = 5;
+        Map<String, String> map = new HashMap<>();
+        map.put("guessNumber", "5");
+        String body = "{\"guessNumber\":\"" + guessNumber + "\"}";
+
         when(useCaseFactory.buildGuessNumberUseCase()).thenReturn(guessNumberUseCase);
         when(request.params("id")).thenReturn(String.valueOf(gameId));
-        when(request.body()).thenReturn("{\"guessNumber\":\"" + guessNumber + "\"}");
-        when(serializer.fetchObjectMapper()).thenReturn(new ObjectMapper());
+        when(request.body()).thenReturn(body);
+        when(serializer.deserializeRequestBody(body)).thenReturn(map);
+
         guessNumberRoute.handle(request, response);
+
         verify(request).params("id");
         verify(guessNumberUseCase).checkGuessAndReturnResponse(gameId, guessNumber);
     }
 
     @Test
     void routeReceivesGameIdNullAndCallsCheckerWithIt() throws Exception {
+        String message = "{\"message\":\"Invalid Game ID\"}";
+        when(serializer.serialize(ArgumentMatchers.any())).thenReturn(of(message));
         guessNumberRoute.handle(request, response);
-        verifyRequestAndResponse("Invalid Game ID");
+        verifyRequestAndResponse(message);
     }
 
     @Test
     void routeReceivesNullGuessAndCallsCheckerWithIt() throws Exception {
+        String message = "{\"message\":\"Guess invalid\"}";
+        when(serializer.serialize(ArgumentMatchers.any())).thenReturn(of(message));
         when(request.params("id")).thenReturn("1");
         guessNumberRoute.handle(request, response);
-        verifyRequestAndResponse("Guess invalid");
+        verifyRequestAndResponse(message);
     }
 
     private void verifyRequestAndResponse(String body) {

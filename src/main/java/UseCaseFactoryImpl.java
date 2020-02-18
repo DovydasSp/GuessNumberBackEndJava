@@ -6,7 +6,7 @@ public class UseCaseFactoryImpl implements UseCaseFactory {
     private final GameEntityRepository gameEntityRepository;
     private final GameIdProvider gameIdProvider;
 
-    public UseCaseFactoryImpl() {
+    UseCaseFactoryImpl() {
         this(new RandomNumberGateway(), new GuessValidator(), new InMemoryGameEntityRepo(), new AtomicGameIdProvider());
     }
 
@@ -25,6 +25,4 @@ public class UseCaseFactoryImpl implements UseCaseFactory {
     public GuessNumberUseCase buildGuessNumberUseCase() {
         return new GuessNumberInteractor(guessValidator, gameEntityRepository);
     }
-
-
 }
