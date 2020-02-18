@@ -1,5 +1,7 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import game.GuessResponseEntity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -10,6 +12,7 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 
 public class GuessNumberRoute implements Route {
+    private static final Logger LOGGER = LogManager.getLogger(GuessNumberRoute.class);
     private final UseCaseFactory useCaseFactory;
     private final JSONSerializer serializer;
 
@@ -25,12 +28,15 @@ public class GuessNumberRoute implements Route {
         try {
             id = Integer.parseInt(idStr);
         } catch (Exception e) {
+            LOGGER.error("Tried to parse invalid game ID");
             return changeResponseOnInvalidRequest(response, "Invalid Game ID").body();
         }
 
         int guessNumber = getGuessNumber(request);
-        if (guessNumber == 0)
+        if (guessNumber == 0) {
+            LOGGER.error("Got invalid guess");
             return changeResponseOnInvalidRequest(response, "Guess invalid").body();
+        }
 
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberUseCase();
         GuessResponseEntity result = interactor.checkGuessAndReturnResponse(id, guessNumber);
@@ -47,6 +53,7 @@ public class GuessNumberRoute implements Route {
                 try {
                     return Integer.parseInt(guessNumberStr);
                 } catch (NumberFormatException ex) {
+                    LOGGER.error("Tried to parse invalid guess number", ex);
                     return 0;
                 }
         }

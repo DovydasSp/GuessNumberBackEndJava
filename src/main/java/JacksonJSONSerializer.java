@@ -1,10 +1,13 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 import java.util.Optional;
 
 public class JacksonJSONSerializer implements JSONSerializer {
+    private static final Logger LOGGER = LogManager.getLogger(JacksonJSONSerializer.class);
     private final ObjectMapper objectMapper;
 
     public JacksonJSONSerializer(ObjectMapper objectMapper) {
@@ -17,11 +20,10 @@ public class JacksonJSONSerializer implements JSONSerializer {
     }
 
     private String serializeObject(Object object) {
-        //TODO logger
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to serialize object", e);
             return null;
         }
     }

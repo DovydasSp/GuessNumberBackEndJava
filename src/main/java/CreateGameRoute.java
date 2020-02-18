@@ -1,3 +1,5 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -6,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CreateGameRoute implements Route {
+    private static final Logger LOGGER = LogManager.getLogger(CreateGameRoute.class);
     private final UseCaseFactory useCaseFactory;
     private final JSONSerializer serializer;
 
@@ -20,6 +23,7 @@ public class CreateGameRoute implements Route {
         int gameId = interactor.createGameAndReturnGameId();
         String serializedGameId = serializeGameId(gameId);
         if (serializedGameId.equals("")) {
+            LOGGER.error("Failed to create game ID");
             return changeResponseOnInvalidRequest(response).body();
         } else {
             response.body(serializedGameId);
