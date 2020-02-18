@@ -26,4 +26,8 @@ public class SparkController {
     public void stop() {
         service.stop();
     }
+
+    public int getPort() {
+        return service.port();
+    }
 }

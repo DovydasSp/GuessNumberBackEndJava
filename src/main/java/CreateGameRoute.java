@@ -1,11 +1,12 @@
+import game.ErrorResponseEntity;
+import game.GameEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-import java.util.HashMap;
-import java.util.Map;
+import static java.util.Objects.isNull;
 
 public class CreateGameRoute implements Route {
     private static final Logger LOGGER = LogManager.getLogger(CreateGameRoute.class);
@@ -22,36 +23,24 @@ public class CreateGameRoute implements Route {
         CreateGameUseCase interactor = useCaseFactory.buildCreateGameUseCase();
         int gameId = interactor.createGameAndReturnGameId();
         String serializedGameId = serializeGameId(gameId);
-        if (serializedGameId.equals("")) {
+        if (isNull(serializedGameId)) {
             LOGGER.error("Failed to create game ID");
             return changeResponseOnInvalidRequest(response).body();
         } else {
             response.body(serializedGameId);
-            return response.body();
         }
-    }
-
-    private Map<String, Integer> convertToResponseMap(int gameId) {
-        Map<String, Integer> values = new HashMap<>();
-        values.put("gameId", gameId);
-        return values;
+        return response.body();
     }
 
     private String serializeGameId(int gameId) {
-        return serializer.serialize(convertToResponseMap(gameId))
-                .orElse("");
+        return serializer.serialize(new GameEntity(gameId, null, null))
+                .orElse(null);
     }
 
     private Response changeResponseOnInvalidRequest(Response response) {
         response.status(500);
-        response.body(serializer.serialize(convertToResponseMap())
+        response.body(serializer.serialize(new ErrorResponseEntity("Serialization failed."))
                 .orElse(""));
         return response;
-    }
-
-    private Map<String, String> convertToResponseMap() {
-        Map<String, String> values = new HashMap<>();
-        values.put("message", "Serialization failed.");
-        return values;
     }
 }

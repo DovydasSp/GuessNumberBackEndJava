@@ -14,7 +14,7 @@ class NumberGeneratorTest {
     }
 
     @Test
-    void generateNumber() {
+    void generateNumberDoesNotGoOutOfBounds() {
         for (int i = 0; i < 1000; i++) {
             int generatedNumber = numberGenerator.generateNumber();
             assertTrue(generatedNumber >= 1 && generatedNumber <= 10);

@@ -1,17 +1,16 @@
+import game.GameEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import spark.Request;
 import spark.Response;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Optional.of;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +47,7 @@ class CreateGameRouteTest {
     @Test
     void routeReceivesGameIdNullAndCallsSerializerWithIt() {
         String message = "{\"message\":\"Serialization failed.\"}";
-        when(serializer.serialize(ArgumentMatchers.any())).thenReturn(of(message));
+        when(serializer.serialize(any())).thenReturn(of(message));
         when(generateNumberUseCase.createGameAndReturnGameId()).thenReturn(0);
         postGameRoute.handle(request, response);
         verify(response).body(message);
@@ -62,17 +61,11 @@ class CreateGameRouteTest {
     }
 
     private void mockSerializer(int gameId) {
-        when(serializer.serialize(createResponseMap(gameId))).thenReturn(Optional.of("\"gameId\":" + gameId));
+        when(serializer.serialize(any(GameEntity.class))).thenReturn(Optional.of("\"gameId\":" + gameId));
     }
 
     private void verifyCalls(String body) {
         verify(generateNumberUseCase).createGameAndReturnGameId();
         verify(response).body(body);
-    }
-
-    private Map<String, Integer> createResponseMap(int gameId) {
-        Map<String, Integer> values = new HashMap<>();
-        values.put("gameId", gameId);
-        return values;
     }
 }

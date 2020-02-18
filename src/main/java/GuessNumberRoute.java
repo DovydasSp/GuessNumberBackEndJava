@@ -1,4 +1,4 @@
-import com.fasterxml.jackson.core.JsonProcessingException;
+import game.ErrorResponseEntity;
 import game.GuessResponseEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -6,8 +6,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
@@ -22,59 +22,54 @@ public class GuessNumberRoute implements Route {
     }
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
+    public Object handle(Request request, Response response) {
         String idStr = request.params("id");
-        int id;
-        try {
-            id = Integer.parseInt(idStr);
-        } catch (Exception e) {
-            LOGGER.error("Tried to parse invalid game ID");
-            return changeResponseOnInvalidRequest(response, "Invalid Game ID").body();
+        int id = parseIntFromStringOr0IfException(idStr, "game ID");
+        if (id == 0) {
+            LOGGER.error("Got invalid id");
+            return changeResponseOnInvalidRequest(response, 400, new ErrorResponseEntity("invalid ID")).body();
         }
 
         int guessNumber = getGuessNumber(request);
         if (guessNumber == 0) {
             LOGGER.error("Got invalid guess");
-            return changeResponseOnInvalidRequest(response, "Guess invalid").body();
+            return changeResponseOnInvalidRequest(response, 400, new ErrorResponseEntity("invalid guess")).body();
         }
 
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberUseCase();
         GuessResponseEntity result = interactor.checkGuessAndReturnResponse(id, guessNumber);
-        response.body(serializedResult(result));
-        return response.body();
+        return changeResponseOnInvalidRequest(response, 200, result).body();
     }
 
-    private int getGuessNumber(Request request) throws JsonProcessingException {
+    private int getGuessNumber(Request request) {
         String body = request.body();
         if (nonNull(body)) {
-            Map map = serializer.deserializeRequestBody(body);
-            String guessNumberStr = (String) map.get("guessNumber");
-            if (nonNull(guessNumberStr))
-                try {
-                    return Integer.parseInt(guessNumberStr);
-                } catch (NumberFormatException ex) {
-                    LOGGER.error("Tried to parse invalid guess number", ex);
-                    return 0;
-                }
+            Optional<Map> map = serializer.deserialize(body, Map.class);
+            Map guessNumberMap;
+            String guessNumberStr = null;
+            if (map.isPresent()) {
+                guessNumberMap = map.get();
+                guessNumberStr = (String) guessNumberMap.get("guessNumber");
+            }
+
+            return parseIntFromStringOr0IfException(guessNumberStr, "guess number");
         }
         return 0;
     }
 
-    private String serializedResult(GuessResponseEntity result) {
-        return serializer.serialize(result)
-                .orElse("");
-    }
-
-    private Response changeResponseOnInvalidRequest(Response response, String message) {
-        response.status(400);
-        response.body(serializer.serialize(convertToResponseMap(message))
+    private Response changeResponseOnInvalidRequest(Response response, int statusCode, Object obj) {
+        response.status(statusCode);
+        response.body(serializer.serialize(obj)
                 .orElse(""));
         return response;
     }
 
-    private Map<String, String> convertToResponseMap(String message) {
-        Map<String, String> values = new HashMap<>();
-        values.put("message", message);
-        return values;
+    private int parseIntFromStringOr0IfException(String parsableString, String logMsg) {
+        try {
+            return Integer.parseInt(parsableString);
+        } catch (NumberFormatException ex) {
+            LOGGER.error("Tried to parse invalid " + logMsg, ex);
+            return 0;
+        }
     }
 }

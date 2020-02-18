@@ -6,24 +6,24 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 
 public class InMemoryGameEntityRepo implements GameEntityRepository {
-    private final Map<Integer, GameEntity> inMemoryStorage;
+    private final Map<Integer, GameEntity> gameEntityToGameEntityMap;
 
     public InMemoryGameEntityRepo() {
         this(new HashMap<>());
     }
 
     public InMemoryGameEntityRepo(Map<Integer, GameEntity> storage) {
-        inMemoryStorage = storage;
+        gameEntityToGameEntityMap = storage;
     }
 
     @Override
     public void save(GameEntity gameEntity) {
         if (nonNull(gameEntity))
-            inMemoryStorage.put(gameEntity.returnGameId(), gameEntity);
+            gameEntityToGameEntityMap.put(gameEntity.returnGameId(), gameEntity);
     }
 
     @Override
     public GameEntity fetchGameEntity(int gameId) {
-        return inMemoryStorage.get(gameId);
+        return gameEntityToGameEntityMap.get(gameId);
     }
 }

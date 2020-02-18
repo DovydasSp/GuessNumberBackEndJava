@@ -9,6 +9,7 @@ import spark.Response;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Optional.of;
 import static org.mockito.Mockito.verify;
@@ -42,10 +43,7 @@ class GuessNumberRouteTest {
         map.put("guessNumber", "5");
         String body = "{\"guessNumber\":\"" + guessNumber + "\"}";
 
-        when(useCaseFactory.buildGuessNumberUseCase()).thenReturn(guessNumberUseCase);
-        when(request.params("id")).thenReturn(String.valueOf(gameId));
-        when(request.body()).thenReturn(body);
-        when(serializer.deserializeRequestBody(body)).thenReturn(map);
+        mockRequest(gameId, body, map);
 
         guessNumberRoute.handle(request, response);
 
@@ -74,5 +72,12 @@ class GuessNumberRouteTest {
         verify(request).params("id");
         verify(response).status(400);
         verify(response).body(body);
+    }
+
+    private void mockRequest(int gameId, String body, Map map) {
+        when(useCaseFactory.buildGuessNumberUseCase()).thenReturn(guessNumberUseCase);
+        when(request.params("id")).thenReturn(String.valueOf(gameId));
+        when(request.body()).thenReturn(body);
+        when(serializer.deserialize(body, Map.class)).thenReturn(Optional.ofNullable(map));
     }
 }

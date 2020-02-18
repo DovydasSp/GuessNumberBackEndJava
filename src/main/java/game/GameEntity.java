@@ -1,25 +1,29 @@
 package game;
 
-public class GameEntity {
-    private final int gameId;
-    private final int guessCount;
-    private final int generatedNumber;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public GameEntity(int gameId, int guessCount, int generatedNumber) {
+public class GameEntity {
+    private final Integer gameId;
+    private final Integer guessCount;
+    private final Integer generatedNumber;
+
+    public GameEntity(@JsonProperty("gameId") Integer gameId,
+                      @JsonProperty("guessCount") Integer guessCount,
+                      @JsonProperty("generatedNumber") Integer generatedNumber) {
         this.gameId = gameId;
         this.guessCount = guessCount;
         this.generatedNumber = generatedNumber;
     }
 
-    public int returnGameId() {
+    public Integer returnGameId() {
         return gameId;
     }
 
-    public int returnGuessCount(){
+    public Integer returnGuessCount() {
         return guessCount;
     }
 
-    public int returnGeneratedNumber(){
+    public Integer returnGeneratedNumber() {
         return generatedNumber;
     }
 }

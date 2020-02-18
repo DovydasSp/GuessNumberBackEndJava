@@ -3,7 +3,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Map;
 import java.util.Optional;
 
 public class JacksonJSONSerializer implements JSONSerializer {
@@ -28,8 +27,17 @@ public class JacksonJSONSerializer implements JSONSerializer {
         }
     }
 
-    @Override
-    public Map deserializeRequestBody(String body) throws JsonProcessingException {
-        return objectMapper.readValue(body, Map.class);
+    public <T> Optional<T> deserialize(String body, Class<T> aClass) {
+        return Optional.ofNullable(aClass)
+                .map(object -> deserializeString(body, aClass));
+    }
+
+    private <T> T deserializeString(String body, Class<T> aClass) {
+        try {
+            return objectMapper.readValue(body, aClass);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("Failed to deserialize object", e);
+            return null;
+        }
     }
 }

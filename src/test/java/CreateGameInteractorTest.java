@@ -29,10 +29,14 @@ class CreateGameInteractorTest {
     }
 
     @Test
-    void execute() {
+    void generateIdAndNumberThenSave() {
         when(gameIdProvider.getNextId()).thenReturn(2);
         when(gateway.generateNumber()).thenReturn(123);
         int id = createGameInteractor.createGameAndReturnGameId();
+        verifyGeneratingAndSaving(id);
+    }
+
+    private void verifyGeneratingAndSaving(int id) {
         assertEquals(id, 2);
         verify(gameIdProvider).getNextId();
         verify(gateway).generateNumber();

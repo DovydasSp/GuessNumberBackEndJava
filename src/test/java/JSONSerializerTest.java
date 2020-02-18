@@ -8,9 +8,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -18,7 +18,7 @@ class JSONSerializerTest {
     private JacksonJSONSerializer serializer;
 
     @Mock
-    private static ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -26,33 +26,43 @@ class JSONSerializerTest {
     }
 
     @Test
-    void serialize() throws JsonProcessingException {
+    void serializeValueMapAndVerifyThatMapperWasCalled() throws JsonProcessingException {
         Map<String, Integer> values = createInputMap(456);
-        String expected = "{\"gameId456\":456}";
 
-        when(objectMapper.writeValueAsString(values)).thenReturn(expected);
-        Optional<String> actual = serializer.serialize(values);
+        serializer.serialize(values);
 
-        assertThat(actual).hasValue(expected);
+        verify(objectMapper).writeValueAsString(values);
     }
 
     @Test
-    void getEmptyStringWhenSerializingNull() {
-        Optional<String> actual = serializer.serialize(null);
+    void serializationCaughtObjectMapperException() throws JsonProcessingException {
+        Map<String, Integer> values = createInputMap(456);
 
-        assertThat(actual).isNotPresent();
+        when(objectMapper.writeValueAsString(values)).thenThrow(JsonProcessingException.class);
+
+        serializer.serialize(values);
+
+        assertThatThrownBy(() -> objectMapper.writeValueAsString(values)).hasCause(null);
     }
 
     @Test
-    void doNotSerializeNullValues() throws JsonProcessingException {
-        Map<String, Integer> values = createInputMap(456, null);
+    void deserializeStringAndVerifyThatMapperWasCalled() throws JsonProcessingException {
+        String value = "{\"gameId\":\"456\"}";
 
-        String expected = "{\"gameId456\":456}";
+        serializer.deserialize(value, Map.class);
 
-        when(objectMapper.writeValueAsString(values)).thenReturn(expected);
-        Optional<String> actual = serializer.serialize(values);
+        verify(objectMapper).readValue(value, Map.class);
+    }
 
-        assertThat(actual).hasValue(expected);
+    @Test
+    void deserializationCaughtObjectMapperException() throws JsonProcessingException {
+        String value = "{\"gameId\":\"456\"}";
+
+        when(objectMapper.readValue(value, Map.class)).thenThrow(JsonProcessingException.class);
+
+        serializer.deserialize(value, Map.class);
+
+        assertThatThrownBy(() -> objectMapper.readValue(value, Map.class)).hasCause(null);
     }
 
     private Map<String, Integer> createInputMap(Integer... values) {
