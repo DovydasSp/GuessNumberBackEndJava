@@ -25,4 +25,13 @@ class GuessValidatorTest {
         assertTrue(guessValidator.isGuessBiggerThanGenerated(10,9));
         assertFalse(guessValidator.isGuessBiggerThanGenerated(9,10));
     }
+
+    /*@Test
+    void isGuessNumberInBoundaries() {
+        assertTrue(guessValidator.isGuessNumberInBoundaries(RouteConstants.MAX_NUMBER_TO_GUESS));
+        assertTrue(guessValidator.isGuessNumberInBoundaries(1));
+        assertTrue(guessValidator.isGuessNumberInBoundaries(5));
+        assertFalse(guessValidator.isGuessNumberInBoundaries(0));
+        assertFalse(guessValidator.isGuessNumberInBoundaries(RouteConstants.MAX_NUMBER_TO_GUESS+1));
+    }*/
 }
