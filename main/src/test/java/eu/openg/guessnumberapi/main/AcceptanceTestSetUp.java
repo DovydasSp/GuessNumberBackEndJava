@@ -33,14 +33,19 @@ class AcceptanceTestSetUp {
         UseCaseFactory factory = new UseCaseFactoryImpl(new FakeNumberGateway(), new GuessValidator(),
                 new InMemoryGameEntityRepo(), new FakeGameIdProvider());
 
-        final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        final ObjectMapper objectMapper = buildObjectMapper();
 
         JSONSerializer serializer = new JacksonJSONSerializer(objectMapper);
         SparkController sparkController = new SparkController(factory, serializer);
         sparkController.matchRoutes(0);
         return sparkController;
+    }
+
+    private static ObjectMapper buildObjectMapper() {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        return objectMapper;
     }
 
     int getPort() {

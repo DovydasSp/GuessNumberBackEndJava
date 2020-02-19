@@ -1,25 +1,25 @@
 package eu.openg.guessnumberapi.domain;
 
 public class GameEntity {
-    private final Integer gameId;
-    private final Integer guessCount;
-    private final Integer generatedNumber;
+    private final int gameId;
+    private final int guessCount;
+    private final int generatedNumber;
 
-    public GameEntity(Integer gameId, Integer guessCount, Integer generatedNumber) {
+    public GameEntity(int gameId, int guessCount, int generatedNumber) {
         this.gameId = gameId;
         this.guessCount = guessCount;
         this.generatedNumber = generatedNumber;
     }
 
-    public Integer returnGameId() {
+    public int returnGameId() {
         return gameId;
     }
 
-    public Integer returnGuessCount() {
+    public int returnGuessCount() {
         return guessCount;
     }
 
-    public Integer returnGeneratedNumber() {
+    public int returnGeneratedNumber() {
         return generatedNumber;
     }
 }
