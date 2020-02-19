@@ -23,7 +23,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GuessNumberRouteTest {
-
     private static GuessNumberRoute guessNumberRoute;
     @Mock
     private static UseCaseFactory useCaseFactory;

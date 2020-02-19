@@ -25,5 +25,4 @@ class GuessValidatorTest {
         assertTrue(guessValidator.isGuessBiggerThanGenerated(10,9));
         assertFalse(guessValidator.isGuessBiggerThanGenerated(9,10));
     }
-
 }

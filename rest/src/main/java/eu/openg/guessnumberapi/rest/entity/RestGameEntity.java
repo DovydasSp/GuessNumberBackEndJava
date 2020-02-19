@@ -3,11 +3,11 @@ package eu.openg.guessnumberapi.rest.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RestGameEntity {
-    private final Integer gameId;
+    private final int gameId;
     private final Integer guessCount;
     private final Integer generatedNumber;
 
-    public RestGameEntity(@JsonProperty("gameId") Integer gameId,
+    public RestGameEntity(@JsonProperty("gameId") int gameId,
                           @JsonProperty("guessCount") Integer guessCount,
                           @JsonProperty("generatedNumber") Integer generatedNumber) {
         this.gameId = gameId;
@@ -15,15 +15,15 @@ public class RestGameEntity {
         this.generatedNumber = generatedNumber;
     }
 
-    public Integer returnGameId() {
+    public int returnGameId() {
         return gameId;
     }
 
-    public Integer returnGuessCount() {
+    public int returnGuessCount() {
         return guessCount;
     }
 
-    public Integer returnGeneratedNumber() {
+    public int returnGeneratedNumber() {
         return generatedNumber;
     }
 }

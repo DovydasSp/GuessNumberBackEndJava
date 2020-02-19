@@ -29,14 +29,14 @@ public class JacksonJSONSerializer implements JSONSerializer {
         }
     }
 
-    public <T> Optional<T> deserialize(String body, Class<T> aClass) {
-        return Optional.ofNullable(body)
-                .map(object -> deserializeString(body, aClass));
+    public <T> Optional<T> deserialize(String json, Class<T> aClass) {
+        return Optional.ofNullable(json)
+                .map(object -> deserializeJson(json, aClass));
     }
 
-    private <T> T deserializeString(String body, Class<T> aClass) {
+    private <T> T deserializeJson(String json, Class<T> aClass) {
         try {
-            return objectMapper.readValue(body, aClass);
+            return objectMapper.readValue(json, aClass);
         } catch (JsonProcessingException e) {
             LOGGER.error("Failed to deserialize object", e);
             return null;

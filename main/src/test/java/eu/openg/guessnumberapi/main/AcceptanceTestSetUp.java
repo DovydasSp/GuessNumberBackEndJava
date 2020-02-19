@@ -21,7 +21,6 @@ class AcceptanceTestSetUp {
     @BeforeAll
     public static void setUp() {
         sparkController = setUpAndReturnSparkController();
-
     }
 
     @AfterAll
