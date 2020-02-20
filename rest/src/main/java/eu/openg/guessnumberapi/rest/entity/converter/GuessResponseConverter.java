@@ -9,7 +9,10 @@ public class GuessResponseConverter {
 
     public RestGuessResponseEntity convert(BoundaryGuessResponse guessResponse) {
         if (nonNull(guessResponse))
-            return new RestGuessResponseEntity(guessResponse.getStatus().toString(), guessResponse.getNumberOfGuesses());
+            if (guessResponse.getStatus() == null)
+                return new RestGuessResponseEntity(null, guessResponse.getNumberOfGuesses());
+            else
+                return new RestGuessResponseEntity(guessResponse.getStatus().toString(), guessResponse.getNumberOfGuesses());
         return null;
     }
 }

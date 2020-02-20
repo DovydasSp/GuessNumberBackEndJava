@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RestGuessResponseEntity {
     private final String message;
-    private final int numberOfGuesses;
+    private final Integer numberOfGuesses;
 
     public RestGuessResponseEntity(@JsonProperty("message") String message,
-                                   @JsonProperty("numberOfGuesses") int numberOfGuesses) {
+                                   @JsonProperty("numberOfGuesses") Integer numberOfGuesses) {
         this.message = message;
         this.numberOfGuesses = numberOfGuesses;
     }
@@ -16,7 +16,7 @@ public class RestGuessResponseEntity {
         return message;
     }
 
-    public int getNumberOfGuesses() {
+    public Integer getNumberOfGuesses() {
         return numberOfGuesses;
     }
 }

@@ -6,6 +6,7 @@ import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
 import eu.openg.guessnumberapi.rest.exception.MissingParamException;
 import eu.openg.guessnumberapi.rest.exception.ServerErrorException;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
+import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,6 +73,6 @@ class GuessNumberRouteTest {
         when(serializer.deserialize(body, RestGuessRequestEntity.class)).thenReturn(Optional.of(guessRequest));
         when(serializer.serialize(any())).thenThrow(ServerErrorException.class);
         when(guessNumberUseCase.checkGuessAndReturnResponse(gameId, guessNumber))
-                .thenReturn(new BoundaryGuessResponse("Higher", 3));
+                .thenReturn(new BoundaryGuessResponse(BoundaryGuessResultStatus.LESS, null));
     }
 }

@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,33 +34,40 @@ class GuessNumberInteractorTest {
     @Test
     void checkLowerGuessAndGuessResponse() {
         int guessedNumber = 1;
-        boolean isBiggerThanGenerated = false;
-        when(gateway.isGuessBiggerThanGenerated(guessedNumber, 3)).thenReturn(isBiggerThanGenerated);
-        checkGuessAndGuessResponse(guessedNumber, false, BoundaryGuessResultStatus.LOWER);
+        when(gateway.isGuessBiggerThanGenerated(guessedNumber, 3)).thenReturn(false);
+        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(guessedNumber, false
+        );
         verify(gateway).isGuessBiggerThanGenerated(guessedNumber, 3);
+        assertEquals(response.getStatus(), BoundaryGuessResultStatus.MORE);
+        assertNull(response.getNumberOfGuesses());
     }
 
     @Test
     void checkHigherGuessAndGuessResponse() {
         int guessedNumber = 5;
-        boolean isBiggerThanGenerated = true;
-        when(gateway.isGuessBiggerThanGenerated(guessedNumber, 3)).thenReturn(isBiggerThanGenerated);
-        checkGuessAndGuessResponse(guessedNumber, false, BoundaryGuessResultStatus.HIGHER);
+        when(gateway.isGuessBiggerThanGenerated(guessedNumber, 3)).thenReturn(true);
+        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(guessedNumber, false
+        );
         verify(gateway).isGuessBiggerThanGenerated(guessedNumber, 3);
+        assertEquals(response.getStatus(), BoundaryGuessResultStatus.LESS);
+        assertNull(response.getNumberOfGuesses());
     }
 
     @Test
     void checkCorrectGuessAndGuessResponse() {
-        checkGuessAndGuessResponse(3, true, BoundaryGuessResultStatus.CORRECT);
+        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(3, true
+        );
+        assertEquals(response.getNumberOfGuesses(), 1);
+        assertNull(response.getStatus());
     }
 
-    private void checkGuessAndGuessResponse(int guessedNumber, boolean isCorrect,
-                                            BoundaryGuessResultStatus message) {
+    private BoundaryGuessResponse checkGuessAndReturnGuessResponse(int guessedNumber, boolean isCorrect) {
         mockAndInitializeRepositoryAndGateway(guessedNumber, isCorrect);
 
         BoundaryGuessResponse response = guessNumberInteractor.checkGuessAndReturnResponse(1, guessedNumber);
 
-        verifyCallsHaveBeenMadeAndCaptureGameEntity(guessedNumber, message, response);
+        verifyCallsHaveBeenMadeAndCaptureGameEntity(guessedNumber);
+        return response;
     }
 
     private void mockAndInitializeRepositoryAndGateway(int guessedNumber, boolean isCorrect) {
@@ -69,19 +77,18 @@ class GuessNumberInteractorTest {
         when(gateway.isGuessCorrect(guessedNumber, 3)).thenReturn(isCorrect);
     }
 
-    private void verifyCallsHaveBeenMadeAndCaptureGameEntity(int guessedNumber, BoundaryGuessResultStatus message, BoundaryGuessResponse response) {
+    private void verifyCallsHaveBeenMadeAndCaptureGameEntity(int guessedNumber) {
         ArgumentCaptor<GameEntity> captor = ArgumentCaptor.forClass(GameEntity.class);
         verify(gameEntityRepository).save(captor.capture());
         verify(gameEntityRepository).fetchGameEntity(1);
         verify(gateway).isGuessCorrect(guessedNumber, 3);
 
-        assertReturnedAnswers(captor, message, response);
+        assertReturnedAnswers(captor);
     }
 
-    private void assertReturnedAnswers(ArgumentCaptor<GameEntity> captor, BoundaryGuessResultStatus message, BoundaryGuessResponse response) {
+    private void assertReturnedAnswers(ArgumentCaptor<GameEntity> captor) {
         assertEquals(captor.getValue().getGameId(), 1);
         assertEquals(captor.getValue().getGeneratedNumber(), 3);
-        assertEquals(response.getStatus(), message);
     }
 
 }

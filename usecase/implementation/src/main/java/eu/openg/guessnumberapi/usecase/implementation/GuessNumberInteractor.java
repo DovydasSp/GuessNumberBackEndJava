@@ -31,10 +31,10 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
                     BoundaryGuessResultStatus.CORRECT);
         } else if (gateway.isGuessBiggerThanGenerated(guessNumber, generatedNumber)) {
             return saveNewGameEntityAndCreateBoundaryGuessResponse(gameId, guessCount, generatedNumber,
-                    BoundaryGuessResultStatus.HIGHER);
+                    BoundaryGuessResultStatus.LESS);
         } else {
             return saveNewGameEntityAndCreateBoundaryGuessResponse(gameId, guessCount, generatedNumber,
-                    BoundaryGuessResultStatus.LOWER);
+                    BoundaryGuessResultStatus.MORE);
         }
     }
 
@@ -42,6 +42,9 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
                                                                                   int generatedNumber, BoundaryGuessResultStatus message) {
         GameEntity changedGameEntity = new GameEntity(gameId, guessCount, generatedNumber);
         gameEntityRepository.save(changedGameEntity);
-        return new BoundaryGuessResponse(message, guessCount);
+        if (message != BoundaryGuessResultStatus.CORRECT)
+            return new BoundaryGuessResponse(message, null);
+        else
+            return new BoundaryGuessResponse(null, guessCount);
     }
 }

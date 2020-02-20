@@ -1,11 +1,14 @@
 package eu.openg.guessnumberapi.main;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
+import eu.openg.guessnumberapi.rest.route.AcceptingOptionsRoute;
 import eu.openg.guessnumberapi.rest.route.CreateGameRoute;
 import eu.openg.guessnumberapi.rest.route.GuessNumberRoute;
 import eu.openg.guessnumberapi.rest.route.RouteConstants;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import spark.Service;
+
+import static eu.openg.guessnumberapi.rest.entity.CorsHeadersProvider.CORS_HEADERS;
 
 public class SparkController {
     private final UseCaseFactory factory;
@@ -21,6 +24,9 @@ public class SparkController {
     public void matchRoutes(int port) {
         service.port(port);
         service.exception(RuntimeException.class, new SparkExceptionHandler(serializer));
+        service.after((request, response) -> CORS_HEADERS.forEach(response::header));
+
+        service.options("*", new AcceptingOptionsRoute());
 
         service.path(RouteConstants.GAMES_PATH, () -> {
             service.post("", new CreateGameRoute(factory, serializer));

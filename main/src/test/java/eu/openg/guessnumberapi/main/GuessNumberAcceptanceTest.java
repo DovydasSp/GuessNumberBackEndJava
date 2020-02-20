@@ -12,31 +12,26 @@ class GuessNumberAcceptanceTest extends AcceptanceTestSetUp {
     @Test
     void createNewGameWithId10AndSendHigherGuess() {
         HttpResponse<String> response = createNewGameAndSendGuess(5);
-        assertThatJson(response.getBody()).node("message").isEqualTo(BoundaryGuessResultStatus.HIGHER);
+        assertThatJson(response.getBody()).node("message").isEqualTo(BoundaryGuessResultStatus.LESS.toString());
     }
 
     @Test
     void createNewGameWithId10AndSendLowerGuess() {
         HttpResponse<String> response = createNewGameAndSendGuess(1);
-        assertThatJson(response.getBody()).node("message").isEqualTo(BoundaryGuessResultStatus.LOWER);
+        assertThatJson(response.getBody()).node("message").isEqualTo(BoundaryGuessResultStatus.MORE.toString());
     }
 
     @Test
     void createNewGameWithId10AndSendCorrectGuess() {
         HttpResponse<String> response = createNewGameAndSendGuess(3);
-        assertThatJson(response.getBody()).node("message").isEqualTo(BoundaryGuessResultStatus.CORRECT);
         assertThatJson(response.getBody()).node("numberOfGuesses").isEqualTo("2");
     }
 
     private HttpResponse<String> createNewGameAndSendGuess(int guessNumber) {
         Unirest.post("http://localhost:" + getPort() + RouteConstants.GAMES_PATH).asString();
 
-        HttpResponse<String> response = Unirest
+        return Unirest
                 .post("http://localhost:" + getPort() + RouteConstants.GAMES_PATH + "/" + 10 + "/guesses")
                 .body("{\"guessNumber\":\"" + guessNumber + "\"}").asString();
-
-        assertThatJson(response.getBody()).node("numberOfGuesses").isEqualTo(2);
-
-        return response;
     }
 }
