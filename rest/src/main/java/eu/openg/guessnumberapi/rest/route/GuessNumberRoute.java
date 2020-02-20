@@ -6,16 +6,23 @@ import eu.openg.guessnumberapi.rest.entity.RestGuessResponseEntity;
 import eu.openg.guessnumberapi.rest.entity.converter.GuessResponseConverter;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
 import eu.openg.guessnumberapi.rest.exception.MissingParamException;
+import eu.openg.guessnumberapi.rest.exception.NotFoundException;
 import eu.openg.guessnumberapi.rest.exception.ServerErrorException;
+import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+
 public class GuessNumberRoute implements Route {
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final String PARAM_ID = "id";
     private final UseCaseFactory useCaseFactory;
     private final JSONSerializer serializer;
@@ -29,9 +36,12 @@ public class GuessNumberRoute implements Route {
     public Object handle(Request request, Response response) {
         int id = extractIdParam(request);
         int guessNumber = extractAndValidateGuessNumber(request);
-
+        LOGGER.info("Request accepted. ID: " + id + " guessNumber: " + guessNumber);
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberUseCase();
-        RestGuessResponseEntity result = new GuessResponseConverter().convert(interactor.checkGuessAndReturnResponse(id, guessNumber));
+        BoundaryGuessResponse boundaryGuessResponse = interactor.checkGuessAndReturnResponse(id, guessNumber);
+        if (isNull(boundaryGuessResponse))
+            throw new NotFoundException("gameID");
+        RestGuessResponseEntity result = new GuessResponseConverter().convert(boundaryGuessResponse);
         return serializeAndSetResponse(response, result).body();
     }
 
