@@ -45,8 +45,8 @@ class CreateGameInteractorTest {
         verify(gateway).generateNumber();
         ArgumentCaptor<GameEntity> captor = ArgumentCaptor.forClass(GameEntity.class);
         verify(gameEntityRepository).save(captor.capture());
-        assertEquals(captor.getValue().returnGuessCount(), 0);
-        assertEquals(captor.getValue().returnGameId(), 2);
-        assertEquals(captor.getValue().returnGeneratedNumber(), 123);
+        assertEquals(captor.getValue().getGuessCount(), 0);
+        assertEquals(captor.getValue().getGameId(), 2);
+        assertEquals(captor.getValue().getGeneratedNumber(), 123);
     }
 }

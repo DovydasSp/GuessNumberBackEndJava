@@ -3,6 +3,7 @@ package eu.openg.guessnumberapi.usecase.implementation;
 import eu.openg.guessnumberapi.domain.GameEntity;
 import eu.openg.guessnumberapi.gateway.api.GameEntityRepository;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
+import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 
 public class GuessNumberInteractor implements GuessNumberUseCase {
@@ -17,25 +18,28 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
 
     @Override
     public BoundaryGuessResponse checkGuessAndReturnResponse(int gameId, int guessNumber) {
-        BoundaryGuessResponse response = null;
         GameEntity gameEntity = gameEntityRepository.fetchGameEntity(gameId);
-        int generatedNumber = gameEntity.returnGeneratedNumber();
-        int guessCount = gameEntity.returnGuessCount() + 1;
-        if (gateway.isGuessCorrect(guessNumber, generatedNumber)) {
-            response = saveNewGameEntityAndReturnBoundaryGuessResponse(gameId, guessCount, generatedNumber,
-                    "Correct");
-        } else if (gateway.isGuessBiggerThanGenerated(guessNumber, generatedNumber)) {
-            response = saveNewGameEntityAndReturnBoundaryGuessResponse(gameId, guessCount, generatedNumber,
-                    "Higher");
-        } else {
-            response = saveNewGameEntityAndReturnBoundaryGuessResponse(gameId, guessCount, generatedNumber,
-                    "Lower");
-        }
-        return response;
+        int generatedNumber = gameEntity.getGeneratedNumber();
+        int guessCount = gameEntity.getGuessCount() + 1;
+        return checkGuessAndReturnBoundaryGuessResponse(guessNumber, generatedNumber, gameId, guessCount);
     }
 
-    private BoundaryGuessResponse saveNewGameEntityAndReturnBoundaryGuessResponse(int gameId, int guessCount,
-                                                                                  int generatedNumber, String message) {
+    private BoundaryGuessResponse checkGuessAndReturnBoundaryGuessResponse(int guessNumber, int generatedNumber,
+                                                                           int gameId, int guessCount) {
+        if (gateway.isGuessCorrect(guessNumber, generatedNumber)) {
+            return saveNewGameEntityAndCreateBoundaryGuessResponse(gameId, guessCount, generatedNumber,
+                    BoundaryGuessResultStatus.CORRECT);
+        } else if (gateway.isGuessBiggerThanGenerated(guessNumber, generatedNumber)) {
+            return saveNewGameEntityAndCreateBoundaryGuessResponse(gameId, guessCount, generatedNumber,
+                    BoundaryGuessResultStatus.HIGHER);
+        } else {
+            return saveNewGameEntityAndCreateBoundaryGuessResponse(gameId, guessCount, generatedNumber,
+                    BoundaryGuessResultStatus.LOWER);
+        }
+    }
+
+    private BoundaryGuessResponse saveNewGameEntityAndCreateBoundaryGuessResponse(int gameId, int guessCount,
+                                                                                  int generatedNumber, BoundaryGuessResultStatus message) {
         GameEntity changedGameEntity = new GameEntity(gameId, guessCount, generatedNumber);
         gameEntityRepository.save(changedGameEntity);
         return new BoundaryGuessResponse(message, guessCount);

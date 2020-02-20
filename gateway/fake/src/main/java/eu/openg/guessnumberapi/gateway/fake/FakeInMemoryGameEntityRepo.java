@@ -1,4 +1,4 @@
-package eu.openg.guessnumberapi.gateway.implementation;
+package eu.openg.guessnumberapi.gateway.fake;
 
 import eu.openg.guessnumberapi.domain.GameEntity;
 import eu.openg.guessnumberapi.gateway.api.GameEntityRepository;
@@ -8,14 +8,14 @@ import java.util.Map;
 
 import static java.util.Objects.nonNull;
 
-public class InMemoryGameEntityRepo implements GameEntityRepository {
+public class FakeInMemoryGameEntityRepo implements GameEntityRepository {
     private final Map<Integer, GameEntity> gameIdToGameEntityMap;
 
-    public InMemoryGameEntityRepo() {
+    public FakeInMemoryGameEntityRepo() {
         this(new HashMap<>());
     }
 
-    public InMemoryGameEntityRepo(Map<Integer, GameEntity> storage) {
+    private FakeInMemoryGameEntityRepo(Map<Integer, GameEntity> storage) {
         gameIdToGameEntityMap = storage;
     }
 
@@ -27,6 +27,7 @@ public class InMemoryGameEntityRepo implements GameEntityRepository {
 
     @Override
     public GameEntity fetchGameEntity(int gameId) {
-        return gameIdToGameEntityMap.get(gameId);
+        return new GameEntity(gameId, 1, 3);
     }
 }
+

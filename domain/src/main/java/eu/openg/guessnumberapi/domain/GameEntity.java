@@ -11,15 +11,15 @@ public class GameEntity {
         this.generatedNumber = generatedNumber;
     }
 
-    public int returnGameId() {
+    public int getGameId() {
         return gameId;
     }
 
-    public int returnGuessCount() {
+    public int getGuessCount() {
         return guessCount;
     }
 
-    public int returnGeneratedNumber() {
+    public int getGeneratedNumber() {
         return generatedNumber;
     }
 }
