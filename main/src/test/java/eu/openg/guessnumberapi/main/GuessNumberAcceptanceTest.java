@@ -11,13 +11,13 @@ class GuessNumberAcceptanceTest extends AcceptanceTestSetUp {
     @Test
     void createNewGameWithId10AndSendHigherGuess() {
         HttpResponse<String> response = createNewGameAndSendGuess(5);
-        assertThatJson(response.getBody()).node("message").isEqualTo("Lower");
+        assertThatJson(response.getBody()).node("message").isEqualTo("Higher");
     }
 
     @Test
     void createNewGameWithId10AndSendLowerGuess() {
         HttpResponse<String> response = createNewGameAndSendGuess(1);
-        assertThatJson(response.getBody()).node("message").isEqualTo("Higher");
+        assertThatJson(response.getBody()).node("message").isEqualTo("Lower");
     }
 
     @Test
@@ -34,5 +34,7 @@ class GuessNumberAcceptanceTest extends AcceptanceTestSetUp {
                 .body("{\"guessNumber\":\"" + guessNumber + "\"}").asString();
 
         assertThatJson(response.getBody()).node("numberOfGuesses").isNotNull();
+
+        return response;
     }
 }

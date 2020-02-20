@@ -62,7 +62,8 @@ class GuessNumberInteractorTest {
         when(gameEntityRepository.fetchGameEntity(1)).thenReturn(gameEntity);
 
         when(gateway.isGuessCorrect(guessedNumber, 3)).thenReturn(isCorrect);
-        when(gateway.isGuessBiggerThanGenerated(guessedNumber, 3)).thenReturn(isBiggerThanGenerated);
+        if (!isCorrect)
+            when(gateway.isGuessBiggerThanGenerated(guessedNumber, 3)).thenReturn(isBiggerThanGenerated);
     }
 
     private void verifyCalls(int guessedNumber, String message, BoundaryGuessResponse response) {
@@ -73,7 +74,8 @@ class GuessNumberInteractorTest {
 
         verify(gameEntityRepository).fetchGameEntity(1);
         verify(gateway).isGuessCorrect(guessedNumber, 3);
-        verify(gateway).isGuessBiggerThanGenerated(guessedNumber, 3);
+        if (!message.equals("Correct"))
+            verify(gateway).isGuessBiggerThanGenerated(guessedNumber, 3);
 
         assertEquals(response.getMessage(), message);
     }
