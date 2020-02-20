@@ -30,50 +30,50 @@ class GuessNumberInteractorTest {
     }
 
     @Test
-    private void checkLowerGuessAndReturnResponse() {
-        checkGuessAndReturnResponse(1, 3, false, false,
-                1, "Lower");
+    void checkLowerGuessAndReturnResponse() {
+        checkGuessAndReturnResponse(1, false, false,
+                "Lower");
     }
 
     @Test
-    private void checkHigherGuessAndReturnResponse() {
-        checkGuessAndReturnResponse(5, 3, false, true,
-                1, "Higher");
+    void checkHigherGuessAndReturnResponse() {
+        checkGuessAndReturnResponse(5, false, true,
+                "Higher");
     }
 
     @Test
-    private void checkCorrectGuessAndReturnResponse() {
-        checkGuessAndReturnResponse(3, 3, true, false,
-                1, "Correct");
+    void checkCorrectGuessAndReturnResponse() {
+        checkGuessAndReturnResponse(3, true, false,
+                "Correct");
     }
 
-    private void checkGuessAndReturnResponse(int guessedNumber, int generatedNumber, boolean isCorrect,
-                                             boolean isBiggerThanGenerated, int gameId, String message) {
-        mockAndInitialize(guessedNumber, generatedNumber, isCorrect, isBiggerThanGenerated, gameId);
+    private void checkGuessAndReturnResponse(int guessedNumber, boolean isCorrect,
+                                             boolean isBiggerThanGenerated, String message) {
+        mockAndInitialize(guessedNumber, isCorrect, isBiggerThanGenerated);
 
-        BoundaryGuessResponse response = guessNumberInteractor.checkGuessAndReturnResponse(gameId, guessedNumber);
+        BoundaryGuessResponse response = guessNumberInteractor.checkGuessAndReturnResponse(1, guessedNumber);
 
-        verifyCalls(guessedNumber, generatedNumber, gameId, message, response);
+        verifyCalls(guessedNumber, message, response);
     }
 
-    private void mockAndInitialize(int guessedNumber, int generatedNumber, boolean isCorrect,
-                                   boolean isBiggerThanGenerated, int gameId) {
-        GameEntity gameEntity = new GameEntity(gameId, 0, generatedNumber);
-        when(gameEntityRepository.fetchGameEntity(gameId)).thenReturn(gameEntity);
+    private void mockAndInitialize(int guessedNumber, boolean isCorrect,
+                                   boolean isBiggerThanGenerated) {
+        GameEntity gameEntity = new GameEntity(1, 0, 3);
+        when(gameEntityRepository.fetchGameEntity(1)).thenReturn(gameEntity);
 
-        when(gateway.isGuessCorrect(guessedNumber, generatedNumber)).thenReturn(isCorrect);
-        when(gateway.isGuessBiggerThanGenerated(guessedNumber, generatedNumber)).thenReturn(isBiggerThanGenerated);
+        when(gateway.isGuessCorrect(guessedNumber, 3)).thenReturn(isCorrect);
+        when(gateway.isGuessBiggerThanGenerated(guessedNumber, 3)).thenReturn(isBiggerThanGenerated);
     }
 
-    private void verifyCalls(int guessedNumber, int generatedNumber, int gameId, String message, BoundaryGuessResponse response) {
+    private void verifyCalls(int guessedNumber, String message, BoundaryGuessResponse response) {
         ArgumentCaptor<GameEntity> captor = ArgumentCaptor.forClass(GameEntity.class);
         verify(gameEntityRepository).save(captor.capture());
-        assertEquals(captor.getValue().returnGameId(), gameId);
-        assertEquals(captor.getValue().returnGeneratedNumber(), generatedNumber);
+        assertEquals(captor.getValue().returnGameId(), 1);
+        assertEquals(captor.getValue().returnGeneratedNumber(), 3);
 
-        verify(gameEntityRepository).fetchGameEntity(gameId);
-        verify(gateway).isGuessCorrect(guessedNumber, generatedNumber);
-        verify(gateway).isGuessBiggerThanGenerated(guessedNumber, generatedNumber);
+        verify(gameEntityRepository).fetchGameEntity(1);
+        verify(gateway).isGuessCorrect(guessedNumber, 3);
+        verify(gateway).isGuessBiggerThanGenerated(guessedNumber, 3);
 
         assertEquals(response.getMessage(), message);
     }
