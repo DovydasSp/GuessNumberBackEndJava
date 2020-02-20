@@ -11,7 +11,7 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
     private final GuessValidator gateway;
     private final GameEntityRepository gameEntityRepository;
 
-    GuessNumberInteractor(GuessValidator gateway, GameEntityRepository gameEntityRepository) {
+    public GuessNumberInteractor(GuessValidator gateway, GameEntityRepository gameEntityRepository) {
         this.gateway = gateway;
         this.gameEntityRepository = gameEntityRepository;
     }
