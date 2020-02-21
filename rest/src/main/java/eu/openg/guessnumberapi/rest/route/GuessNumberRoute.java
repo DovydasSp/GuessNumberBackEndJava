@@ -22,7 +22,7 @@ import java.util.Optional;
 import static java.util.Objects.isNull;
 
 public class GuessNumberRoute implements Route {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger(GuessNumberRoute.class);
     private static final String PARAM_ID = "id";
     private final UseCaseFactory useCaseFactory;
     private final JSONSerializer serializer;
