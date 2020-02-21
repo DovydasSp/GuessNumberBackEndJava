@@ -23,8 +23,8 @@ public class SparkController {
 
     public void matchRoutes(int port) {
         service.port(port);
+        service.before((request, response) -> CORS_HEADERS.forEach(response::header));
         service.exception(RuntimeException.class, new SparkExceptionHandler(serializer));
-        service.after((request, response) -> CORS_HEADERS.forEach(response::header));
 
         service.options("*", new AcceptingOptionsRoute());
 

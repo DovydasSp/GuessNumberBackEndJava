@@ -30,16 +30,14 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
 
     private BoundaryGuessResponse checkGuessAndReturnBoundaryGuessResponse(int guessNumber, int generatedNumber,
                                                                            int gameId, int guessCount) {
-        if (gateway.isGuessCorrect(guessNumber, generatedNumber)) {
+        if (gateway.isGuessCorrect(guessNumber, generatedNumber))
             return saveNewGameEntityAndCreateBoundaryGuessResponse(gameId, guessCount, generatedNumber,
                     BoundaryGuessResultStatus.CORRECT);
-        } else if (gateway.isGuessBiggerThanGenerated(guessNumber, generatedNumber)) {
+        if (gateway.isGuessBiggerThanGenerated(guessNumber, generatedNumber))
             return saveNewGameEntityAndCreateBoundaryGuessResponse(gameId, guessCount, generatedNumber,
                     BoundaryGuessResultStatus.LESS);
-        } else {
-            return saveNewGameEntityAndCreateBoundaryGuessResponse(gameId, guessCount, generatedNumber,
+        return saveNewGameEntityAndCreateBoundaryGuessResponse(gameId, guessCount, generatedNumber,
                     BoundaryGuessResultStatus.MORE);
-        }
     }
 
     private BoundaryGuessResponse saveNewGameEntityAndCreateBoundaryGuessResponse(int gameId, int guessCount,
@@ -48,7 +46,6 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
         gameEntityRepository.save(changedGameEntity);
         if (message != BoundaryGuessResultStatus.CORRECT)
             return new BoundaryGuessResponse(message, null);
-        else
-            return new BoundaryGuessResponse(null, guessCount);
+        return new BoundaryGuessResponse(null, guessCount);
     }
 }
