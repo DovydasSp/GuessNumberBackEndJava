@@ -1,7 +1,8 @@
-version '1.0-SNAPSHOT'
+version '1.0'
 
 allprojects {
     apply plugin: 'java'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
     test {
         useJUnitPlatform()
@@ -28,3 +29,24 @@ allprojects {
         testImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.13.0"
     }
 }
+
+/*jar {
+    manifest {
+        attributes "Main-Class": "eu.openg.guessnumberapi.main.Main"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}*/
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
+    }
+}
+
+

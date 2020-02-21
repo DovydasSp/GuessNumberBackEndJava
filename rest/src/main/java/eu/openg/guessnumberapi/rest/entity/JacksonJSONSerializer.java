@@ -24,7 +24,7 @@ public class JacksonJSONSerializer implements JSONSerializer {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            LOGGER.error("Failed to serialize object", e);
+            LOGGER.error("Failed to serialize object", e.getMessage());
             return null;
         }
     }
@@ -38,7 +38,7 @@ public class JacksonJSONSerializer implements JSONSerializer {
         try {
             return objectMapper.readValue(json, aClass);
         } catch (JsonProcessingException e) {
-            LOGGER.error("Failed to deserialize object", e);
+            LOGGER.error("Failed to deserialize object", e.getMessage());
             return null;
         }
     }

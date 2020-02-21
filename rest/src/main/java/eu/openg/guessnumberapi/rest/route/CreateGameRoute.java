@@ -27,6 +27,7 @@ public class CreateGameRoute implements Route {
     public Object handle(Request request, Response response) {
         CreateGameUseCase interactor = useCaseFactory.buildCreateGameUseCase();
         int gameId = interactor.createGameAndReturnGameId();
+        LOGGER.info("Request accepted. Created new game with gameId: " + gameId);
         String serializedGameId = serializeGameId(gameId);
         if (isNull(serializedGameId)) {
             LOGGER.error("Failed to create game ID");
