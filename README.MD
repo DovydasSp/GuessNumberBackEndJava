@@ -1,4 +1,4 @@
-#Guess Number API
+# Guess Number API
 
 ## Table of contents
 * [General info](#general-info)
