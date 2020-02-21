@@ -35,8 +35,7 @@ class GuessNumberInteractorTest {
     void checkLowerGuessAndGuessResponse() {
         int guessedNumber = 1;
         when(gateway.isGuessBiggerThanGenerated(guessedNumber, 3)).thenReturn(false);
-        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(guessedNumber, false
-        );
+        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(guessedNumber, false);
         verify(gateway).isGuessBiggerThanGenerated(guessedNumber, 3);
         assertEquals(response.getStatus(), BoundaryGuessResultStatus.MORE);
         assertNull(response.getNumberOfGuesses());
@@ -46,8 +45,7 @@ class GuessNumberInteractorTest {
     void checkHigherGuessAndGuessResponse() {
         int guessedNumber = 5;
         when(gateway.isGuessBiggerThanGenerated(guessedNumber, 3)).thenReturn(true);
-        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(guessedNumber, false
-        );
+        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(guessedNumber, false);
         verify(gateway).isGuessBiggerThanGenerated(guessedNumber, 3);
         assertEquals(response.getStatus(), BoundaryGuessResultStatus.LESS);
         assertNull(response.getNumberOfGuesses());
@@ -55,8 +53,7 @@ class GuessNumberInteractorTest {
 
     @Test
     void checkCorrectGuessAndGuessResponse() {
-        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(3, true
-        );
+        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(3, true);
         assertEquals(response.getNumberOfGuesses(), 1);
         assertNull(response.getStatus());
     }

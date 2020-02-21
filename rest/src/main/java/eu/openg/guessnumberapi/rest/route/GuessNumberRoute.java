@@ -48,7 +48,7 @@ public class GuessNumberRoute implements Route {
     private int extractAndValidateGuessNumber(Request request) {
         return serializer.deserialize(request.body(), RestGuessRequestEntity.class)
                 .map(RestGuessRequestEntity::getGuessNumber)
-                .filter(guessNumber -> guessNumber > 0)
+                .filter(guessNumber -> guessNumber > 0 && guessNumber <= 10)
                 .orElseThrow(() -> new InvalidParamException("guessNumber"));
     }
 
