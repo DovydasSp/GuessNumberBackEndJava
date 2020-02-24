@@ -1,8 +1,9 @@
 package eu.openg.guessnumberapi.main;
 
-import eu.openg.guessnumberapi.gateway.api.GameEntityRepository;
+import eu.openg.guessnumberapi.domain.Game;
+import eu.openg.guessnumberapi.gateway.api.GameRepository;
 import eu.openg.guessnumberapi.gateway.fake.FakeGameIdProvider;
-import eu.openg.guessnumberapi.gateway.fake.FakeInMemoryGameEntityRepo;
+import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameRepo;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
@@ -15,28 +16,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GuessNumberIntegrationTest {
     private GuessNumberUseCase guessNumberUseCase;
-    private GameEntityRepository gameEntityRepository;
+    private GameRepository gameRepository;
 
     @BeforeEach
     void setUp() {
         GuessValidator gateway = new GuessValidator();
-        gameEntityRepository = new FakeInMemoryGameEntityRepo(new FakeGameIdProvider());
-        guessNumberUseCase = new GuessNumberInteractor(gateway, gameEntityRepository);
+        gameRepository = new InMemoryGameRepo(new FakeGameIdProvider());
+        guessNumberUseCase = new GuessNumberInteractor(gateway, gameRepository);
+        gameRepository.save(new Game(1, 1, 3));
     }
 
     @Test
     void checkLowerGuessAndReturnedResponse() {
-        checkGuessAndReturnedResponse(1, BoundaryGuessResultStatus.MORE, null);
+        checkGuessAndReturnedResponse(1, BoundaryGuessResultStatus.MORE, 2);
     }
 
     @Test
     void checkHigherGuessAndReturnedResponse() {
-        checkGuessAndReturnedResponse(5, BoundaryGuessResultStatus.LESS, null);
+        checkGuessAndReturnedResponse(5, BoundaryGuessResultStatus.LESS, 2);
     }
 
     @Test
     void checkCorrectGuessAndReturnedResponse() {
-        checkGuessAndReturnedResponse(3, null, 2);
+        checkGuessAndReturnedResponse(3, BoundaryGuessResultStatus.CORRECT, 2);
     }
 
     private void checkGuessAndReturnedResponse(int guessNumber, BoundaryGuessResultStatus expectedStatus,

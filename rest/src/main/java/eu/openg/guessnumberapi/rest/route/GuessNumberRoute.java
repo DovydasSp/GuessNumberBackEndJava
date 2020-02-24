@@ -1,8 +1,8 @@
 package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
-import eu.openg.guessnumberapi.rest.entity.RestGuessRequestEntity;
-import eu.openg.guessnumberapi.rest.entity.RestGuessResponseEntity;
+import eu.openg.guessnumberapi.rest.entity.RestGuessRequest;
+import eu.openg.guessnumberapi.rest.entity.RestGuessResponse;
 import eu.openg.guessnumberapi.rest.entity.converter.GuessResponseConverter;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
 import eu.openg.guessnumberapi.rest.exception.MissingParamException;
@@ -40,14 +40,14 @@ public class GuessNumberRoute implements Route {
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberUseCase();
         BoundaryGuessResponse boundaryGuessResponse = interactor.checkGuessAndReturnResponse(id, guessNumber);
         if (isNull(boundaryGuessResponse))
-            throw new NotFoundException("gameID");
-        RestGuessResponseEntity result = new GuessResponseConverter().convert(boundaryGuessResponse);
+            throw new NotFoundException("game with gameID:" + id);
+        RestGuessResponse result = new GuessResponseConverter().convert(boundaryGuessResponse);
         return serializeAndSetResponse(response, result).body();
     }
 
     private int extractAndValidateGuessNumber(Request request) {
-        return serializer.deserialize(request.body(), RestGuessRequestEntity.class)
-                .map(RestGuessRequestEntity::getGuessNumber)
+        return serializer.deserialize(request.body(), RestGuessRequest.class)
+                .map(RestGuessRequest::getGuessNumber)
                 .filter(guessNumber -> guessNumber > 0 && guessNumber <= 10)
                 .orElseThrow(() -> new InvalidParamException("guessNumber"));
     }

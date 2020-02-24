@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.openg.guessnumberapi.gateway.fake.FakeGameIdProvider;
-import eu.openg.guessnumberapi.gateway.fake.FakeInMemoryGameEntityRepo;
 import eu.openg.guessnumberapi.gateway.fake.FakeNumberGateway;
+import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameRepo;
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.JacksonJSONSerializer;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
@@ -30,7 +30,7 @@ class AcceptanceTestSetUp {
 
     private static SparkController setUpAndReturnSparkController() {
         UseCaseFactory factory = new UseCaseFactoryImpl(new FakeNumberGateway(), new GuessValidator(),
-                new FakeInMemoryGameEntityRepo(new FakeGameIdProvider()));
+                new InMemoryGameRepo(new FakeGameIdProvider()));
 
         final ObjectMapper objectMapper = buildObjectMapper();
 

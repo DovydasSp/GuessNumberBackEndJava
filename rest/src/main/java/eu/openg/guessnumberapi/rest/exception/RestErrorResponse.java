@@ -2,10 +2,10 @@ package eu.openg.guessnumberapi.rest.exception;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RestErrorResponseEntity {
+public class RestErrorResponse {
     private final String message;
 
-    public RestErrorResponseEntity(@JsonProperty("message") String message) {
+    public RestErrorResponse(@JsonProperty("message") String message) {
         this.message = message;
     }
 

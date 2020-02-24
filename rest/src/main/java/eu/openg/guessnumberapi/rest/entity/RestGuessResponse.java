@@ -2,12 +2,12 @@ package eu.openg.guessnumberapi.rest.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RestGuessResponseEntity {
+public class RestGuessResponse {
     private final String message;
     private final Integer numberOfGuesses;
 
-    public RestGuessResponseEntity(@JsonProperty("message") String message,
-                                   @JsonProperty("numberOfGuesses") Integer numberOfGuesses) {
+    public RestGuessResponse(@JsonProperty("message") String message,
+                             @JsonProperty("numberOfGuesses") Integer numberOfGuesses) {
         this.message = message;
         this.numberOfGuesses = numberOfGuesses;
     }

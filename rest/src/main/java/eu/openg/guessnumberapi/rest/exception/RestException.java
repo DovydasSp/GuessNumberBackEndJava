@@ -2,9 +2,9 @@ package eu.openg.guessnumberapi.rest.exception;
 
 public class RestException extends RuntimeException {
     private final int status;
-    private final RestErrorResponseEntity responseEntity;
+    private final RestErrorResponse responseEntity;
 
-    RestException(int status, RestErrorResponseEntity responseEntity) {
+    RestException(int status, RestErrorResponse responseEntity) {
         this.status = status;
         this.responseEntity = responseEntity;
     }
@@ -13,7 +13,7 @@ public class RestException extends RuntimeException {
         return status;
     }
 
-    public RestErrorResponseEntity getErrorResponseEntity() {
+    public RestErrorResponse getErrorResponseEntity() {
         return responseEntity;
     }
 }

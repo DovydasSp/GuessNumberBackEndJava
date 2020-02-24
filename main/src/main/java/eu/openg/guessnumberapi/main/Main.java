@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.openg.guessnumberapi.gateway.implementation.PostgresqlGameEntityRepo;
+import eu.openg.guessnumberapi.gateway.api.GameRepository;
+import eu.openg.guessnumberapi.gateway.implementation.AtomicGameIdProvider;
+import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameRepo;
+import eu.openg.guessnumberapi.gateway.implementation.PostgresqlGameRepo;
 import eu.openg.guessnumberapi.gateway.implementation.RandomNumberGateway;
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.JacksonJSONSerializer;
@@ -19,8 +22,7 @@ public class Main {
 
     public static void main(String[] args) {
         UseCaseFactory factory = new UseCaseFactoryImpl(new RandomNumberGateway(), new GuessValidator(),
-                new PostgresqlGameEntityRepo());
-        //new InMemoryGameEntityRepo(new AtomicGameIdProvider()));
+                initGameRepository());
         JSONSerializer serializer = createSerializer();
         sparkController = new SparkController(factory, serializer);
         sparkController.matchRoutes(4568);
@@ -38,5 +40,12 @@ public class Main {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         return new JacksonJSONSerializer(objectMapper);
+    }
+
+    private static GameRepository initGameRepository() {
+        if (Config.USE_POSTGRESQL_DB)
+            return new PostgresqlGameRepo();
+        else
+            return new InMemoryGameRepo(new AtomicGameIdProvider());
     }
 }

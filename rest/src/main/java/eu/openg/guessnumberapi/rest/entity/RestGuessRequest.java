@@ -2,10 +2,10 @@ package eu.openg.guessnumberapi.rest.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RestGuessRequestEntity {
+public class RestGuessRequest {
     private final int guessNumber;
 
-    public RestGuessRequestEntity(@JsonProperty("guessNumber") int guessNumber) {
+    public RestGuessRequest(@JsonProperty("guessNumber") int guessNumber) {
         this.guessNumber = guessNumber;
     }
 

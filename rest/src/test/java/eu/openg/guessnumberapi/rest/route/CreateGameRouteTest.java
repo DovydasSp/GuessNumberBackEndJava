@@ -1,7 +1,7 @@
 package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
-import eu.openg.guessnumberapi.rest.entity.RestGameEntity;
+import eu.openg.guessnumberapi.rest.entity.RestGame;
 import eu.openg.guessnumberapi.usecase.api.CreateGameUseCase;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +66,7 @@ class CreateGameRouteTest {
     }
 
     private void mockSerializer(int gameId) {
-        when(serializer.serialize(any(RestGameEntity.class))).thenReturn(Optional.of("\"gameId\":" + gameId));
+        when(serializer.serialize(any(RestGame.class))).thenReturn(Optional.of("\"gameId\":" + gameId));
     }
 
     private void verifyCalls(String body) {

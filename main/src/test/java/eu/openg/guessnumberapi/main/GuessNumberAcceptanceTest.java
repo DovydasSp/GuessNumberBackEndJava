@@ -24,7 +24,7 @@ class GuessNumberAcceptanceTest extends AcceptanceTestSetUp {
     @Test
     void createNewGameWithId10AndSendCorrectGuess() {
         HttpResponse<String> response = createNewGameAndSendGuess(3);
-        assertThatJson(response.getBody()).node("numberOfGuesses").isEqualTo("2");
+        assertThatJson(response.getBody()).node("numberOfGuesses").isEqualTo("1");
     }
 
     private HttpResponse<String> createNewGameAndSendGuess(int guessNumber) {

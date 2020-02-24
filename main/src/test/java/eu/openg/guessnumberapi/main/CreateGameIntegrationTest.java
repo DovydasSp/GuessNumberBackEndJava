@@ -1,12 +1,12 @@
 package eu.openg.guessnumberapi.main;
 
-import eu.openg.guessnumberapi.domain.GameEntity;
-import eu.openg.guessnumberapi.gateway.api.GameEntityRepository;
+import eu.openg.guessnumberapi.domain.Game;
 import eu.openg.guessnumberapi.gateway.api.GameIdProvider;
+import eu.openg.guessnumberapi.gateway.api.GameRepository;
 import eu.openg.guessnumberapi.gateway.api.NumberGateway;
 import eu.openg.guessnumberapi.gateway.fake.FakeGameIdProvider;
-import eu.openg.guessnumberapi.gateway.fake.FakeInMemoryGameEntityRepo;
 import eu.openg.guessnumberapi.gateway.fake.FakeNumberGateway;
+import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameRepo;
 import eu.openg.guessnumberapi.usecase.api.CreateGameUseCase;
 import eu.openg.guessnumberapi.usecase.implementation.CreateGameInteractor;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,22 +16,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CreateGameIntegrationTest {
     private CreateGameUseCase createGameUseCase;
-    private GameEntityRepository gameEntityRepository;
+    private GameRepository gameRepository;
 
     @BeforeEach
     void setUp() {
         NumberGateway numberGateway = new FakeNumberGateway();
         GameIdProvider gameIdProvider = new FakeGameIdProvider();
-        gameEntityRepository = new FakeInMemoryGameEntityRepo(gameIdProvider);
-        createGameUseCase = new CreateGameInteractor(numberGateway, gameEntityRepository);
+        gameRepository = new InMemoryGameRepo(gameIdProvider);
+        createGameUseCase = new CreateGameInteractor(numberGateway, gameRepository);
     }
 
     @Test
     void createGameReturnsGameId10AndPutsNewGameEntityToRepository() {
         int id = createGameUseCase.createGameAndReturnGameId();
-        GameEntity gameEntity = gameEntityRepository.fetchGameEntity(id);
+        Game game = gameRepository.fetchGameEntity(id);
         assertEquals(10, id);
-        assertEquals(3, gameEntity.getGeneratedNumber());
-        assertEquals(1, gameEntity.getGuessCount());
+        assertEquals(3, game.getGeneratedNumber());
+        assertEquals(0, game.getGuessCount());
     }
 }

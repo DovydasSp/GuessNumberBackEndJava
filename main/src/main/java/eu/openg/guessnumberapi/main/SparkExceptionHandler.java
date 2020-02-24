@@ -1,7 +1,7 @@
 package eu.openg.guessnumberapi.main;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
-import eu.openg.guessnumberapi.rest.exception.RestErrorResponseEntity;
+import eu.openg.guessnumberapi.rest.exception.RestErrorResponse;
 import eu.openg.guessnumberapi.rest.exception.RestException;
 import spark.ExceptionHandler;
 import spark.Request;
@@ -20,11 +20,11 @@ public class SparkExceptionHandler implements ExceptionHandler<RuntimeException>
             final RestException restException = (RestException) exception;
             mapErrorResponse(response, restException.getStatus(), restException.getErrorResponseEntity());
         } else {
-            mapErrorResponse(response, 500, new RestErrorResponseEntity(exception.getMessage()));
+            mapErrorResponse(response, 500, new RestErrorResponse(exception.getMessage()));
         }
     }
 
-    private void mapErrorResponse(Response response, int statusCode, RestErrorResponseEntity responseEntity) {
+    private void mapErrorResponse(Response response, int statusCode, RestErrorResponse responseEntity) {
         response.status(statusCode);
         serializer.serialize(responseEntity).ifPresent(response::body);
     }

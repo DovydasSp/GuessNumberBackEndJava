@@ -1,7 +1,7 @@
 package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
-import eu.openg.guessnumberapi.rest.entity.RestGuessRequestEntity;
+import eu.openg.guessnumberapi.rest.entity.RestGuessRequest;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
 import eu.openg.guessnumberapi.rest.exception.MissingParamException;
 import eu.openg.guessnumberapi.rest.exception.ServerErrorException;
@@ -63,16 +63,16 @@ class GuessNumberRouteTest {
     }
 
     private void mockRequest(int gameId, int guessNumber) {
-        RestGuessRequestEntity guessRequest = mock(RestGuessRequestEntity.class);
+        RestGuessRequest guessRequest = mock(RestGuessRequest.class);
         when(guessRequest.getGuessNumber()).thenReturn(guessNumber);
         String body = "{\"guessNumber\":\"" + guessNumber + "\"}";
 
         when(useCaseFactory.buildGuessNumberUseCase()).thenReturn(guessNumberUseCase);
         when(request.params("id")).thenReturn(String.valueOf(gameId));
         when(request.body()).thenReturn(body);
-        when(serializer.deserialize(body, RestGuessRequestEntity.class)).thenReturn(Optional.of(guessRequest));
+        when(serializer.deserialize(body, RestGuessRequest.class)).thenReturn(Optional.of(guessRequest));
         when(serializer.serialize(any())).thenThrow(ServerErrorException.class);
         when(guessNumberUseCase.checkGuessAndReturnResponse(gameId, guessNumber))
-                .thenReturn(new BoundaryGuessResponse(BoundaryGuessResultStatus.LESS, null));
+                .thenReturn(new BoundaryGuessResponse(BoundaryGuessResultStatus.LESS, 1));
     }
 }

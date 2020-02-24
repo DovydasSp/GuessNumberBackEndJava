@@ -1,7 +1,7 @@
 package eu.openg.guessnumberapi.usecase.implementation;
 
-import eu.openg.guessnumberapi.domain.GameEntity;
-import eu.openg.guessnumberapi.gateway.api.GameEntityRepository;
+import eu.openg.guessnumberapi.domain.Game;
+import eu.openg.guessnumberapi.gateway.api.GameRepository;
 import eu.openg.guessnumberapi.gateway.api.NumberGateway;
 import eu.openg.guessnumberapi.usecase.api.CreateGameUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,18 +21,18 @@ class CreateGameInteractorTest {
     @Mock
     private NumberGateway gateway;
     @Mock
-    private GameEntityRepository gameEntityRepository;
+    private GameRepository gameRepository;
     private CreateGameUseCase createGameInteractor;
 
     @BeforeEach
     void setUp() {
-        createGameInteractor = new CreateGameInteractor(gateway, gameEntityRepository);
+        createGameInteractor = new CreateGameInteractor(gateway, gameRepository);
     }
 
     @Test
     void generateIdAndNumberThenSave() {
         when(gateway.generateNumber()).thenReturn(123);
-        when(gameEntityRepository.save(any())).thenReturn(2);
+        when(gameRepository.save(any(Game.class))).thenReturn(2);
         int id = createGameInteractor.createGameAndReturnGameId();
         verifyGeneratingAndSaving(id);
     }
@@ -40,8 +40,8 @@ class CreateGameInteractorTest {
     private void verifyGeneratingAndSaving(int id) {
         assertEquals(2, id);
         verify(gateway).generateNumber();
-        ArgumentCaptor<GameEntity> captor = ArgumentCaptor.forClass(GameEntity.class);
-        verify(gameEntityRepository).save(captor.capture());
+        ArgumentCaptor<Game> captor = ArgumentCaptor.forClass(Game.class);
+        verify(gameRepository).save(captor.capture());
         assertEquals(captor.getValue().getGuessCount(), 0);
         assertEquals(captor.getValue().getGeneratedNumber(), 123);
     }
