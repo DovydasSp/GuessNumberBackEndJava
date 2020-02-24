@@ -30,7 +30,7 @@ class AcceptanceTestSetUp {
 
     private static SparkController setUpAndReturnSparkController() {
         UseCaseFactory factory = new UseCaseFactoryImpl(new FakeNumberGateway(), new GuessValidator(),
-                new FakeInMemoryGameEntityRepo(), new FakeGameIdProvider());
+                new FakeInMemoryGameEntityRepo(new FakeGameIdProvider()));
 
         final ObjectMapper objectMapper = buildObjectMapper();
 

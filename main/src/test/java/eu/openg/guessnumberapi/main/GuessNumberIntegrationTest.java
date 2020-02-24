@@ -1,6 +1,7 @@
 package eu.openg.guessnumberapi.main;
 
 import eu.openg.guessnumberapi.gateway.api.GameEntityRepository;
+import eu.openg.guessnumberapi.gateway.fake.FakeGameIdProvider;
 import eu.openg.guessnumberapi.gateway.fake.FakeInMemoryGameEntityRepo;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
@@ -12,14 +13,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GuessNumberIntegrationTest {
+class GuessNumberIntegrationTest {
     private GuessNumberUseCase guessNumberUseCase;
     private GameEntityRepository gameEntityRepository;
 
     @BeforeEach
     void setUp() {
         GuessValidator gateway = new GuessValidator();
-        gameEntityRepository = new FakeInMemoryGameEntityRepo();
+        gameEntityRepository = new FakeInMemoryGameEntityRepo(new FakeGameIdProvider());
         guessNumberUseCase = new GuessNumberInteractor(gateway, gameEntityRepository);
     }
 

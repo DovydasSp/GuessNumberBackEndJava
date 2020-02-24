@@ -22,6 +22,5 @@ $ cd GuessNumberBackEndJava
 $ ./gradlew installDist
 
 # Run the app
-$ cd ./main/build/install/guess-number-api/bin/
-$ ./guess-number-api
+$ cd ./main/build/install/guess-number-api/bin/guess-number-api
 ```

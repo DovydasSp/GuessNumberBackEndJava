@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.openg.guessnumberapi.gateway.implementation.AtomicGameIdProvider;
-import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameEntityRepo;
+import eu.openg.guessnumberapi.gateway.implementation.PostgresqlGameEntityRepo;
 import eu.openg.guessnumberapi.gateway.implementation.RandomNumberGateway;
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.JacksonJSONSerializer;
@@ -20,7 +19,8 @@ public class Main {
 
     public static void main(String[] args) {
         UseCaseFactory factory = new UseCaseFactoryImpl(new RandomNumberGateway(), new GuessValidator(),
-                new InMemoryGameEntityRepo(), new AtomicGameIdProvider());
+                new PostgresqlGameEntityRepo());
+        //new InMemoryGameEntityRepo(new AtomicGameIdProvider()));
         JSONSerializer serializer = createSerializer();
         sparkController = new SparkController(factory, serializer);
         sparkController.matchRoutes(4568);

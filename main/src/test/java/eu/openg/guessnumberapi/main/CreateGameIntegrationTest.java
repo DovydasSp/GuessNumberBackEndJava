@@ -22,8 +22,8 @@ class CreateGameIntegrationTest {
     void setUp() {
         NumberGateway numberGateway = new FakeNumberGateway();
         GameIdProvider gameIdProvider = new FakeGameIdProvider();
-        gameEntityRepository = new FakeInMemoryGameEntityRepo();
-        createGameUseCase = new CreateGameInteractor(numberGateway, gameEntityRepository, gameIdProvider);
+        gameEntityRepository = new FakeInMemoryGameEntityRepo(gameIdProvider);
+        createGameUseCase = new CreateGameInteractor(numberGateway, gameEntityRepository);
     }
 
     @Test

@@ -2,7 +2,6 @@ package eu.openg.guessnumberapi.usecase.implementation;
 
 import eu.openg.guessnumberapi.domain.GameEntity;
 import eu.openg.guessnumberapi.gateway.api.GameEntityRepository;
-import eu.openg.guessnumberapi.gateway.api.GameIdProvider;
 import eu.openg.guessnumberapi.gateway.api.NumberGateway;
 import eu.openg.guessnumberapi.usecase.api.CreateGameUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,31 +22,27 @@ class CreateGameInteractorTest {
     private NumberGateway gateway;
     @Mock
     private GameEntityRepository gameEntityRepository;
-    @Mock
-    private GameIdProvider gameIdProvider;
     private CreateGameUseCase createGameInteractor;
 
     @BeforeEach
     void setUp() {
-        createGameInteractor = new CreateGameInteractor(gateway, gameEntityRepository, gameIdProvider);
+        createGameInteractor = new CreateGameInteractor(gateway, gameEntityRepository);
     }
 
     @Test
     void generateIdAndNumberThenSave() {
-        when(gameIdProvider.getNextId()).thenReturn(2);
         when(gateway.generateNumber()).thenReturn(123);
+        when(gameEntityRepository.save(any())).thenReturn(2);
         int id = createGameInteractor.createGameAndReturnGameId();
         verifyGeneratingAndSaving(id);
     }
 
     private void verifyGeneratingAndSaving(int id) {
-        assertEquals(id, 2);
-        verify(gameIdProvider).getNextId();
+        assertEquals(2, id);
         verify(gateway).generateNumber();
         ArgumentCaptor<GameEntity> captor = ArgumentCaptor.forClass(GameEntity.class);
         verify(gameEntityRepository).save(captor.capture());
         assertEquals(captor.getValue().getGuessCount(), 0);
-        assertEquals(captor.getValue().getGameId(), 2);
         assertEquals(captor.getValue().getGeneratedNumber(), 123);
     }
 }
