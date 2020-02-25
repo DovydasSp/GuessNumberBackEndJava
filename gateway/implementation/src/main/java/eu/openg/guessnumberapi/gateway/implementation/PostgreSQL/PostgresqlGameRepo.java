@@ -1,4 +1,4 @@
-package eu.openg.guessnumberapi.gateway.implementation;
+package eu.openg.guessnumberapi.gateway.implementation.PostgreSQL;
 
 import eu.openg.guessnumberapi.domain.Game;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
@@ -12,22 +12,9 @@ public class PostgresqlGameRepo implements GameRepository {
     private static final Logger LOGGER = LogManager.getLogger(PostgresqlGameRepo.class);
     private Connection connection;
 
-    public PostgresqlGameRepo() {
-        connectToPostgresqlDatabase();
+    public PostgresqlGameRepo(PostgresqlConnection postgresqlConnection) {
+        connection = postgresqlConnection.connectToPostgresqlDatabase();
         createGameTableIfNotExists();
-    }
-
-    private void connectToPostgresqlDatabase() {
-        connection = null;
-        try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager
-                    .getConnection("jdbc:postgresql://localhost:5432/postgres",
-                            "postgres", "guessnumber");
-            LOGGER.info("PostgreSql database opened successfully");
-        } catch (Exception e) {
-            throw logErrorAndThrowException("Connection failed. Could not connect to database.", e);
-        }
     }
 
     private void createGameTableIfNotExists() {
@@ -35,7 +22,7 @@ public class PostgresqlGameRepo implements GameRepository {
             statement.executeUpdate(QueryUtils.CREATE_TABLE_QUERY);
             LOGGER.info("PostgreSql database table created successfully");
         } catch (SQLException e) {
-            throw logErrorAndThrowException("CREATE TABLE failed. game table could not be created.", e);
+            throw logErrorAndReturnNewException("CREATE TABLE failed. game table could not be created.", e);
         }
     }
 
@@ -46,7 +33,7 @@ public class PostgresqlGameRepo implements GameRepository {
             LOGGER.info("PostgreSql new game insert successful.");
             return id;
         } catch (SQLException e) {
-            throw logErrorAndThrowException("INSERT failed. New game could not be inserted.", e);
+            throw logErrorAndReturnNewException("INSERT failed. New game could not be inserted.", e);
         }
     }
 
@@ -63,7 +50,7 @@ public class PostgresqlGameRepo implements GameRepository {
             LOGGER.info("PostgreSql guessCount increment update successful.");
             return updatedGuessCount;
         } catch (SQLException e) {
-            throw logErrorAndThrowException("UPDATE failed. guessCount could not be incremented", e);
+            throw logErrorAndReturnNewException("UPDATE failed. guessCount could not be incremented", e);
         }
     }
 
@@ -73,11 +60,11 @@ public class PostgresqlGameRepo implements GameRepository {
     }
 
     private int executeQueryAndReturnInt(PreparedStatement statement) throws SQLException {
-        ResultSet rs = statement.executeQuery();
-        rs.next();
-        int answer = rs.getInt(1);
-        rs.close();
-        return answer;
+        try (ResultSet rs = statement.executeQuery()) {
+            if (rs.next())
+                return rs.getInt(1);
+        }
+        throw new PostgresqlException("Failed. Statement did not return any results.");
     }
 
     @Override
@@ -86,30 +73,23 @@ public class PostgresqlGameRepo implements GameRepository {
             statement.setInt(1, gameId);
             return selectAndReturnGameFromDB(statement);
         } catch (SQLException e) {
-            throw logErrorAndThrowException("SELECT failed. Game could not be fetched from database.", e);
+            throw logErrorAndReturnNewException("SELECT failed. Game could not be fetched from database.", e);
         }
     }
 
     private Game selectAndReturnGameFromDB(PreparedStatement statement) throws SQLException {
-        ResultSet rs = statement.executeQuery();
-        rs.next();
-        int id = rs.getInt("gameid");
-        int count = rs.getInt("guesscount");
-        int number = rs.getInt("actualNumber");
-        rs.close();
-        return new Game(id, count, number);
-    }
-
-    @Override
-    public void closeConnection() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            throw logErrorAndThrowException("Connection close failed. Connection could not be closed.", e);
+        try (ResultSet rs = statement.executeQuery()) {
+            if (rs.next()) {
+                int id = rs.getInt("gameid");
+                int count = rs.getInt("guesscount");
+                int number = rs.getInt("actualNumber");
+                return new Game(id, count, number);
+            }
+            return null;
         }
     }
 
-    private PostgresqlException logErrorAndThrowException(String message, Exception e) {
+    private PostgresqlException logErrorAndReturnNewException(String message, Exception e) {
         LOGGER.error(message + "\n" + e);
         return new PostgresqlException(message);
     }

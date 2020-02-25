@@ -3,7 +3,7 @@ package eu.openg.guessnumberapi.gateway.implementation;
 import eu.openg.guessnumberapi.domain.Game;
 import eu.openg.guessnumberapi.gateway.api.GameIdProvider;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
-import eu.openg.guessnumberapi.gateway.implementation.exception.GameNotFoundException;
+import eu.openg.guessnumberapi.gateway.implementation.exception.NullGameException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,6 +63,6 @@ class InMemoryRestGameRepoTest {
 
     @Test
     void savingNullDoesNotThrowException() {
-        assertThrows(GameNotFoundException.class, () -> gameRepo.saveNewGameAndReturnId(null));
+        assertThrows(NullGameException.class, () -> gameRepo.saveNewGameAndReturnId(null));
     }
 }

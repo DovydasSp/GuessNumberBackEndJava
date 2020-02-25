@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
 import eu.openg.guessnumberapi.gateway.implementation.AtomicGameIdProvider;
 import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameRepo;
-import eu.openg.guessnumberapi.gateway.implementation.PostgresqlGameRepo;
+import eu.openg.guessnumberapi.gateway.implementation.PostgreSQL.PostgresqlConnection;
+import eu.openg.guessnumberapi.gateway.implementation.PostgreSQL.PostgresqlGameRepo;
 import eu.openg.guessnumberapi.gateway.implementation.RandomNumberGateway;
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.JacksonJSONSerializer;
@@ -22,8 +23,10 @@ import static java.util.Objects.nonNull;
 public class Main {
     private static SparkController sparkController;
     private static GameRepository gameRepository;
+    private static PostgresqlConnection postgresqlConnection;
 
     public static void main(String[] args) {
+        postgresqlConnection = new PostgresqlConnection();
         gameRepository = initGameRepository();
         UseCaseFactory factory = new UseCaseFactoryImpl(new RandomNumberGateway(), new GuessValidator(), gameRepository);
         JSONSerializer serializer = createSerializer();
@@ -38,7 +41,7 @@ public class Main {
         if (nonNull(sparkController))
             sparkController.stop();
         if (nonNull(gameRepository))
-            gameRepository.closeConnection();
+            postgresqlConnection.closeConnection();
     }
 
     private static JSONSerializer createSerializer() {
@@ -50,7 +53,7 @@ public class Main {
 
     private static GameRepository initGameRepository() {
         if (Config.USE_POSTGRESQL_DB)
-            return new PostgresqlGameRepo();
+            return new PostgresqlGameRepo(postgresqlConnection);
         else
             return new InMemoryGameRepo(new AtomicGameIdProvider());
     }

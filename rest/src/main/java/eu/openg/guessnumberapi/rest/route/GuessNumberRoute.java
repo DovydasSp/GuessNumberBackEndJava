@@ -2,13 +2,11 @@ package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.RestGuessRequest;
-import eu.openg.guessnumberapi.rest.entity.RestGuessResponse;
 import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.rest.exception.GameNotFountException;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
 import eu.openg.guessnumberapi.rest.exception.MissingParamException;
 import eu.openg.guessnumberapi.rest.exception.ServerErrorException;
-import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import org.apache.logging.log4j.LogManager;
@@ -24,13 +22,13 @@ public class GuessNumberRoute implements Route {
     private static final String PARAM_ID = "id";
     private final UseCaseFactory useCaseFactory;
     private final JSONSerializer serializer;
-    private final RestResponseConverter restGuessResponse;
+    private final RestResponseConverter restResponseConverter;
 
     public GuessNumberRoute(UseCaseFactory useCaseFactory, JSONSerializer serializer,
-                            RestResponseConverter restGuessResponse) {
+                            RestResponseConverter restResponseConverter) {
         this.useCaseFactory = useCaseFactory;
         this.serializer = serializer;
-        this.restGuessResponse = restGuessResponse;
+        this.restResponseConverter = restResponseConverter;
     }
 
     @Override
@@ -39,11 +37,12 @@ public class GuessNumberRoute implements Route {
         int guessNumber = extractAndValidateGuessNumber(request);
         LOGGER.info("Request accepted. ID: " + id + " guessNumber: " + guessNumber);
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberUseCase();
-        BoundaryGuessResponse boundaryGuessResponse = Optional.of(interactor)
+        return Optional.of(interactor)
                 .map(inter -> inter.checkGuessAndReturnResponse(id, guessNumber))
+                .map(restResponseConverter::convert)
+                .map(result -> serializeAndSetResponse(response, result))
+                .map(Response::body)
                 .orElseThrow(() -> new GameNotFountException(id));
-        RestGuessResponse result = restGuessResponse.convert(boundaryGuessResponse);
-        return serializeAndSetResponse(response, result).body();
     }
 
     private int extractIdParam(Request request) {

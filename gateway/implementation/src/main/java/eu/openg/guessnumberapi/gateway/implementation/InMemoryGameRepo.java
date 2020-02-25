@@ -3,7 +3,7 @@ package eu.openg.guessnumberapi.gateway.implementation;
 import eu.openg.guessnumberapi.domain.Game;
 import eu.openg.guessnumberapi.gateway.api.GameIdProvider;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
-import eu.openg.guessnumberapi.gateway.implementation.exception.GameNotFoundException;
+import eu.openg.guessnumberapi.gateway.implementation.exception.NullGameException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class InMemoryGameRepo implements GameRepository {
             gameIdToGameMap.put(id, newGame);
             return id;
         }
-        throw new GameNotFoundException("Game was null");
+        throw new NullGameException("Game was null");
     }
 
     @Override
@@ -50,10 +50,5 @@ public class InMemoryGameRepo implements GameRepository {
     @Override
     public Game fetchGame(int gameId) {
         return gameIdToGameMap.get(gameId);
-    }
-
-    @Override
-    public void closeConnection() {
-        gameIdToGameMap.clear();
     }
 }

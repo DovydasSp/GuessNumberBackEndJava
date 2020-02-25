@@ -30,7 +30,7 @@ public class CreateGameRoute implements Route {
         LOGGER.info("Request accepted. Created new game with gameId: " + gameId);
         String serializedGameId = serializeGameId(gameId);
         if (isNull(serializedGameId)) {
-            LOGGER.error("Failed to serialize game ID");
+            LOGGER.error("Failed to serialize game with gameID:" + gameId);
             changeResponseOnInvalidRequest(response);
         } else {
             response.body(serializedGameId);

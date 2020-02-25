@@ -8,6 +8,4 @@ public interface GameRepository {
     int incrementAndReturnGuessCount(int gameId);
 
     Game fetchGame(int gameId);
-
-    void closeConnection();
 }
