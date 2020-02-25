@@ -40,7 +40,7 @@ public class PostgresqlGameRepo implements GameRepository {
     private int insertAndReturnId(PreparedStatement statement, Game game) throws SQLException {
         statement.setInt(1, game.getGuessCount());
         statement.setInt(2, game.getActualNumber());
-        return executeQueryAndReturnInt(statement);
+        return executeQueryAndReturnField(statement, "GAMEID");
     }
 
     @Override
@@ -56,13 +56,13 @@ public class PostgresqlGameRepo implements GameRepository {
 
     private int updateAndReturnGuessCount(PreparedStatement statement, int gameId) throws SQLException {
         statement.setInt(1, gameId);
-        return executeQueryAndReturnInt(statement);
+        return executeQueryAndReturnField(statement, "GUESSCOUNT");
     }
 
-    private int executeQueryAndReturnInt(PreparedStatement statement) throws SQLException {
+    private int executeQueryAndReturnField(PreparedStatement statement, String fieldToReturn) throws SQLException {
         try (ResultSet rs = statement.executeQuery()) {
             if (rs.next())
-                return rs.getInt(1);
+                return rs.getInt(fieldToReturn);
         }
         throw new PostgresqlException("Failed. Statement did not return any results.");
     }

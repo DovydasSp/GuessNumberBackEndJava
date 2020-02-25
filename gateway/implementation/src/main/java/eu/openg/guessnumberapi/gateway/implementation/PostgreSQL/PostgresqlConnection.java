@@ -13,7 +13,6 @@ public class PostgresqlConnection {
     private Connection connection;
 
     Connection connectToPostgresqlDatabase() {
-        connection = null;
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager
