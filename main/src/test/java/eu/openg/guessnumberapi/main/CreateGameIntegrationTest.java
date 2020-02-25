@@ -27,11 +27,11 @@ class CreateGameIntegrationTest {
     }
 
     @Test
-    void createGameReturnsGameId10AndPutsNewGameEntityToRepository() {
+    void createGameReturnsGameId10AndPutsNewGameToRepository() {
         int id = createGameUseCase.createGameAndReturnGameId();
-        Game game = gameRepository.fetchGameEntity(id);
+        Game game = gameRepository.fetchGame(id);
         assertEquals(10, id);
-        assertEquals(3, game.getGeneratedNumber());
+        assertEquals(3, game.getActualNumber());
         assertEquals(0, game.getGuessCount());
     }
 }

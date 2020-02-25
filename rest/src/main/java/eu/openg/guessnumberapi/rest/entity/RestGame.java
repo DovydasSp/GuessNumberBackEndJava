@@ -5,14 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class RestGame {
     private final int gameId;
     private final Integer guessCount;
-    private final Integer generatedNumber;
+    private final Integer actualNumber;
+
+    public RestGame(@JsonProperty("gameId") int gameId) {
+        this(gameId, null, null);
+    }
 
     public RestGame(@JsonProperty("gameId") int gameId,
                     @JsonProperty("guessCount") Integer guessCount,
-                    @JsonProperty("generatedNumber") Integer generatedNumber) {
+                    @JsonProperty("actualNumber") Integer actualNumber) {
         this.gameId = gameId;
         this.guessCount = guessCount;
-        this.generatedNumber = generatedNumber;
+        this.actualNumber = actualNumber;
     }
 
     public int returnGameId() {
@@ -23,7 +27,7 @@ public class RestGame {
         return guessCount;
     }
 
-    public int returnGeneratedNumber() {
-        return generatedNumber;
+    public int returnActualNumber() {
+        return actualNumber;
     }
 }

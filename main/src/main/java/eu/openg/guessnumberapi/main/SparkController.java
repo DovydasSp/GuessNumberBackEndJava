@@ -1,6 +1,7 @@
 package eu.openg.guessnumberapi.main;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
+import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.rest.route.AcceptingOptionsRoute;
 import eu.openg.guessnumberapi.rest.route.CreateGameRoute;
 import eu.openg.guessnumberapi.rest.route.GuessNumberRoute;
@@ -14,10 +15,12 @@ public class SparkController {
     private final UseCaseFactory factory;
     private final Service service;
     private final JSONSerializer serializer;
+    private final RestResponseConverter restResponseConverter;
 
-    public SparkController(UseCaseFactory factory, JSONSerializer serializer) {
+    public SparkController(UseCaseFactory factory, JSONSerializer serializer, RestResponseConverter restResponseConverter) {
         this.factory = factory;
         this.serializer = serializer;
+        this.restResponseConverter = restResponseConverter;
         service = Service.ignite();
     }
 
@@ -30,7 +33,7 @@ public class SparkController {
 
         service.path(RouteConstants.GAMES_PATH, () -> {
             service.post("", new CreateGameRoute(factory, serializer));
-            service.post(RouteConstants.GAMES_GUESSES_PATH, new GuessNumberRoute(factory, serializer));
+            service.post(RouteConstants.GAMES_GUESSES_PATH, new GuessNumberRoute(factory, serializer, restResponseConverter));
         });
 
         service.awaitInitialization();

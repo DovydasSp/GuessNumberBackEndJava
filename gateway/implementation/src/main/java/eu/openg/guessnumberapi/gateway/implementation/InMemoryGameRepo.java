@@ -3,6 +3,7 @@ package eu.openg.guessnumberapi.gateway.implementation;
 import eu.openg.guessnumberapi.domain.Game;
 import eu.openg.guessnumberapi.gateway.api.GameIdProvider;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
+import eu.openg.guessnumberapi.gateway.implementation.exception.GameNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 
 public class InMemoryGameRepo implements GameRepository {
-    private final Map<Integer, Game> gameIdToGameEntityMap;
+    private final Map<Integer, Game> gameIdToGameMap;
     private final GameIdProvider gameIdProvider;
 
     public InMemoryGameRepo(GameIdProvider gameIdProvider) {
@@ -18,38 +19,41 @@ public class InMemoryGameRepo implements GameRepository {
     }
 
     public InMemoryGameRepo(Map<Integer, Game> storage, GameIdProvider gameIdProvider) {
-        gameIdToGameEntityMap = storage;
+        gameIdToGameMap = storage;
         this.gameIdProvider = gameIdProvider;
     }
 
     @Override
-    public int save(Game game) {
+    public int saveNewGameAndReturnId(Game game) {
         if (nonNull(game)) {
+            Game newGame = game;
             int id = game.getGameId();
             if (id == 0) {
                 id = gameIdProvider.getNextId();
-                game = new Game(id, game.getGuessCount(), game.getGeneratedNumber());
+                newGame = new Game(id, game.getGuessCount(), game.getActualNumber());
             }
-            gameIdToGameEntityMap.put(id, game);
+            gameIdToGameMap.put(id, newGame);
             return id;
         }
-        throw new NullPointerException("Game was null");
+        throw new GameNotFoundException("Game was null");
     }
 
     @Override
-    public int incrementGuessCount(Game game) {
-        if (nonNull(game)) {
-            int gameId = game.getGameId();
-            int newGuessCount = game.getGuessCount() + 1;
-            game = new Game(gameId, newGuessCount, game.getGeneratedNumber());
-            gameIdToGameEntityMap.put(gameId, game);
-            return newGuessCount;
-        }
-        throw new NullPointerException("Game was null");
+    public int incrementAndReturnGuessCount(int gameId) {
+        Game game = gameIdToGameMap.get(gameId);
+        int newGuessCount = game.getGuessCount() + 1;
+        Game newGame = new Game(gameId, newGuessCount, game.getActualNumber());
+        gameIdToGameMap.put(gameId, newGame);
+        return newGuessCount;
     }
 
     @Override
-    public Game fetchGameEntity(int gameId) {
-        return gameIdToGameEntityMap.get(gameId);
+    public Game fetchGame(int gameId) {
+        return gameIdToGameMap.get(gameId);
+    }
+
+    @Override
+    public void closeConnection() {
+        gameIdToGameMap.clear();
     }
 }

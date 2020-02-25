@@ -3,18 +3,18 @@ package eu.openg.guessnumberapi.usecase.implementation;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 
 public class GuessValidator {
-    public boolean isGuessCorrect(int guessedNumber, int generatedNumber){
-        return guessedNumber == generatedNumber;
+    public boolean isGuessCorrect(int guessedNumber, int actualNumber) {
+        return guessedNumber == actualNumber;
     }
 
-    public boolean isGuessBiggerThanGenerated(int guessedNumber, int generatedNumber){
-        return guessedNumber > generatedNumber;
+    public boolean isGuessBiggerThanGenerated(int guessedNumber, int actualNumber) {
+        return guessedNumber > actualNumber;
     }
 
-    public BoundaryGuessResultStatus checkGuessAndReturnBoundaryGuessResponse(int guessNumber, int generatedNumber) {
-        if (isGuessCorrect(guessNumber, generatedNumber))
+    public BoundaryGuessResultStatus checkGuessAndReturnBoundaryGuessResponse(int guessNumber, int actualNumber) {
+        if (isGuessCorrect(guessNumber, actualNumber))
             return BoundaryGuessResultStatus.CORRECT;
-        if (isGuessBiggerThanGenerated(guessNumber, generatedNumber))
+        if (isGuessBiggerThanGenerated(guessNumber, actualNumber))
             return BoundaryGuessResultStatus.LESS;
         return BoundaryGuessResultStatus.MORE;
     }

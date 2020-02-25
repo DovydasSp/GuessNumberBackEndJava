@@ -3,16 +3,16 @@ package eu.openg.guessnumberapi.domain;
 public class Game {
     private final int gameId;
     private final int guessCount;
-    private final int generatedNumber;
+    private final int actualNumber;
 
-    public Game(int generatedNumber) {
-        this(0, 0, generatedNumber);
+    public Game(int actualNumber) {
+        this(0, 0, actualNumber);
     }
 
-    public Game(int gameId, int guessCount, int generatedNumber) {
+    public Game(int gameId, int guessCount, int actualNumber) {
         this.gameId = gameId;
         this.guessCount = guessCount;
-        this.generatedNumber = generatedNumber;
+        this.actualNumber = actualNumber;
     }
 
     public int getGameId() {
@@ -23,7 +23,7 @@ public class Game {
         return guessCount;
     }
 
-    public int getGeneratedNumber() {
-        return generatedNumber;
+    public int getActualNumber() {
+        return actualNumber;
     }
 }

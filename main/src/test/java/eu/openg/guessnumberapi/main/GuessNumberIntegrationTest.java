@@ -23,7 +23,7 @@ class GuessNumberIntegrationTest {
         GuessValidator gateway = new GuessValidator();
         gameRepository = new InMemoryGameRepo(new FakeGameIdProvider());
         guessNumberUseCase = new GuessNumberInteractor(gateway, gameRepository);
-        gameRepository.save(new Game(1, 1, 3));
+        gameRepository.saveNewGameAndReturnId(new Game(1, 1, 3));
     }
 
     @Test

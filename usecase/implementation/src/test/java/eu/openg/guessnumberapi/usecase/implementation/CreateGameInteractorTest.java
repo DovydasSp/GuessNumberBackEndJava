@@ -32,7 +32,7 @@ class CreateGameInteractorTest {
     @Test
     void generateIdAndNumberThenSave() {
         when(gateway.generateNumber()).thenReturn(123);
-        when(gameRepository.save(any(Game.class))).thenReturn(2);
+        when(gameRepository.saveNewGameAndReturnId(any(Game.class))).thenReturn(2);
         int id = createGameInteractor.createGameAndReturnGameId();
         verifyGeneratingAndSaving(id);
     }
@@ -41,8 +41,8 @@ class CreateGameInteractorTest {
         assertEquals(2, id);
         verify(gateway).generateNumber();
         ArgumentCaptor<Game> captor = ArgumentCaptor.forClass(Game.class);
-        verify(gameRepository).save(captor.capture());
+        verify(gameRepository).saveNewGameAndReturnId(captor.capture());
         assertEquals(captor.getValue().getGuessCount(), 0);
-        assertEquals(captor.getValue().getGeneratedNumber(), 123);
+        assertEquals(captor.getValue().getActualNumber(), 123);
     }
 }

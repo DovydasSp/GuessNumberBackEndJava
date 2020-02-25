@@ -6,7 +6,7 @@ import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 
-import static java.util.Objects.isNull;
+import java.util.Optional;
 
 public class GuessNumberInteractor implements GuessNumberUseCase {
 
@@ -20,15 +20,15 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
 
     @Override
     public BoundaryGuessResponse checkGuessAndReturnResponse(int gameId, int guessNumber) {
-        Game game = gameRepository.fetchGameEntity(gameId);
-        if (isNull(game))
-            return null;
-        return checkGuessAndReturnBoundaryGuessResponse(guessNumber, game);
+        return Optional.of(gameRepository)
+                .map(gameRepo -> gameRepo.fetchGame(gameId))
+                .map(game -> checkGuessAndReturnBoundaryGuessResponse(guessNumber, game))
+                .orElse(null);
     }
 
     private BoundaryGuessResponse checkGuessAndReturnBoundaryGuessResponse(int guessNumber, Game game) {
-        BoundaryGuessResultStatus status = gateway.checkGuessAndReturnBoundaryGuessResponse(guessNumber, game.getGeneratedNumber());
-        int numberOfGuesses = gameRepository.incrementGuessCount(game);
+        BoundaryGuessResultStatus status = gateway.checkGuessAndReturnBoundaryGuessResponse(guessNumber, game.getActualNumber());
+        int numberOfGuesses = gameRepository.incrementAndReturnGuessCount(game.getGameId());
         return new BoundaryGuessResponse(status, numberOfGuesses);
     }
 }

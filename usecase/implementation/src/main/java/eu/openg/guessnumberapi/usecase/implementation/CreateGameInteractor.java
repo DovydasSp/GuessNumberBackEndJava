@@ -16,7 +16,7 @@ public class CreateGameInteractor implements CreateGameUseCase {
 
     @Override
     public int createGameAndReturnGameId() {
-        int generatedNumber = gateway.generateNumber();
-        return gameRepository.save(new Game(generatedNumber));
+        int actualNumber = gateway.generateNumber();
+        return gameRepository.saveNewGameAndReturnId(new Game(actualNumber));
     }
 }

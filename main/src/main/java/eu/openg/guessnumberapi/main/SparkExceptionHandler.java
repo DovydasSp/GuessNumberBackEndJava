@@ -18,7 +18,7 @@ public class SparkExceptionHandler implements ExceptionHandler<RuntimeException>
     public void handle(RuntimeException exception, Request request, Response response) {
         if (exception instanceof RestException) {
             final RestException restException = (RestException) exception;
-            mapErrorResponse(response, restException.getStatus(), restException.getErrorResponseEntity());
+            mapErrorResponse(response, restException.getStatus(), restException.getErrorResponse());
         } else {
             mapErrorResponse(response, 500, new RestErrorResponse(exception.getMessage()));
         }

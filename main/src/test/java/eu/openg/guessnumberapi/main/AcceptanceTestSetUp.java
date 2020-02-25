@@ -9,6 +9,8 @@ import eu.openg.guessnumberapi.gateway.fake.FakeNumberGateway;
 import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameRepo;
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.JacksonJSONSerializer;
+import eu.openg.guessnumberapi.rest.entity.converter.GuessResponseConverter;
+import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import eu.openg.guessnumberapi.usecase.implementation.GuessValidator;
 import eu.openg.guessnumberapi.usecase.implementation.UseCaseFactoryImpl;
@@ -35,7 +37,8 @@ class AcceptanceTestSetUp {
         final ObjectMapper objectMapper = buildObjectMapper();
 
         JSONSerializer serializer = new JacksonJSONSerializer(objectMapper);
-        SparkController sparkController = new SparkController(factory, serializer);
+        RestResponseConverter restResponseConverter = new GuessResponseConverter();
+        SparkController sparkController = new SparkController(factory, serializer, restResponseConverter);
         sparkController.matchRoutes(0);
         return sparkController;
     }

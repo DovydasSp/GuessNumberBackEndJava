@@ -2,6 +2,7 @@ package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.RestGuessRequest;
+import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
 import eu.openg.guessnumberapi.rest.exception.MissingParamException;
 import eu.openg.guessnumberapi.rest.exception.ServerErrorException;
@@ -35,10 +36,12 @@ class GuessNumberRouteTest {
     private static Request request;
     @Mock
     private static Response response;
+    @Mock
+    private static RestResponseConverter restResponseConverter;
 
     @BeforeEach
     void setUp() {
-        guessNumberRoute = new GuessNumberRoute(useCaseFactory, serializer);
+        guessNumberRoute = new GuessNumberRoute(useCaseFactory, serializer, restResponseConverter);
     }
 
     @Test
@@ -46,7 +49,7 @@ class GuessNumberRouteTest {
         int gameId = 37;
         int guessNumber = 5;
 
-        mockRequest(gameId, guessNumber);
+        createMocks(gameId, guessNumber);
 
         assertThrows(ServerErrorException.class, () -> guessNumberRoute.handle(request, response));
     }
@@ -62,7 +65,7 @@ class GuessNumberRouteTest {
         assertThrows(InvalidParamException.class, () -> guessNumberRoute.handle(request, response));
     }
 
-    private void mockRequest(int gameId, int guessNumber) {
+    private void createMocks(int gameId, int guessNumber) {
         RestGuessRequest guessRequest = mock(RestGuessRequest.class);
         when(guessRequest.getGuessNumber()).thenReturn(guessNumber);
         String body = "{\"guessNumber\":\"" + guessNumber + "\"}";

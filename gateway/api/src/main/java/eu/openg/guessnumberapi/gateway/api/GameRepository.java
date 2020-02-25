@@ -3,9 +3,11 @@ package eu.openg.guessnumberapi.gateway.api;
 import eu.openg.guessnumberapi.domain.Game;
 
 public interface GameRepository {
-    int save(Game restGame);
+    int saveNewGameAndReturnId(Game game);
 
-    int incrementGuessCount(Game game);
+    int incrementAndReturnGuessCount(int gameId);
 
-    Game fetchGameEntity(int gameId);
+    Game fetchGame(int gameId);
+
+    void closeConnection();
 }

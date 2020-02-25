@@ -39,7 +39,7 @@ public class CreateGameRoute implements Route {
     }
 
     private String serializeGameId(int gameId) {
-        return serializer.serialize(new RestGame(gameId, null, null))
+        return serializer.serialize(new RestGame(gameId))
                 .orElse(null);
     }
 
