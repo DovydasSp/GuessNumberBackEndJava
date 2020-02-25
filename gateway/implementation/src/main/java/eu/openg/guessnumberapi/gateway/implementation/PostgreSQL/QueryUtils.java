@@ -12,4 +12,8 @@ class QueryUtils {
             "WHERE GAMEID = ? RETURNING GUESSCOUNT;";
 
     static final String SELECT_GAME_QUERY = "SELECT * FROM GAME WHERE GAMEID = ?;";
+
+    static final String GAME_ID = "GAMEID";
+    static final String GUESS_COUNT = "GUESSCOUNT";
+    static final String ACTUAL_NUMBER = "ACTUALNUMBER";
 }

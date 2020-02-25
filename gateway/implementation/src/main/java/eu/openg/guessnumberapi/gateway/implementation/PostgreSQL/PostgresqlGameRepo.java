@@ -29,7 +29,7 @@ public class PostgresqlGameRepo implements GameRepository {
     @Override
     public int saveNewGameAndReturnId(Game game) {
         try (PreparedStatement statement = connection.prepareStatement(QueryUtils.INSERT_GAME_QUERY)) {
-            int id = insertAndReturnId(statement, game);
+            int id = executeInsertQuery(statement, game);
             LOGGER.info("PostgreSql new game insert successful.");
             return id;
         } catch (SQLException e) {
@@ -37,16 +37,24 @@ public class PostgresqlGameRepo implements GameRepository {
         }
     }
 
-    private int insertAndReturnId(PreparedStatement statement, Game game) throws SQLException {
+    private int executeInsertQuery(PreparedStatement statement, Game game) throws SQLException {
         statement.setInt(1, game.getGuessCount());
         statement.setInt(2, game.getActualNumber());
-        return executeQueryAndReturnField(statement, "GAMEID");
+        try (ResultSet resultSet = statement.executeQuery()) {
+            return returnField(resultSet, QueryUtils.GAME_ID);
+        }
+    }
+
+    private int returnField(ResultSet resultSet, String fieldToReturn) throws SQLException {
+        if (resultSet.next())
+            return resultSet.getInt(fieldToReturn);
+        throw new PostgresqlException("Failed. Statement did not return any results.");
     }
 
     @Override
-    public int incrementAndReturnGuessCount(int gameId) {
+    public int incrementThenReturnGuessCount(int gameId) {
         try (PreparedStatement statement = connection.prepareStatement(QueryUtils.UPDATE_GUESSCOUNT_QUERY)) {
-            int updatedGuessCount = updateAndReturnGuessCount(statement, gameId);
+            int updatedGuessCount = executeUpdateQuery(statement, gameId);
             LOGGER.info("PostgreSql guessCount increment update successful.");
             return updatedGuessCount;
         } catch (SQLException e) {
@@ -54,39 +62,39 @@ public class PostgresqlGameRepo implements GameRepository {
         }
     }
 
-    private int updateAndReturnGuessCount(PreparedStatement statement, int gameId) throws SQLException {
+    private int executeUpdateQuery(PreparedStatement statement, int gameId) throws SQLException {
         statement.setInt(1, gameId);
-        return executeQueryAndReturnField(statement, "GUESSCOUNT");
-    }
-
-    private int executeQueryAndReturnField(PreparedStatement statement, String fieldToReturn) throws SQLException {
-        try (ResultSet rs = statement.executeQuery()) {
-            if (rs.next())
-                return rs.getInt(fieldToReturn);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            return returnField(resultSet, QueryUtils.GAME_ID);
         }
-        throw new PostgresqlException("Failed. Statement did not return any results.");
     }
 
     @Override
     public Game fetchGame(int gameId) {
         try (PreparedStatement statement = connection.prepareStatement(QueryUtils.SELECT_GAME_QUERY)) {
-            statement.setInt(1, gameId);
-            return selectAndReturnGameFromDB(statement);
+            Game returnedGame = executeSelectQuery(statement, gameId);
+            LOGGER.info("PostgreSql guessCount increment update successful.");
+            return returnedGame;
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("SELECT failed. Game could not be fetched from database.", e);
         }
     }
 
-    private Game selectAndReturnGameFromDB(PreparedStatement statement) throws SQLException {
-        try (ResultSet rs = statement.executeQuery()) {
-            if (rs.next()) {
-                int id = rs.getInt("gameid");
-                int count = rs.getInt("guesscount");
-                int number = rs.getInt("actualNumber");
-                return new Game(id, count, number);
-            }
-            return null;
+    private Game executeSelectQuery(PreparedStatement statement, int gameId) throws SQLException {
+        statement.setInt(1, gameId);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            return returnGame(resultSet);
         }
+    }
+
+    private Game returnGame(ResultSet resultSet) throws SQLException {
+        if (resultSet.next()) {
+            int id = resultSet.getInt(QueryUtils.GAME_ID);
+            int count = resultSet.getInt(QueryUtils.GUESS_COUNT);
+            int number = resultSet.getInt(QueryUtils.ACTUAL_NUMBER);
+            return new Game(id, count, number);
+        }
+        throw new PostgresqlException("Failed. Statement did not return any results.");
     }
 
     private PostgresqlException logErrorAndReturnNewException(String message, Exception e) {

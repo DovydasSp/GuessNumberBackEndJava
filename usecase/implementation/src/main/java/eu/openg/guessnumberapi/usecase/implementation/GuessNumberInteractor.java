@@ -28,7 +28,7 @@ public class GuessNumberInteractor implements GuessNumberUseCase {
 
     private BoundaryGuessResponse checkGuessAndReturnBoundaryGuessResponse(int guessNumber, Game game) {
         BoundaryGuessResultStatus status = gateway.checkGuessAndReturnBoundaryGuessResponse(guessNumber, game.getActualNumber());
-        int numberOfGuesses = gameRepository.incrementAndReturnGuessCount(game.getGameId());
+        int numberOfGuesses = gameRepository.incrementThenReturnGuessCount(game.getGameId());
         return new BoundaryGuessResponse(status, numberOfGuesses);
     }
 }

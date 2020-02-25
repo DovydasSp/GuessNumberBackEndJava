@@ -35,7 +35,7 @@ class GuessNumberInteractorTest {
     private void createEntityAndMockRepository() {
         game = new Game(1, 0, 3);
         when(gameRepository.fetchGame(1)).thenReturn(game);
-        when(gameRepository.incrementAndReturnGuessCount(any(int.class))).thenReturn(1);
+        when(gameRepository.incrementThenReturnGuessCount(any(int.class))).thenReturn(1);
     }
 
     @Test
@@ -75,7 +75,7 @@ class GuessNumberInteractorTest {
     }
 
     private void verifyCallsHaveBeenMadeAndCaptureGame(int guessedNumber) {
-        verify(gameRepository).incrementAndReturnGuessCount(1);
+        verify(gameRepository).incrementThenReturnGuessCount(1);
         verify(gameRepository).fetchGame(1);
         verify(gateway).checkGuessAndReturnBoundaryGuessResponse(guessedNumber, 3);
     }

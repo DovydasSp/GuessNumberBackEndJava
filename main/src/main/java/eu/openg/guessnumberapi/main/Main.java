@@ -26,7 +26,8 @@ public class Main {
     private static PostgresqlConnection postgresqlConnection;
 
     public static void main(String[] args) {
-        postgresqlConnection = new PostgresqlConnection();
+        postgresqlConnection = new PostgresqlConnection(Config.POSTGRES_URL, Config.POSTGRES_USERNAME,
+                Config.POSTGRES_PASSWORD);
         gameRepository = initGameRepository();
         UseCaseFactory factory = new UseCaseFactoryImpl(new RandomNumberGateway(), new GuessValidator(), gameRepository);
         JSONSerializer serializer = createSerializer();

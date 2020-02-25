@@ -6,7 +6,7 @@ public class RestGuessResponse {
     private final Integer numberOfGuesses;
     private final String message;
 
-    public RestGuessResponse(Integer numberOfGuesses) {
+    public RestGuessResponse(int numberOfGuesses) {
         this(null, numberOfGuesses);
     }
 
@@ -14,7 +14,7 @@ public class RestGuessResponse {
         this(message, null);
     }
 
-    public RestGuessResponse(String message, Integer numberOfGuesses) {
+    private RestGuessResponse(String message, Integer numberOfGuesses) {
         this.message = message;
         this.numberOfGuesses = numberOfGuesses;
     }

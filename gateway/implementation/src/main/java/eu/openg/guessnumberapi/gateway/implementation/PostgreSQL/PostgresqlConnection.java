@@ -11,13 +11,21 @@ import java.sql.SQLException;
 public class PostgresqlConnection {
     private static final Logger LOGGER = LogManager.getLogger(PostgresqlConnection.class);
     private Connection connection;
+    private static String url;
+    private static String username;
+    private static String password;
+
+    public PostgresqlConnection(String url, String username, String password) {
+        PostgresqlConnection.url = url;
+        PostgresqlConnection.username = username;
+        PostgresqlConnection.password = password;
+    }
 
     Connection connectToPostgresqlDatabase() {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager
-                    .getConnection("jdbc:postgresql://localhost:5432/postgres",
-                            "postgres", "guessnumber");
+                    .getConnection(url, username, password);
             LOGGER.info("PostgreSql database opened successfully");
             return connection;
         } catch (Exception e) {
@@ -34,7 +42,7 @@ public class PostgresqlConnection {
     }
 
     private PostgresqlException logErrorAndReturnNewException(String message, Exception e) {
-        LOGGER.error(message + "\n" + e);
+        LOGGER.error(message, e);
         return new PostgresqlException(message);
     }
 }

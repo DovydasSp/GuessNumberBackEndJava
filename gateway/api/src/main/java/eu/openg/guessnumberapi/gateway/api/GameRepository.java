@@ -5,7 +5,7 @@ import eu.openg.guessnumberapi.domain.Game;
 public interface GameRepository {
     int saveNewGameAndReturnId(Game game);
 
-    int incrementAndReturnGuessCount(int gameId);
+    int incrementThenReturnGuessCount(int gameId);
 
     Game fetchGame(int gameId);
 }

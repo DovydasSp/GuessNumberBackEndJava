@@ -26,12 +26,8 @@ public class InMemoryGameRepo implements GameRepository {
     @Override
     public int saveNewGameAndReturnId(Game game) {
         if (nonNull(game)) {
-            Game newGame = game;
-            int id = game.getGameId();
-            if (id == 0) {
-                id = gameIdProvider.getNextId();
-                newGame = new Game(id, game.getGuessCount(), game.getActualNumber());
-            }
+            int id = gameIdProvider.getNextId();
+            Game newGame = new Game(id, game.getGuessCount(), game.getActualNumber());
             gameIdToGameMap.put(id, newGame);
             return id;
         }
@@ -39,7 +35,7 @@ public class InMemoryGameRepo implements GameRepository {
     }
 
     @Override
-    public int incrementAndReturnGuessCount(int gameId) {
+    public int incrementThenReturnGuessCount(int gameId) {
         Game game = gameIdToGameMap.get(gameId);
         int newGuessCount = game.getGuessCount() + 1;
         Game newGame = new Game(gameId, newGuessCount, game.getActualNumber());
