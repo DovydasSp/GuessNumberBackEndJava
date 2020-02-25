@@ -10,7 +10,7 @@ import java.sql.*;
 
 public class PostgresqlGameRepo implements GameRepository {
     private static final Logger LOGGER = LogManager.getLogger(PostgresqlGameRepo.class);
-    private Connection connection;
+    private final Connection connection;
 
     public PostgresqlGameRepo(PostgresqlConnection postgresqlConnection) {
         connection = postgresqlConnection.connectToPostgresqlDatabase();
