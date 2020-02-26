@@ -1,11 +1,13 @@
 package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
-import eu.openg.guessnumberapi.rest.entity.RestGuessRequestEntity;
+import eu.openg.guessnumberapi.rest.entity.RestGuessRequest;
+import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
+import eu.openg.guessnumberapi.rest.exception.GameNotFoundException;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
 import eu.openg.guessnumberapi.rest.exception.MissingParamException;
-import eu.openg.guessnumberapi.rest.exception.ServerErrorException;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
+import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +21,8 @@ import spark.Response;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GuessNumberRouteTest {
@@ -34,10 +37,12 @@ class GuessNumberRouteTest {
     private static Request request;
     @Mock
     private static Response response;
+    @Mock
+    private static RestResponseConverter restResponseConverter;
 
     @BeforeEach
     void setUp() {
-        guessNumberRoute = new GuessNumberRoute(useCaseFactory, serializer);
+        guessNumberRoute = new GuessNumberRoute(useCaseFactory, serializer, restResponseConverter);
     }
 
     @Test
@@ -45,9 +50,9 @@ class GuessNumberRouteTest {
         int gameId = 37;
         int guessNumber = 5;
 
-        mockRequest(gameId, guessNumber);
+        createMocks(gameId, guessNumber);
 
-        assertThrows(ServerErrorException.class, () -> guessNumberRoute.handle(request, response));
+        assertThrows(GameNotFoundException.class, () -> guessNumberRoute.handle(request, response));
     }
 
     @Test
@@ -61,17 +66,16 @@ class GuessNumberRouteTest {
         assertThrows(InvalidParamException.class, () -> guessNumberRoute.handle(request, response));
     }
 
-    private void mockRequest(int gameId, int guessNumber) {
-        RestGuessRequestEntity guessRequest = mock(RestGuessRequestEntity.class);
+    private void createMocks(int gameId, int guessNumber) {
+        RestGuessRequest guessRequest = mock(RestGuessRequest.class);
         when(guessRequest.getGuessNumber()).thenReturn(guessNumber);
         String body = "{\"guessNumber\":\"" + guessNumber + "\"}";
 
         when(useCaseFactory.buildGuessNumberUseCase()).thenReturn(guessNumberUseCase);
         when(request.params("id")).thenReturn(String.valueOf(gameId));
         when(request.body()).thenReturn(body);
-        when(serializer.deserialize(body, RestGuessRequestEntity.class)).thenReturn(Optional.of(guessRequest));
-        when(serializer.serialize(any())).thenThrow(ServerErrorException.class);
+        when(serializer.deserialize(body, RestGuessRequest.class)).thenReturn(Optional.of(guessRequest));
         when(guessNumberUseCase.checkGuessAndReturnResponse(gameId, guessNumber))
-                .thenReturn(new BoundaryGuessResponse("Higher", 3));
+                .thenReturn(new BoundaryGuessResponse(BoundaryGuessResultStatus.LESS, 1));
     }
 }

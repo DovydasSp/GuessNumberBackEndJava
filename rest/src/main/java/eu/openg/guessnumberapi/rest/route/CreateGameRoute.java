@@ -1,8 +1,8 @@
 package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
-import eu.openg.guessnumberapi.rest.entity.RestGameEntity;
-import eu.openg.guessnumberapi.rest.exception.RestErrorResponseEntity;
+import eu.openg.guessnumberapi.rest.entity.RestGame;
+import eu.openg.guessnumberapi.rest.exception.RestErrorResponse;
 import eu.openg.guessnumberapi.usecase.api.CreateGameUseCase;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import org.apache.logging.log4j.LogManager;
@@ -27,10 +27,11 @@ public class CreateGameRoute implements Route {
     public Object handle(Request request, Response response) {
         CreateGameUseCase interactor = useCaseFactory.buildCreateGameUseCase();
         int gameId = interactor.createGameAndReturnGameId();
+        LOGGER.info("Request accepted. Created new game with gameId: [{}]", gameId);
         String serializedGameId = serializeGameId(gameId);
         if (isNull(serializedGameId)) {
-            LOGGER.error("Failed to create game ID");
-            changeResponseOnInvalidRequest(response);
+            LOGGER.error("Failed to serialize game with gameID: [{}]", gameId);
+            changeResponseOnInvalidRequest(response, gameId);
         } else {
             response.body(serializedGameId);
         }
@@ -38,14 +39,13 @@ public class CreateGameRoute implements Route {
     }
 
     private String serializeGameId(int gameId) {
-        return serializer.serialize(new RestGameEntity(gameId, null, null))
+        return serializer.serialize(new RestGame(gameId))
                 .orElse(null);
     }
 
-    private Response changeResponseOnInvalidRequest(Response response) {
+    private void changeResponseOnInvalidRequest(Response response, int gameId) {
         response.status(500);
-        response.body(serializer.serialize(new RestErrorResponseEntity("Serialization failed."))
+        response.body(serializer.serialize(new RestErrorResponse("Serialization failed for game with gameId:" + gameId))
                 .orElse(""));
-        return response;
     }
 }

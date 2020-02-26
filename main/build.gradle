@@ -1,4 +1,6 @@
 apply plugin: 'application'
+applicationName = 'guess-number-api'
+mainClassName = "eu.openg.guessnumberapi.main.Main"
 
 dependencies {
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1"

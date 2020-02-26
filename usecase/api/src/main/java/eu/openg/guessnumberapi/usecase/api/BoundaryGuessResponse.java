@@ -1,16 +1,16 @@
 package eu.openg.guessnumberapi.usecase.api;
 
 public class BoundaryGuessResponse {
-    private final String message;
+    private final BoundaryGuessResultStatus status;
     private final int numberOfGuesses;
 
-    public BoundaryGuessResponse(String message, int numberOfGuesses) {
-        this.message = message;
+    public BoundaryGuessResponse(BoundaryGuessResultStatus status, int numberOfGuesses) {
+        this.status = status;
         this.numberOfGuesses = numberOfGuesses;
     }
 
-    public String getMessage() {
-        return message;
+    public BoundaryGuessResultStatus getStatus() {
+        return status;
     }
 
     public int getNumberOfGuesses() {

@@ -6,9 +6,11 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.openg.guessnumberapi.gateway.fake.FakeGameIdProvider;
 import eu.openg.guessnumberapi.gateway.fake.FakeNumberGateway;
-import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameEntityRepo;
+import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameRepo;
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.JacksonJSONSerializer;
+import eu.openg.guessnumberapi.rest.entity.converter.GuessResponseConverter;
+import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import eu.openg.guessnumberapi.usecase.implementation.GuessValidator;
 import eu.openg.guessnumberapi.usecase.implementation.UseCaseFactoryImpl;
@@ -30,12 +32,13 @@ class AcceptanceTestSetUp {
 
     private static SparkController setUpAndReturnSparkController() {
         UseCaseFactory factory = new UseCaseFactoryImpl(new FakeNumberGateway(), new GuessValidator(),
-                new InMemoryGameEntityRepo(), new FakeGameIdProvider());
+                new InMemoryGameRepo(new FakeGameIdProvider()));
 
         final ObjectMapper objectMapper = buildObjectMapper();
 
         JSONSerializer serializer = new JacksonJSONSerializer(objectMapper);
-        SparkController sparkController = new SparkController(factory, serializer);
+        RestResponseConverter restResponseConverter = new GuessResponseConverter();
+        SparkController sparkController = new SparkController(factory, serializer, restResponseConverter);
         sparkController.matchRoutes(0);
         return sparkController;
     }

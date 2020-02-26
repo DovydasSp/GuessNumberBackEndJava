@@ -1,16 +1,21 @@
 package eu.openg.guessnumberapi.usecase.implementation;
 
+import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
+
 public class GuessValidator {
-    public boolean isGuessCorrect(int guessedNumber, int generatedNumber){
-        return guessedNumber == generatedNumber;
+    private boolean isGuessCorrect(int guessedNumber, int actualNumber) {
+        return guessedNumber == actualNumber;
     }
 
-    public boolean isGuessBiggerThanGenerated(int guessedNumber, int generatedNumber){
-        return guessedNumber > generatedNumber;
+    private boolean isGuessBiggerThanGenerated(int guessedNumber, int actualNumber) {
+        return guessedNumber > actualNumber;
     }
 
-    public boolean isGuessNumberInBoundaries(int guessedNumber){
-//        return guessedNumber >= 1 && guessedNumber <= Constants.MAX_NUMBER_TO_GUESS;
-        return true; //TODO validate only in gw or uc + test
+    public BoundaryGuessResultStatus checkGuessAndReturnBoundaryGuessResponse(int guessNumber, int actualNumber) {
+        if (isGuessCorrect(guessNumber, actualNumber))
+            return BoundaryGuessResultStatus.CORRECT;
+        if (isGuessBiggerThanGenerated(guessNumber, actualNumber))
+            return BoundaryGuessResultStatus.LESS;
+        return BoundaryGuessResultStatus.MORE;
     }
 }
