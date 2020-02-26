@@ -14,8 +14,8 @@ public class GuessResponseConverter implements RestResponseConverter {
         if (isNull(guessResponse))
             return null;
         return Optional.of(guessResponse.getStatus())
-                .filter(st -> st != BoundaryGuessResultStatus.CORRECT)
-                .map(st -> new RestGuessResponse(status2String(st)))
+                .filter(status -> status != BoundaryGuessResultStatus.CORRECT)
+                .map(status -> new RestGuessResponse(status2String(status)))
                 .orElseGet(() -> new RestGuessResponse(guessResponse.getNumberOfGuesses()));
     }
 

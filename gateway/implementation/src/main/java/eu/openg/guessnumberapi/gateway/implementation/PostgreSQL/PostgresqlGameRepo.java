@@ -20,7 +20,7 @@ public class PostgresqlGameRepo implements GameRepository {
     private void createGameTableIfNotExists() {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(QueryUtils.CREATE_TABLE_QUERY);
-            LOGGER.info("PostgreSql database table created successfully");
+            LOGGER.info("PostgreSql database table {} created successfully", QueryUtils.TABLE_NAME);
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("CREATE TABLE failed. game table could not be created.", e);
         }
@@ -28,73 +28,73 @@ public class PostgresqlGameRepo implements GameRepository {
 
     @Override
     public int saveNewGameAndReturnId(Game game) {
-        try (PreparedStatement statement = connection.prepareStatement(QueryUtils.INSERT_GAME_QUERY)) {
-            int id = executeInsertQuery(statement, game);
-            LOGGER.info("PostgreSql new game insert successful.");
+        try (PreparedStatement statement = prepareInsertQuery(game);
+             ResultSet resultSet = statement.executeQuery()) {
+            int id = extractFieldFromResultSet(resultSet, QueryUtils.GAME_ID, game.getGameId());
+            LOGGER.info("PostgreSql new game with gameID: {} insert successful.", id);
             return id;
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("INSERT failed. New game could not be inserted.", e);
         }
     }
 
-    private int executeInsertQuery(PreparedStatement statement, Game game) throws SQLException {
+    private PreparedStatement prepareInsertQuery(Game game) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(QueryUtils.INSERT_GAME_QUERY);
         statement.setInt(1, game.getGuessCount());
         statement.setInt(2, game.getActualNumber());
-        try (ResultSet resultSet = statement.executeQuery()) {
-            return returnField(resultSet);
-        }
+        return statement;
     }
 
-    private int returnField(ResultSet resultSet) throws SQLException {
+    private int extractFieldFromResultSet(ResultSet resultSet, String resultToExtract, int gameId) throws SQLException {
         if (resultSet.next())
-            return resultSet.getInt(1);
-        throw new PostgresqlException("Failed. Statement did not return any results.");
+            return resultSet.getInt(resultToExtract);
+        throw new PostgresqlException("Failed. Statement did not return any results for game with id " + gameId);
     }
 
     @Override
     public int incrementThenReturnGuessCount(int gameId) {
-        try (PreparedStatement statement = connection.prepareStatement(QueryUtils.UPDATE_GUESSCOUNT_QUERY)) {
-            int updatedGuessCount = executeUpdateQuery(statement, gameId);
-            LOGGER.info("PostgreSql guessCount increment update successful.");
+        try (PreparedStatement statement = prepareUpdateQuery(gameId);
+             ResultSet resultSet = statement.executeQuery()) {
+            int updatedGuessCount = extractFieldFromResultSet(resultSet, QueryUtils.GUESS_COUNT, gameId);
+            LOGGER.info("PostgreSql guessCount increment to game with id {} update successful.", gameId);
             return updatedGuessCount;
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("UPDATE failed. guessCount could not be incremented", e);
         }
     }
 
-    private int executeUpdateQuery(PreparedStatement statement, int gameId) throws SQLException {
+    private PreparedStatement prepareUpdateQuery(int gameId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(QueryUtils.UPDATE_GUESSCOUNT_QUERY);
         statement.setInt(1, gameId);
-        try (ResultSet resultSet = statement.executeQuery()) {
-            return returnField(resultSet);
-        }
+        return statement;
     }
 
     @Override
     public Game fetchGame(int gameId) {
-        try (PreparedStatement statement = connection.prepareStatement(QueryUtils.SELECT_GAME_QUERY)) {
-            Game returnedGame = executeSelectQuery(statement, gameId);
-            LOGGER.info("PostgreSql game fetch successful.");
+        try (PreparedStatement statement = prepareSelectQuery(gameId);
+             ResultSet resultSet = statement.executeQuery()) {
+            Game returnedGame = returnGame(resultSet, gameId);
+            LOGGER.info("PostgreSql game with id {} fetched successfully.", gameId);
             return returnedGame;
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("SELECT failed. Game could not be fetched from database.", e);
         }
     }
 
-    private Game executeSelectQuery(PreparedStatement statement, int gameId) throws SQLException {
+    private PreparedStatement prepareSelectQuery(int gameId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(QueryUtils.SELECT_GAME_QUERY);
         statement.setInt(1, gameId);
-        try (ResultSet resultSet = statement.executeQuery()) {
-            return returnGame(resultSet);
-        }
+        return statement;
     }
 
-    private Game returnGame(ResultSet resultSet) throws SQLException {
+    private Game returnGame(ResultSet resultSet, int gameId) throws SQLException {
         if (resultSet.next()) {
             int id = resultSet.getInt(QueryUtils.GAME_ID);
             int count = resultSet.getInt(QueryUtils.GUESS_COUNT);
             int number = resultSet.getInt(QueryUtils.ACTUAL_NUMBER);
             return new Game(id, count, number);
         }
-        throw new PostgresqlException("Failed. Statement did not return any results.");
+        throw new PostgresqlException("Failed. Statement did not return game data for game with id " + gameId);
     }
 
     private PostgresqlException logErrorAndReturnNewException(String message, Exception e) {
