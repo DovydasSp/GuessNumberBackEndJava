@@ -35,7 +35,7 @@ public class GuessNumberRoute implements Route {
     public Object handle(Request request, Response response) {
         int id = extractIdParam(request);
         int guessNumber = extractAndValidateGuessNumber(request);
-        LOGGER.info("Request accepted. [gameId]: {}, [guessNumber]: {}", id, guessNumber);
+        LOGGER.info("Request accepted. gameId: [{}], guessNumber: [{}]", id, guessNumber);
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberUseCase();
         return Optional.of(interactor)
                 .map(inter -> inter.checkGuessAndReturnResponse(id, guessNumber))

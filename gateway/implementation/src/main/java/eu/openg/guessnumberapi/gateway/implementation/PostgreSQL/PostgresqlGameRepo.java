@@ -23,7 +23,7 @@ public class PostgresqlGameRepo implements GameRepository {
     private void createGameTableIfNotExists() {
         try (Statement statement = postgresqlConnectionProvider.getConnection().createStatement()) {
             statement.executeUpdate(QueryUtils.CREATE_TABLE_QUERY);
-            LOGGER.info("PostgreSql database table {} created successfully", QueryUtils.GAME_TABLE_NAME);
+            LOGGER.info("PostgreSql database table [{}] created successfully", QueryUtils.GAME_TABLE_NAME);
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("CREATE TABLE failed. game table could not be created.", e);
         }
@@ -35,7 +35,7 @@ public class PostgresqlGameRepo implements GameRepository {
                 game.getActualNumber());
              ResultSet resultSet = statement.executeQuery()) {
             int id = extractFieldFromResultSet(resultSet, QueryUtils.GAME_ID, game.getGameId());
-            LOGGER.info("PostgreSql new game with [gameID]: {} insert successful.", id);
+            LOGGER.info("PostgreSql new game with gameID: [{}] insert successful.", id);
             return id;
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("INSERT failed. New game could not be inserted.", e);
@@ -55,7 +55,7 @@ public class PostgresqlGameRepo implements GameRepository {
     private int extractFieldFromResultSet(ResultSet resultSet, String fieldToExtract, int gameId) throws SQLException {
         if (resultSet.next())
             return resultSet.getInt(fieldToExtract);
-        throw new PostgresqlException("Failed. Statement did not return any results for game with [gameId]: " + gameId);
+        throw new PostgresqlException("Failed. Statement did not return any results for game with gameId: " + gameId);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class PostgresqlGameRepo implements GameRepository {
         try (PreparedStatement statement = createQuery(QueryUtils.UPDATE_GUESS_COUNT_QUERY, gameId);
              ResultSet resultSet = statement.executeQuery()) {
             int updatedGuessCount = extractFieldFromResultSet(resultSet, QueryUtils.GUESS_COUNT, gameId);
-            LOGGER.info("PostgreSql guessCount increment to game with [gameId]: {} update successful.", gameId);
+            LOGGER.info("PostgreSql guessCount increment to game with gameId: [{}] update successful.", gameId);
             return updatedGuessCount;
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("UPDATE failed. guessCount could not be incremented", e);
@@ -75,7 +75,7 @@ public class PostgresqlGameRepo implements GameRepository {
         try (PreparedStatement statement = createQuery(QueryUtils.SELECT_GAME_QUERY, gameId);
              ResultSet resultSet = statement.executeQuery()) {
             Game returnedGame = returnGame(resultSet, gameId);
-            LOGGER.info("PostgreSql game with [gameId]: {} fetched successfully.", gameId);
+            LOGGER.info("PostgreSql game with gameId: [{}] fetched successfully.", gameId);
             return returnedGame;
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("SELECT failed. Game could not be fetched from database.", e);
@@ -89,7 +89,7 @@ public class PostgresqlGameRepo implements GameRepository {
             int number = resultSet.getInt(QueryUtils.ACTUAL_NUMBER);
             return new Game(id, count, number);
         }
-        throw new PostgresqlException("Failed. Statement did not return game data for game with [gameId]: " + gameId);
+        throw new PostgresqlException("Failed. Statement did not return game data for game with gameId: " + gameId);
     }
 
     private PostgresqlException logErrorAndReturnNewException(String message, Exception e) {

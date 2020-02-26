@@ -27,10 +27,10 @@ public class CreateGameRoute implements Route {
     public Object handle(Request request, Response response) {
         CreateGameUseCase interactor = useCaseFactory.buildCreateGameUseCase();
         int gameId = interactor.createGameAndReturnGameId();
-        LOGGER.info("Request accepted. Created new game with [gameId]: {}", gameId);
+        LOGGER.info("Request accepted. Created new game with gameId: [{}]", gameId);
         String serializedGameId = serializeGameId(gameId);
         if (isNull(serializedGameId)) {
-            LOGGER.error("Failed to serialize game with [gameID]: {}", gameId);
+            LOGGER.error("Failed to serialize game with gameID: [{}]", gameId);
             changeResponseOnInvalidRequest(response, gameId);
         } else {
             response.body(serializedGameId);
@@ -45,7 +45,7 @@ public class CreateGameRoute implements Route {
 
     private void changeResponseOnInvalidRequest(Response response, int gameId) {
         response.status(500);
-        response.body(serializer.serialize(new RestErrorResponse("Serialization failed for game with [gameId]:" + gameId))
+        response.body(serializer.serialize(new RestErrorResponse("Serialization failed for game with gameId:" + gameId))
                 .orElse(""));
     }
 }
