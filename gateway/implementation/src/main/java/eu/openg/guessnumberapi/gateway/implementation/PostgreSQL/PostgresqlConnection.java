@@ -11,17 +11,17 @@ import java.sql.SQLException;
 public class PostgresqlConnection {
     private static final Logger LOGGER = LogManager.getLogger(PostgresqlConnection.class);
     private Connection connection;
-    private static String url;
-    private static String username;
-    private static String password;
+    private String url;
+    private String username;
+    private String password;
 
     public PostgresqlConnection(String url, String username, String password) {
-        PostgresqlConnection.url = url;
-        PostgresqlConnection.username = username;
-        PostgresqlConnection.password = password;
+        this.url = url;
+        this.username = username;
+        this.password = password;
     }
 
-    Connection connectToPostgresqlDatabase() {
+    Connection openConnection() {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager

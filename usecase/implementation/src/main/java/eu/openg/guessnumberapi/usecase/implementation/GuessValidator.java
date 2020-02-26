@@ -3,11 +3,11 @@ package eu.openg.guessnumberapi.usecase.implementation;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 
 public class GuessValidator {
-    public boolean isGuessCorrect(int guessedNumber, int actualNumber) {
+    private boolean isGuessCorrect(int guessedNumber, int actualNumber) {
         return guessedNumber == actualNumber;
     }
 
-    public boolean isGuessBiggerThanGenerated(int guessedNumber, int actualNumber) {
+    private boolean isGuessBiggerThanGenerated(int guessedNumber, int actualNumber) {
         return guessedNumber > actualNumber;
     }
 

@@ -17,13 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class GuessNumberIntegrationTest {
     private GuessNumberUseCase guessNumberUseCase;
     private GameRepository gameRepository;
+    private int id;
 
     @BeforeEach
     void setUp() {
         GuessValidator gateway = new GuessValidator();
         gameRepository = new InMemoryGameRepo(new FakeGameIdProvider());
+        id = gameRepository.saveNewGameAndReturnId(new Game(1, 1, 3));
         guessNumberUseCase = new GuessNumberInteractor(gateway, gameRepository);
-        gameRepository.saveNewGameAndReturnId(new Game(1, 1, 3));
     }
 
     @Test
@@ -43,7 +44,7 @@ class GuessNumberIntegrationTest {
 
     private void checkGuessAndReturnedResponse(int guessNumber, BoundaryGuessResultStatus expectedStatus,
                                                Integer expectedNumberOfGuesses) {
-        BoundaryGuessResponse guessResponse = guessNumberUseCase.checkGuessAndReturnResponse(1, guessNumber);
+        BoundaryGuessResponse guessResponse = guessNumberUseCase.checkGuessAndReturnResponse(id, guessNumber);
         assertEquals(expectedStatus, guessResponse.getStatus());
         assertEquals(expectedNumberOfGuesses, guessResponse.getNumberOfGuesses());
     }

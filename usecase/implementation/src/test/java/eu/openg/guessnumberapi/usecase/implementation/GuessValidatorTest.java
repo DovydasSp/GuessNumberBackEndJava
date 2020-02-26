@@ -1,10 +1,10 @@
 package eu.openg.guessnumberapi.usecase.implementation;
 
+import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GuessValidatorTest {
     private GuessValidator guessValidator;
@@ -16,13 +16,19 @@ class GuessValidatorTest {
 
     @Test
     void isGuessCorrect() {
-        assertTrue(guessValidator.isGuessCorrect(10,10));
-        assertFalse(guessValidator.isGuessCorrect(1,10));
+        assertEquals(guessValidator.checkGuessAndReturnBoundaryGuessResponse(9, 9),
+                BoundaryGuessResultStatus.CORRECT);
     }
 
     @Test
     void isGuessBiggerThanGenerated() {
-        assertTrue(guessValidator.isGuessBiggerThanGenerated(10,9));
-        assertFalse(guessValidator.isGuessBiggerThanGenerated(9,10));
+        assertEquals(guessValidator.checkGuessAndReturnBoundaryGuessResponse(10, 9),
+                BoundaryGuessResultStatus.LESS);
+    }
+
+    @Test
+    void isGuessLowerThanGenerated() {
+        assertEquals(guessValidator.checkGuessAndReturnBoundaryGuessResponse(8, 9),
+                BoundaryGuessResultStatus.MORE);
     }
 }

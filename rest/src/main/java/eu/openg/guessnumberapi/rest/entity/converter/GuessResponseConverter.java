@@ -13,11 +13,10 @@ public class GuessResponseConverter implements RestResponseConverter {
     public RestGuessResponse convert(BoundaryGuessResponse guessResponse) {
         if (isNull(guessResponse))
             return null;
-        BoundaryGuessResultStatus status = guessResponse.getStatus();
-        if (status == BoundaryGuessResultStatus.CORRECT)
-            return new RestGuessResponse(guessResponse.getNumberOfGuesses());
-        else
-            return new RestGuessResponse(status2String(status));
+        return Optional.of(guessResponse.getStatus())
+                .filter(st -> st != BoundaryGuessResultStatus.CORRECT)
+                .map(st -> new RestGuessResponse(status2String(st)))
+                .orElseGet(() -> new RestGuessResponse(guessResponse.getNumberOfGuesses()));
     }
 
     private String status2String(BoundaryGuessResultStatus status) {

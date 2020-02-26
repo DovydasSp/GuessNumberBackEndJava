@@ -28,10 +28,11 @@ class GuessNumberAcceptanceTest extends AcceptanceTestSetUp {
     }
 
     private HttpResponse<String> createNewGameAndSendGuess(int guessNumber) {
-        Unirest.post("http://localhost:" + getPort() + RouteConstants.GAMES_PATH).asString();
+        String url = "http://localhost:" + getPort() + RouteConstants.GAMES_PATH;
+        Unirest.post(url).asString();
 
         return Unirest
-                .post("http://localhost:" + getPort() + RouteConstants.GAMES_PATH + "/" + 10 + "/guesses")
+                .post(url + "/" + 10 + "/guesses")
                 .body("{\"guessNumber\":\"" + guessNumber + "\"}").asString();
     }
 }

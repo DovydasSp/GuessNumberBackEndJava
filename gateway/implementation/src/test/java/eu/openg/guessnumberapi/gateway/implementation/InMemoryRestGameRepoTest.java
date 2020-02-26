@@ -38,27 +38,21 @@ class InMemoryRestGameRepoTest {
     }
 
     @Test
-    void saveNewEntityWithSameId() {
-        Game newGame = new Game(game.getGameId(), 3, 4);
-        gameRepo.saveNewGameAndReturnId(newGame);
-        assertEquals(gameRepo.fetchGame(newGame.getGameId()), newGame);
-    }
-
-    @Test
     void saveNewEntityWithNewId() {
-        Game newGame = new Game(3, 3, 4);
-        gameRepo.saveNewGameAndReturnId(newGame);
-        assertEquals(gameRepo.fetchGame(newGame.getGameId()), newGame);
+        when(gameIdProvider.getNextId()).thenReturn(100);
+        Game newGame = new Game(0, 3, 4);
+        int newId = gameRepo.saveNewGameAndReturnId(newGame);
+        Game fetchedGame = gameRepo.fetchGame(newId);
+        assertEquals(newGame.getActualNumber(), fetchedGame.getActualNumber());
+        assertEquals(newGame.getGuessCount(), fetchedGame.getGuessCount());
     }
 
     @Test
-    void saveNewEntityWithId0() {
-        when(gameIdProvider.getNextId()).thenReturn(1);
-        Game newGame = new Game(0, 3, 4);
-        int id = gameRepo.saveNewGameAndReturnId(newGame);
-        Game entity = gameRepo.fetchGame(id);
-        assertEquals(entity.getGuessCount(), newGame.getGuessCount());
-        assertEquals(entity.getActualNumber(), newGame.getActualNumber());
+    void incrementGuessCount() {
+        int oldGuessCount = game.getGuessCount();
+        int newGuessCount = gameRepo.incrementThenReturnGuessCount(game.getGameId());
+        assertEquals(newGuessCount, gameRepo.fetchGame(game.getGameId()).getGuessCount());
+        assertEquals(oldGuessCount + 1, newGuessCount);
     }
 
     @Test

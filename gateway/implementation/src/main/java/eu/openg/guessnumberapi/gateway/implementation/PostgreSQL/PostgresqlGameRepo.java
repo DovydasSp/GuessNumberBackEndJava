@@ -13,7 +13,7 @@ public class PostgresqlGameRepo implements GameRepository {
     private final Connection connection;
 
     public PostgresqlGameRepo(PostgresqlConnection postgresqlConnection) {
-        connection = postgresqlConnection.connectToPostgresqlDatabase();
+        connection = postgresqlConnection.openConnection();
         createGameTableIfNotExists();
     }
 
@@ -41,13 +41,13 @@ public class PostgresqlGameRepo implements GameRepository {
         statement.setInt(1, game.getGuessCount());
         statement.setInt(2, game.getActualNumber());
         try (ResultSet resultSet = statement.executeQuery()) {
-            return returnField(resultSet, QueryUtils.GAME_ID);
+            return returnField(resultSet);
         }
     }
 
-    private int returnField(ResultSet resultSet, String fieldToReturn) throws SQLException {
+    private int returnField(ResultSet resultSet) throws SQLException {
         if (resultSet.next())
-            return resultSet.getInt(fieldToReturn);
+            return resultSet.getInt(1);
         throw new PostgresqlException("Failed. Statement did not return any results.");
     }
 
@@ -65,7 +65,7 @@ public class PostgresqlGameRepo implements GameRepository {
     private int executeUpdateQuery(PreparedStatement statement, int gameId) throws SQLException {
         statement.setInt(1, gameId);
         try (ResultSet resultSet = statement.executeQuery()) {
-            return returnField(resultSet, QueryUtils.GAME_ID);
+            return returnField(resultSet);
         }
     }
 
@@ -73,7 +73,7 @@ public class PostgresqlGameRepo implements GameRepository {
     public Game fetchGame(int gameId) {
         try (PreparedStatement statement = connection.prepareStatement(QueryUtils.SELECT_GAME_QUERY)) {
             Game returnedGame = executeSelectQuery(statement, gameId);
-            LOGGER.info("PostgreSql guessCount increment update successful.");
+            LOGGER.info("PostgreSql game fetch successful.");
             return returnedGame;
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("SELECT failed. Game could not be fetched from database.", e);
@@ -98,7 +98,7 @@ public class PostgresqlGameRepo implements GameRepository {
     }
 
     private PostgresqlException logErrorAndReturnNewException(String message, Exception e) {
-        LOGGER.error(message + "\n" + e);
+        LOGGER.error(message, e);
         return new PostgresqlException(message);
     }
 }

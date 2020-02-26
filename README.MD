@@ -18,6 +18,9 @@ $ git clone https://github.com/DovydasSp/GuessNumberBackEndJava
 # Go into the repository
 $ cd GuessNumberBackEndJava
 
+# Create docker postgresql container
+$ docker run --name postgresql-guessnumber -e POSTGRES_PASSWORD=guessnumber -d -p 5432:5432 -v ./postgresql postgres
+
 # Build project
 $ ./gradlew installDist
 

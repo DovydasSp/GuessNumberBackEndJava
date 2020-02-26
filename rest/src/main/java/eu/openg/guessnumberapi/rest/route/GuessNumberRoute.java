@@ -3,7 +3,7 @@ package eu.openg.guessnumberapi.rest.route;
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.RestGuessRequest;
 import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
-import eu.openg.guessnumberapi.rest.exception.GameNotFountException;
+import eu.openg.guessnumberapi.rest.exception.GameNotFoundException;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
 import eu.openg.guessnumberapi.rest.exception.MissingParamException;
 import eu.openg.guessnumberapi.rest.exception.ServerErrorException;
@@ -42,7 +42,7 @@ public class GuessNumberRoute implements Route {
                 .map(restResponseConverter::convert)
                 .map(result -> serializeAndSetResponse(response, result))
                 .map(Response::body)
-                .orElseThrow(() -> new GameNotFountException(id));
+                .orElseThrow(() -> new GameNotFoundException(id));
     }
 
     private int extractIdParam(Request request) {
