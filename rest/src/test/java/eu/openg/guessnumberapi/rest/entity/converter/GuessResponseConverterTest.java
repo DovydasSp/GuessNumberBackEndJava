@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GuessResponseConverterTest {
     private GuessResponseConverter guessResponseConverter;
+    private static final int GUESS_COUNT = 10;
 
     @BeforeEach
     void setUp() {
@@ -17,23 +18,22 @@ class GuessResponseConverterTest {
 
     @Test
     void convertCorrectGuessResponse() {
-        convertGuessResponse(null, 10);
+        convertGuessResponse(BoundaryGuessResultStatus.CORRECT, null, GUESS_COUNT);
     }
 
     @Test
     void convertHigherGuessResponse() {
-        convertGuessResponse(BoundaryGuessResultStatus.LESS, null);
+        convertGuessResponse(BoundaryGuessResultStatus.LESS, BoundaryGuessResultStatus.LESS.toString(), null);
     }
 
     @Test
     void convertLowerGuessResponse() {
-        convertGuessResponse(BoundaryGuessResultStatus.MORE, null);
+        convertGuessResponse(BoundaryGuessResultStatus.MORE, BoundaryGuessResultStatus.MORE.toString(), null);
     }
 
-    private void convertGuessResponse(BoundaryGuessResultStatus status, Integer guess_count) {
-        BoundaryGuessResponse guessResponse = new BoundaryGuessResponse(status, guess_count);
+    private void convertGuessResponse(BoundaryGuessResultStatus status, String statusString, Integer guess_count) {
+        BoundaryGuessResponse guessResponse = new BoundaryGuessResponse(status, GUESS_COUNT);
         assertEquals(guess_count, guessResponseConverter.convert(guessResponse).getNumberOfGuesses());
-        assertEquals(status.toString(),
-                guessResponseConverter.convert(guessResponse).getMessage());
+        assertEquals(statusString, guessResponseConverter.convert(guessResponse).getMessage());
     }
 }
