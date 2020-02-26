@@ -21,6 +21,11 @@ public class PostgresqlConnection {
         this.url = url;
         this.username = username;
         this.password = password;
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     Connection getConnection() throws SQLException {
@@ -32,9 +37,7 @@ public class PostgresqlConnection {
 
     private void openConnection() {
         try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager
-                    .getConnection(url, username, password);
+            connection = DriverManager.getConnection(url, username, password);
             LOGGER.info("PostgreSql database opened successfully");
         } catch (Exception e) {
             throw logErrorAndReturnNewException("Connection failed. Could not connect to database.", e);
