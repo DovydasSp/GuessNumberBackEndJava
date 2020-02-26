@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static java.util.Objects.isNull;
+
 public class PostgresqlConnection {
     private static final Logger LOGGER = LogManager.getLogger(PostgresqlConnection.class);
     private Connection connection;
@@ -21,13 +23,19 @@ public class PostgresqlConnection {
         this.password = password;
     }
 
-    Connection openConnection() {
+    Connection getConnection() throws SQLException {
+        if (isNull(connection) || connection.isClosed()) {
+            openConnection();
+        }
+        return connection;
+    }
+
+    private void openConnection() {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager
                     .getConnection(url, username, password);
             LOGGER.info("PostgreSql database opened successfully");
-            return connection;
         } catch (Exception e) {
             throw logErrorAndReturnNewException("Connection failed. Could not connect to database.", e);
         }

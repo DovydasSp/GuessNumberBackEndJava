@@ -6,19 +6,22 @@ import eu.openg.guessnumberapi.gateway.implementation.exception.PostgresqlExcept
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class PostgresqlGameRepo implements GameRepository {
     private static final Logger LOGGER = LogManager.getLogger(PostgresqlGameRepo.class);
-    private final Connection connection;
+    private final PostgresqlConnection postgresqlConnection;
 
     public PostgresqlGameRepo(PostgresqlConnection postgresqlConnection) {
-        connection = postgresqlConnection.openConnection();
+        this.postgresqlConnection = postgresqlConnection;
         createGameTableIfNotExists();
     }
 
     private void createGameTableIfNotExists() {
-        try (Statement statement = connection.createStatement()) {
+        try (Statement statement = postgresqlConnection.getConnection().createStatement()) {
             statement.executeUpdate(QueryUtils.CREATE_TABLE_QUERY);
             LOGGER.info("PostgreSql database table {} created successfully", QueryUtils.GAME_TABLE_NAME);
         } catch (SQLException e) {
@@ -39,7 +42,8 @@ public class PostgresqlGameRepo implements GameRepository {
     }
 
     private PreparedStatement prepareInsertQuery(Game game) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(QueryUtils.INSERT_GAME_QUERY);
+        PreparedStatement statement = postgresqlConnection.getConnection()
+                .prepareStatement(QueryUtils.INSERT_GAME_QUERY);
         statement.setInt(1, game.getGuessCount());
         statement.setInt(2, game.getActualNumber());
         return statement;
@@ -64,7 +68,8 @@ public class PostgresqlGameRepo implements GameRepository {
     }
 
     private PreparedStatement prepareUpdateQuery(int gameId) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(QueryUtils.UPDATE_GUESSCOUNT_QUERY);
+        PreparedStatement statement = postgresqlConnection.getConnection()
+                .prepareStatement(QueryUtils.UPDATE_GUESSCOUNT_QUERY);
         statement.setInt(1, gameId);
         return statement;
     }
@@ -82,7 +87,8 @@ public class PostgresqlGameRepo implements GameRepository {
     }
 
     private PreparedStatement prepareSelectQuery(int gameId) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(QueryUtils.SELECT_GAME_QUERY);
+        PreparedStatement statement = postgresqlConnection.getConnection()
+                .prepareStatement(QueryUtils.SELECT_GAME_QUERY);
         statement.setInt(1, gameId);
         return statement;
     }
