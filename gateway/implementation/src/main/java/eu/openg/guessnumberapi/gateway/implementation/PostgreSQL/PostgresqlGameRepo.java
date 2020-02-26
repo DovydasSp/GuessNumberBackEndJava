@@ -20,7 +20,7 @@ public class PostgresqlGameRepo implements GameRepository {
     private void createGameTableIfNotExists() {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(QueryUtils.CREATE_TABLE_QUERY);
-            LOGGER.info("PostgreSql database table {} created successfully", QueryUtils.TABLE_NAME);
+            LOGGER.info("PostgreSql database table {} created successfully", QueryUtils.GAME_TABLE_NAME);
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("CREATE TABLE failed. game table could not be created.", e);
         }
@@ -45,9 +45,9 @@ public class PostgresqlGameRepo implements GameRepository {
         return statement;
     }
 
-    private int extractFieldFromResultSet(ResultSet resultSet, String resultToExtract, int gameId) throws SQLException {
+    private int extractFieldFromResultSet(ResultSet resultSet, String fieldToExtract, int gameId) throws SQLException {
         if (resultSet.next())
-            return resultSet.getInt(resultToExtract);
+            return resultSet.getInt(fieldToExtract);
         throw new PostgresqlException("Failed. Statement did not return any results for game with id " + gameId);
     }
 
