@@ -15,19 +15,19 @@ class GuessValidatorTest {
     }
 
     @Test
-    void isGuessCorrect() {
+    void testCorrectGuess() {
         assertEquals(guessValidator.checkGuessAndReturnBoundaryGuessResponse(9, 9),
                 BoundaryGuessResultStatus.CORRECT);
     }
 
     @Test
-    void isGuessBiggerThanGenerated() {
+    void testBiggerThanGeneratedGuess() {
         assertEquals(guessValidator.checkGuessAndReturnBoundaryGuessResponse(10, 9),
                 BoundaryGuessResultStatus.LESS);
     }
 
     @Test
-    void isGuessLowerThanGenerated() {
+    void testLowerThanGeneratedGuess() {
         assertEquals(guessValidator.checkGuessAndReturnBoundaryGuessResponse(8, 9),
                 BoundaryGuessResultStatus.MORE);
     }

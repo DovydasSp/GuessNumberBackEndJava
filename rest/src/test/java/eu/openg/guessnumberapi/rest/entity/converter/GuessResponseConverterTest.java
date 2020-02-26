@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GuessResponseConverterTest {
-    GuessResponseConverter guessResponseConverter;
-    private static final int GUESS_COUNT = 10;
+    private GuessResponseConverter guessResponseConverter;
 
     @BeforeEach
     void setUp() {
@@ -18,24 +17,23 @@ class GuessResponseConverterTest {
 
     @Test
     void convertCorrectGuessResponse() {
-        BoundaryGuessResponse guessResponse = new BoundaryGuessResponse(BoundaryGuessResultStatus.CORRECT, GUESS_COUNT);
-        assertEquals(GUESS_COUNT, guessResponseConverter.convert(guessResponse).getNumberOfGuesses());
-        assertEquals(null, guessResponseConverter.convert(guessResponse).getMessage());
+        convertGuessResponse(null, 10);
     }
 
     @Test
     void convertHigherGuessResponse() {
-        BoundaryGuessResponse guessResponse = new BoundaryGuessResponse(BoundaryGuessResultStatus.LESS, GUESS_COUNT);
-        assertEquals(null, guessResponseConverter.convert(guessResponse).getNumberOfGuesses());
-        assertEquals(BoundaryGuessResultStatus.LESS.toString(),
-                guessResponseConverter.convert(guessResponse).getMessage());
+        convertGuessResponse(BoundaryGuessResultStatus.LESS, null);
     }
 
     @Test
     void convertLowerGuessResponse() {
-        BoundaryGuessResponse guessResponse = new BoundaryGuessResponse(BoundaryGuessResultStatus.MORE, GUESS_COUNT);
-        assertEquals(null, guessResponseConverter.convert(guessResponse).getNumberOfGuesses());
-        assertEquals(BoundaryGuessResultStatus.MORE.toString(),
+        convertGuessResponse(BoundaryGuessResultStatus.MORE, null);
+    }
+
+    private void convertGuessResponse(BoundaryGuessResultStatus status, Integer guess_count) {
+        BoundaryGuessResponse guessResponse = new BoundaryGuessResponse(status, guess_count);
+        assertEquals(guess_count, guessResponseConverter.convert(guessResponse).getNumberOfGuesses());
+        assertEquals(status.toString(),
                 guessResponseConverter.convert(guessResponse).getMessage());
     }
 }

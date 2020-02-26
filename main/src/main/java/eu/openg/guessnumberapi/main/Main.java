@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
 import eu.openg.guessnumberapi.gateway.implementation.AtomicGameIdProvider;
 import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameRepo;
-import eu.openg.guessnumberapi.gateway.implementation.PostgreSQL.PostgresqlConnection;
+import eu.openg.guessnumberapi.gateway.implementation.PostgreSQL.PostgresqlConnectionProvider;
 import eu.openg.guessnumberapi.gateway.implementation.PostgreSQL.PostgresqlGameRepo;
 import eu.openg.guessnumberapi.gateway.implementation.RandomNumberGateway;
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
@@ -23,10 +23,10 @@ import static java.util.Objects.nonNull;
 public class Main {
     private static SparkController sparkController;
     private static GameRepository gameRepository;
-    private static PostgresqlConnection postgresqlConnection;
+    private static PostgresqlConnectionProvider postgresqlConnectionProvider;
 
     public static void main(String[] args) {
-        postgresqlConnection = new PostgresqlConnection(Config.POSTGRES_URL, Config.POSTGRES_USERNAME,
+        postgresqlConnectionProvider = new PostgresqlConnectionProvider(Config.POSTGRES_URL, Config.POSTGRES_USERNAME,
                 Config.POSTGRES_PASSWORD);
         gameRepository = initGameRepository();
         UseCaseFactory factory = new UseCaseFactoryImpl(new RandomNumberGateway(), new GuessValidator(), gameRepository);
@@ -42,7 +42,7 @@ public class Main {
         if (nonNull(sparkController))
             sparkController.stop();
         if (nonNull(gameRepository))
-            postgresqlConnection.closeConnection();
+            postgresqlConnectionProvider.closeConnection();
     }
 
     private static JSONSerializer createSerializer() {
@@ -54,7 +54,7 @@ public class Main {
 
     private static GameRepository initGameRepository() {
         if (Config.USE_POSTGRESQL_DB)
-            return new PostgresqlGameRepo(postgresqlConnection);
+            return new PostgresqlGameRepo(postgresqlConnectionProvider);
         else
             return new InMemoryGameRepo(new AtomicGameIdProvider());
     }

@@ -10,21 +10,22 @@ import java.sql.SQLException;
 
 import static java.util.Objects.isNull;
 
-public class PostgresqlConnection {
-    private static final Logger LOGGER = LogManager.getLogger(PostgresqlConnection.class);
+public class PostgresqlConnectionProvider {
+    private static final Logger LOGGER = LogManager.getLogger(PostgresqlConnectionProvider.class);
     private Connection connection;
     private String url;
     private String username;
     private String password;
 
-    public PostgresqlConnection(String url, String username, String password) {
+    public PostgresqlConnectionProvider(String url, String username, String password) {
         this.url = url;
         this.username = username;
         this.password = password;
+        String driverClass = "org.postgresql.Driver";
         try {
-            Class.forName("org.postgresql.Driver");
+            Class.forName(driverClass);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw logErrorAndReturnNewException("Class " + driverClass + " was not found.", e);
         }
     }
 
