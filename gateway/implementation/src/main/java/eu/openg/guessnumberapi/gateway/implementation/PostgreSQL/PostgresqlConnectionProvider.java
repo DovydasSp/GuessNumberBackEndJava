@@ -21,6 +21,10 @@ public class PostgresqlConnectionProvider {
         this.url = url;
         this.username = username;
         this.password = password;
+        initDriverClass();
+    }
+
+    private void initDriverClass() {
         String driverClass = "org.postgresql.Driver";
         try {
             Class.forName(driverClass);
