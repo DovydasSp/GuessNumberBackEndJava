@@ -69,7 +69,7 @@ public class PostgresqlGameRepo implements GameRepository {
 
     private PreparedStatement prepareUpdateQuery(int gameId) throws SQLException {
         PreparedStatement statement = postgresqlConnection.getConnection()
-                .prepareStatement(QueryUtils.UPDATE_GUESSCOUNT_QUERY);
+                .prepareStatement(QueryUtils.UPDATE_GUESS_COUNT_QUERY);
         statement.setInt(1, gameId);
         return statement;
     }

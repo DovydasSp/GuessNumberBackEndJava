@@ -14,7 +14,7 @@ class QueryUtils {
     static final String INSERT_GAME_QUERY = "INSERT INTO " + GAME_TABLE_NAME + " (" + GUESS_COUNT + ","
             + ACTUAL_NUMBER + ") VALUES (?,?) RETURNING " + GAME_ID + ";";
 
-    static final String UPDATE_GUESSCOUNT_QUERY = "UPDATE " + GAME_TABLE_NAME + " SET " + GUESS_COUNT + " = "
+    static final String UPDATE_GUESS_COUNT_QUERY = "UPDATE " + GAME_TABLE_NAME + " SET " + GUESS_COUNT + " = "
             + GUESS_COUNT + " + 1 WHERE " + GAME_ID + " = ? RETURNING " + GUESS_COUNT + ";";
 
     static final String SELECT_GAME_QUERY = "SELECT * FROM " + GAME_TABLE_NAME + " WHERE " + GAME_ID + " = ?;";
