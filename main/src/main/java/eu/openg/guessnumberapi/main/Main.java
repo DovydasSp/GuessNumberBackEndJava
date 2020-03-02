@@ -17,6 +17,7 @@ import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import eu.openg.guessnumberapi.usecase.implementation.GuessValidator;
 import eu.openg.guessnumberapi.usecase.implementation.UseCaseFactoryImpl;
+import org.flywaydb.core.Flyway;
 
 import static java.util.Objects.nonNull;
 
@@ -53,9 +54,16 @@ public class Main {
     }
 
     private static GameRepository initGameRepository() {
-        if (Config.USE_POSTGRESQL_DB)
+        if (Config.USE_POSTGRESQL_DB) {
+            performAvailableDatabaseMigrations();
             return new PostgresqlGameRepo(postgresqlConnectionProvider);
-        else
+        } else
             return new InMemoryGameRepo(new AtomicGameIdProvider());
+    }
+
+    private static void performAvailableDatabaseMigrations() {
+        Flyway flyway = Flyway.configure()
+                .dataSource(Config.POSTGRES_URL, Config.POSTGRES_USERNAME, Config.POSTGRES_PASSWORD).load();
+        flyway.migrate();
     }
 }
