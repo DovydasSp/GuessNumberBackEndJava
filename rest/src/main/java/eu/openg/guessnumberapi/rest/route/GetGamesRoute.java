@@ -1,6 +1,7 @@
 package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
+import eu.openg.guessnumberapi.rest.entity.RestGame;
 import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.rest.exception.ServerErrorException;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGame;
@@ -14,16 +15,15 @@ import spark.Route;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class GetGamesRoute implements Route {
     private static final Logger LOGGER = LogManager.getLogger(GetGamesRoute.class);
     private final UseCaseFactory useCaseFactory;
     private final JSONSerializer serializer;
-    private final RestResponseConverter restResponseConverter;
+    private final RestResponseConverter<List<BoundaryGame>, List<RestGame>> restResponseConverter;
 
     public GetGamesRoute(UseCaseFactory useCaseFactory, JSONSerializer serializer,
-                         RestResponseConverter restResponseConverter) {
+                         RestResponseConverter<List<BoundaryGame>, List<RestGame>> restResponseConverter) {
         this.useCaseFactory = useCaseFactory;
         this.serializer = serializer;
         this.restResponseConverter = restResponseConverter;
@@ -40,7 +40,7 @@ public class GetGamesRoute implements Route {
     private String fetchGames() {
         return Optional.of(useCaseFactory.buildGetGamesUseCase())
                 .map(GetGamesUseCase::fetchGames)
-                .map((Function<List<BoundaryGame>, Object>) restResponseConverter::convert)
+                .map(restResponseConverter::convert)
                 .flatMap(serializer::serialize)
                 .orElseThrow(() -> new ServerErrorException("Failed to retrieve games."));
     }

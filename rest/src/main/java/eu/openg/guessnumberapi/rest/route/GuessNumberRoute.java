@@ -2,6 +2,7 @@ package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.RestGuessRequest;
+import eu.openg.guessnumberapi.rest.entity.RestGuessResponse;
 import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.rest.exception.GameNotFoundException;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
@@ -17,17 +18,16 @@ import spark.Response;
 import spark.Route;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 public class GuessNumberRoute implements Route {
     private static final Logger LOGGER = LogManager.getLogger(GuessNumberRoute.class);
     private static final String PARAM_ID = "id";
     private final UseCaseFactory useCaseFactory;
     private final JSONSerializer serializer;
-    private final RestResponseConverter restResponseConverter;
+    private final RestResponseConverter<BoundaryGuessResponse, RestGuessResponse> restResponseConverter;
 
     public GuessNumberRoute(UseCaseFactory useCaseFactory, JSONSerializer serializer,
-                            RestResponseConverter restResponseConverter) {
+                            RestResponseConverter<BoundaryGuessResponse, RestGuessResponse> restResponseConverter) {
         this.useCaseFactory = useCaseFactory;
         this.serializer = serializer;
         this.restResponseConverter = restResponseConverter;
@@ -41,7 +41,7 @@ public class GuessNumberRoute implements Route {
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberUseCase();
         return Optional.of(interactor)
                 .map(inter -> inter.checkGuessAndReturnResponse(id, guessNumber))
-                .map((Function<BoundaryGuessResponse, Object>) restResponseConverter::convert)
+                .map(restResponseConverter::convert)
                 .map(result -> serializeAndSetResponse(response, result))
                 .map(Response::body)
                 .orElseThrow(() -> new GameNotFoundException(id));
