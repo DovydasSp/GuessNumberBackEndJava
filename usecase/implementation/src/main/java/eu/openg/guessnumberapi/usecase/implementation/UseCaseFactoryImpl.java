@@ -3,6 +3,7 @@ package eu.openg.guessnumberapi.usecase.implementation;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
 import eu.openg.guessnumberapi.gateway.api.NumberGateway;
 import eu.openg.guessnumberapi.usecase.api.CreateGameUseCase;
+import eu.openg.guessnumberapi.usecase.api.GetGamesUseCase;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 
@@ -25,5 +26,9 @@ public class UseCaseFactoryImpl implements UseCaseFactory {
 
     public GuessNumberUseCase buildGuessNumberUseCase() {
         return new GuessNumberInteractor(guessValidator, gameRepository);
+    }
+
+    public GetGamesUseCase buildGetGamesUseCase() {
+        return new GetGamesInteractor(gameRepository);
     }
 }

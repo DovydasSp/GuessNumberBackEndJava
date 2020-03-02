@@ -9,7 +9,6 @@ import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 import java.util.Optional;
 
 public class GuessNumberInteractor implements GuessNumberUseCase {
-
     private final GuessValidator gateway;
     private final GameRepository gameRepository;
 

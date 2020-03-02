@@ -7,6 +7,7 @@ import eu.openg.guessnumberapi.rest.exception.GameNotFoundException;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
 import eu.openg.guessnumberapi.rest.exception.MissingParamException;
 import eu.openg.guessnumberapi.rest.exception.ServerErrorException;
+import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +17,7 @@ import spark.Response;
 import spark.Route;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 public class GuessNumberRoute implements Route {
     private static final Logger LOGGER = LogManager.getLogger(GuessNumberRoute.class);
@@ -39,7 +41,7 @@ public class GuessNumberRoute implements Route {
         GuessNumberUseCase interactor = useCaseFactory.buildGuessNumberUseCase();
         return Optional.of(interactor)
                 .map(inter -> inter.checkGuessAndReturnResponse(id, guessNumber))
-                .map(restResponseConverter::convert)
+                .map((Function<BoundaryGuessResponse, Object>) restResponseConverter::convert)
                 .map(result -> serializeAndSetResponse(response, result))
                 .map(Response::body)
                 .orElseThrow(() -> new GameNotFoundException(id));
