@@ -1,1 +1,1 @@
-alter table game add COLUMN version int;
+ALTER TABLE game ADD COLUMN version INT;
