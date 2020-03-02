@@ -17,12 +17,16 @@ public class GetGamesInteractor implements GetGamesUseCase {
 
     @Override
     public List<BoundaryGame> fetchGames() {
-        List<Game> games = gameRepository.fetchGames();
-        return convert(games);
+        return convert(gameRepository.fetchGames());
     }
 
     private List<BoundaryGame> convert(List<Game> games) {
-        return games.stream().map(game -> new BoundaryGame(game.getGameId(), game.getGuessCount(), game.getActualNumber()))
+        return games.stream()
+                .map(this::gameToBoundaryGame)
                 .collect(Collectors.toList());
+    }
+
+    private BoundaryGame gameToBoundaryGame(Game game) {
+        return new BoundaryGame(game.getGameId(), game.getGuessCount(), game.getActualNumber());
     }
 }

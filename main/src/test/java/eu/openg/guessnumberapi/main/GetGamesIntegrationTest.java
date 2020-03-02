@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GetGamesIntegrationTest {
@@ -32,10 +31,6 @@ class GetGamesIntegrationTest {
 
     @Test
     void getGamesWhenDbIsNotEmpty() {
-        List<BoundaryGame> expectedBoundaryGames = asList(
-                new BoundaryGame(22, 2, 22),
-                new BoundaryGame(11, 1, 11));
-
         Map<Integer, Game> storage = new HashMap<>();
         storage.put(22, new Game(22, 2, 22));
         storage.put(11, new Game(11, 1, 11));
@@ -46,11 +41,13 @@ class GetGamesIntegrationTest {
 
         List<BoundaryGame> actualBoundaryGames = getGamesUseCase.fetchGames();
 
-        assertEquals(expectedBoundaryGames.get(0).getActualNumber(), actualBoundaryGames.get(0).getActualNumber());
-        assertEquals(expectedBoundaryGames.get(1).getActualNumber(), actualBoundaryGames.get(1).getActualNumber());
-        assertEquals(expectedBoundaryGames.get(0).getGameId(), actualBoundaryGames.get(0).getGameId());
-        assertEquals(expectedBoundaryGames.get(1).getGameId(), actualBoundaryGames.get(1).getGameId());
-        assertEquals(expectedBoundaryGames.get(0).getGuessCount(), actualBoundaryGames.get(0).getGuessCount());
-        assertEquals(expectedBoundaryGames.get(1).getGuessCount(), actualBoundaryGames.get(1).getGuessCount());
+        assertGame(storage.get(22), actualBoundaryGames.get(0));
+        assertGame(storage.get(11), actualBoundaryGames.get(1));
+    }
+
+    void assertGame(Game expected, BoundaryGame actual) {
+        assertEquals(expected.getActualNumber(), actual.getActualNumber());
+        assertEquals(expected.getGameId(), actual.getGameId());
+        assertEquals(expected.getGuessCount(), actual.getGuessCount());
     }
 }

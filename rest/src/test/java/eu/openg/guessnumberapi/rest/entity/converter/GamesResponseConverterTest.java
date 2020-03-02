@@ -22,15 +22,13 @@ class GamesResponseConverterTest {
 
     @Test
     void convertNullList() {
-        List<BoundaryGame> boundaryGames = null;
-        List<RestGame> restGames = gamesResponseConverter.convert(boundaryGames);
+        List<RestGame> restGames = gamesResponseConverter.convert(null);
         assertTrue(restGames.isEmpty());
     }
 
     @Test
     void convertEmptyList() {
-        List<BoundaryGame> boundaryGames = new ArrayList<>();
-        List<RestGame> restGames = gamesResponseConverter.convert(boundaryGames);
+        List<RestGame> restGames = gamesResponseConverter.convert(new ArrayList<>());
         assertTrue(restGames.isEmpty());
     }
 
@@ -40,17 +38,15 @@ class GamesResponseConverterTest {
                 new BoundaryGame(11, 1, 11),
                 new BoundaryGame(22, 2, 22));
 
-        List<RestGame> expectedRestGames = asList(
-                new RestGame(11, 1, 11),
-                new RestGame(22, 2, 22));
-
         List<RestGame> actualRestGames = gamesResponseConverter.convert(boundaryGames);
 
-        assertEquals(expectedRestGames.get(0).returnActualNumber(), actualRestGames.get(0).returnActualNumber());
-        assertEquals(expectedRestGames.get(1).returnActualNumber(), actualRestGames.get(1).returnActualNumber());
-        assertEquals(expectedRestGames.get(0).returnGameId(), actualRestGames.get(0).returnGameId());
-        assertEquals(expectedRestGames.get(1).returnGameId(), actualRestGames.get(1).returnGameId());
-        assertEquals(expectedRestGames.get(0).returnGuessCount(), actualRestGames.get(0).returnGuessCount());
-        assertEquals(expectedRestGames.get(1).returnGuessCount(), actualRestGames.get(1).returnGuessCount());
+        assertGame(boundaryGames.get(0), actualRestGames.get(0));
+        assertGame(boundaryGames.get(1), actualRestGames.get(1));
+    }
+
+    void assertGame(BoundaryGame expected, RestGame actual) {
+        assertEquals(expected.getActualNumber(), actual.returnActualNumber());
+        assertEquals(expected.getGameId(), actual.returnGameId());
+        assertEquals(expected.getGuessCount(), actual.returnGuessCount());
     }
 }

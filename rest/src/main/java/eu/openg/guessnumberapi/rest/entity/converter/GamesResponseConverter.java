@@ -13,7 +13,12 @@ public class GamesResponseConverter implements RestResponseConverter<List<Bounda
     public List<RestGame> convert(List<BoundaryGame> boundaryGames) {
         if (isNull(boundaryGames))
             return Collections.emptyList();
-        return boundaryGames.stream().map(boundaryGame -> new RestGame(boundaryGame.getGameId(),
-                boundaryGame.getGuessCount(), boundaryGame.getActualNumber())).collect(Collectors.toList());
+        return boundaryGames.stream()
+                .map(this::boundaryToRestGame)
+                .collect(Collectors.toList());
+    }
+
+    private RestGame boundaryToRestGame(BoundaryGame boundaryGame) {
+        return new RestGame(boundaryGame.getGameId(), boundaryGame.getGuessCount(), boundaryGame.getActualNumber());
     }
 }

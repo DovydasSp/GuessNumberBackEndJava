@@ -15,10 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import spark.Request;
 import spark.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
-import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
@@ -39,9 +40,9 @@ class GetGamesRouteTest {
     private static Response response;
     @Mock
     private static RestResponseConverter restResponseConverter;
-    private List<BoundaryGame> boundaryGames;
-    private List<RestGame> restGames;
-    private String responseBody;
+    private List<BoundaryGame> boundaryGames = new ArrayList<>();
+    private List<RestGame> restGames = new ArrayList<>();
+    private String responseBody = "";
 
     @BeforeEach
     void setUp() {
@@ -50,7 +51,10 @@ class GetGamesRouteTest {
 
     @Test
     void returnGamesWhenDbIsNotEmpty() {
-        assignVariables();
+        int gamesCount = 4;
+        assignResponseBody(gamesCount);
+        assignRestGames(gamesCount);
+        assignBoundaryGames(gamesCount);
         when(useCaseFactory.buildGetGamesUseCase()).thenReturn(getGamesUseCase);
         when(getGamesUseCase.fetchGames()).thenReturn(boundaryGames);
         when(serializer.serialize(anyList())).thenReturn(Optional.of(responseBody));
@@ -62,26 +66,20 @@ class GetGamesRouteTest {
     @Test
     void returnGamesWhenDbIsEmpty() {
         when(useCaseFactory.buildGetGamesUseCase()).thenReturn(getGamesUseCase);
-        when(getGamesUseCase.fetchGames()).thenReturn(null);
         assertThrows(ServerErrorException.class, () -> getGamesRoute.handle(request, response));
     }
 
-    private void assignVariables() {
-        boundaryGames = asList(
-                new BoundaryGame(11, 1, 11),
-                new BoundaryGame(22, 2, 22),
-                new BoundaryGame(33, 3, 33),
-                new BoundaryGame(44, 4, 44));
+    private void assignBoundaryGames(int gamesCount) {
+        IntStream.range(1, gamesCount + 1).forEach(i -> boundaryGames.add(new BoundaryGame(i, i, i)));
+    }
 
-        restGames = asList(
-                new RestGame(11, 1, 11),
-                new RestGame(22, 2, 22),
-                new RestGame(33, 3, 33),
-                new RestGame(44, 4, 44));
+    private void assignRestGames(int gamesCount) {
+        IntStream.range(1, gamesCount + 1).forEach(i -> restGames.add(new RestGame(i, i, i)));
+    }
 
-        responseBody = "{\"gameId\":11,\"guessCount\":1,\"actualNumber\":11}," +
-                "{\"gameId\":22,\"guessCount\":2,\"actualNumber\":22}," +
-                "{\"gameId\":33,\"guessCount\":3,\"actualNumber\":33}," +
-                "{\"gameId\":44,\"guessCount\":4,\"actualNumber\":44}";
+    private void assignResponseBody(int gamesCount) {
+        IntStream.range(1, gamesCount)
+                .forEach(i -> responseBody += "{\"gameId\":" + i + ",\"guessCount\":" + i + ",\"actualNumber\":" + i + "},");
+        responseBody += "{\"gameId\":" + gamesCount + ",\"guessCount\":" + gamesCount + ",\"actualNumber\":" + gamesCount + "}";
     }
 }

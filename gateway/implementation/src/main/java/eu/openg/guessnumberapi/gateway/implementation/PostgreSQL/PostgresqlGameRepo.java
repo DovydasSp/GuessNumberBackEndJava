@@ -103,15 +103,15 @@ public class PostgresqlGameRepo implements GameRepository {
     public List<Game> fetchGames() {
         try (PreparedStatement statement = createQuery(QueryUtils.SELECT_GAMES_QUERY);
              ResultSet resultSet = statement.executeQuery()) {
-            List<Game> returnedGames = returnGames(resultSet);
-            LOGGER.info("PostgreSql games fetched successfully.");
+            List<Game> returnedGames = putGamesToListFromResultSet(resultSet);
+            LOGGER.info("PostgreSql [{}] games fetched successfully.", returnedGames.size());
             return returnedGames;
         } catch (SQLException e) {
             throw logErrorAndReturnNewException("SELECT failed. Games could not be fetched from database.", e);
         }
     }
 
-    private List<Game> returnGames(ResultSet resultSet) throws SQLException {
+    private List<Game> putGamesToListFromResultSet(ResultSet resultSet) throws SQLException {
         ArrayList<Game> games = new ArrayList();
         while (resultSet.next()) {
             int id = resultSet.getInt(QueryUtils.GAME_ID);

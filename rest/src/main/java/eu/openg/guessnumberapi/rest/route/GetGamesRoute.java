@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class GetGamesRoute implements Route {
-    private static final Logger LOGGER = LogManager.getLogger(CreateGameRoute.class);
+    private static final Logger LOGGER = LogManager.getLogger(GetGamesRoute.class);
     private final UseCaseFactory useCaseFactory;
     private final JSONSerializer serializer;
     private final RestResponseConverter restResponseConverter;
@@ -31,7 +31,8 @@ public class GetGamesRoute implements Route {
 
     @Override
     public Object handle(Request request, Response response) {
-        LOGGER.info("Get games request accepted. Fetching games.");
+        LOGGER.info("Get games request accepted from host: {}. User-Agent: {}. Fetching games.",
+                request.host(), request.userAgent());
         fillSuccessfulResponse(response, fetchGames());
         return response.body();
     }
