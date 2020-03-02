@@ -11,15 +11,19 @@ class GetGamesAcceptanceTest extends AcceptanceTestSetUp {
 
     @Test
     void getGamesFromDb() {
-        HttpResponse<String> response = sendGetGamesRequest();
+        String url = "http://localhost:" + getPort() + RouteConstants.GAMES_PATH;
+        postNewGame(url);
+        HttpResponse<String> response = sendGetGamesRequest(url);
         assertThatJson(response.getBody()).node("[0]").node("gameId").isEqualTo(10);
         assertThatJson(response.getBody()).node("[0]").node("guessCount").isEqualTo(0);
         assertThatJson(response.getBody()).node("[0]").node("guessCount").isNumber();
     }
 
-    private HttpResponse<String> sendGetGamesRequest() {
-        String url = "http://localhost:" + getPort() + RouteConstants.GAMES_PATH;
-        Unirest.post(url).asString();
+    private HttpResponse<String> sendGetGamesRequest(String url) {
         return Unirest.get(url).asString();
+    }
+
+    private void postNewGame(String url) {
+        Unirest.post(url).asString();
     }
 }

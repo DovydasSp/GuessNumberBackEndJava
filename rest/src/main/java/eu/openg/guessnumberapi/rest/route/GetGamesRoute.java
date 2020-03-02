@@ -31,7 +31,7 @@ public class GetGamesRoute implements Route {
 
     @Override
     public Object handle(Request request, Response response) {
-        LOGGER.info("Get games request accepted from host: {}. User-Agent: {}. Fetching games.",
+        LOGGER.info("Get games request accepted from host: [{}]. User-Agent: [{}]. Fetching games.",
                 request.host(), request.userAgent());
         fillSuccessfulResponse(response, fetchGames());
         return response.body();
