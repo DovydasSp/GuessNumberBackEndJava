@@ -1,1 +1,1 @@
-alter table game drop COLUMN IF EXISTS version;
+ALTER TABLE game DROP COLUMN IF EXISTS version;
