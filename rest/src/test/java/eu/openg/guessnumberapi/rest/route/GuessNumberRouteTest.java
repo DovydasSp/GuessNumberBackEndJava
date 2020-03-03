@@ -2,6 +2,7 @@ package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.RestGuessRequest;
+import eu.openg.guessnumberapi.rest.entity.RestGuessResponse;
 import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.rest.exception.GameNotFoundException;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
@@ -38,7 +39,7 @@ class GuessNumberRouteTest {
     @Mock
     private static Response response;
     @Mock
-    private static RestResponseConverter restResponseConverter;
+    private static RestResponseConverter<BoundaryGuessResponse, RestGuessResponse> restResponseConverter;
 
     @BeforeEach
     void setUp() {

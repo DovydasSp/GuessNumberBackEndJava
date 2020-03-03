@@ -22,8 +22,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GetGamesRouteTest {
@@ -39,7 +38,7 @@ class GetGamesRouteTest {
     @Mock
     private static Response response;
     @Mock
-    private static RestResponseConverter restResponseConverter;
+    private static RestResponseConverter<List<BoundaryGame>, List<RestGame>> restResponseConverter;
 
     @BeforeEach
     void setUp() {
@@ -65,22 +64,20 @@ class GetGamesRouteTest {
 
     private List<BoundaryGame> returnBoundaryGames(int gamesCount) {
         return IntStream.rangeClosed(1, gamesCount)
-                .mapToObj(i -> new BoundaryGame(i, i, i))
+                .mapToObj(i -> mock(BoundaryGame.class))
                 .collect(Collectors.toList());
     }
 
     private List<RestGame> returnRestGames(int gamesCount) {
         return IntStream.rangeClosed(1, gamesCount)
-                .mapToObj(i -> new RestGame(i, i, i))
+                .mapToObj(i -> mock(RestGame.class))
                 .collect(Collectors.toList());
     }
 
     private String assignResponseBody(int gamesCount) {
-        String responseBody = IntStream.rangeClosed(1, gamesCount)
-                .mapToObj(i -> "{\"gameId\":" + i + ",\"guessCount\":" + i + ",\"actualNumber\":" + i + "},")
-                .collect(Collectors.joining());
-        responseBody = responseBody.substring(0, responseBody.lastIndexOf(','));
-        return responseBody;
+        return IntStream.rangeClosed(1, gamesCount)
+                .mapToObj(i -> "{\"gameId\":" + i + ",\"guessCount\":" + i + ",\"actualNumber\":" + i + "}")
+                .collect(Collectors.joining(","));
     }
 
     private void initMocks(List<RestGame> restGames, List<BoundaryGame> boundaryGames, String responseBody) {

@@ -1,10 +1,16 @@
 package eu.openg.guessnumberapi.main;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
+import eu.openg.guessnumberapi.rest.entity.RestGame;
+import eu.openg.guessnumberapi.rest.entity.RestGuessResponse;
 import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.rest.route.*;
+import eu.openg.guessnumberapi.usecase.api.BoundaryGame;
+import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import spark.Service;
+
+import java.util.List;
 
 import static eu.openg.guessnumberapi.rest.entity.CorsHeadersProvider.CORS_HEADERS;
 
@@ -12,11 +18,12 @@ public class SparkController {
     private final UseCaseFactory factory;
     private final Service service;
     private final JSONSerializer serializer;
-    private final RestResponseConverter restResponseConverter;
-    private final RestResponseConverter restGamesConverter;
+    private final RestResponseConverter<BoundaryGuessResponse, RestGuessResponse> restResponseConverter;
+    private final RestResponseConverter<List<BoundaryGame>, List<RestGame>> restGamesConverter;
 
     public SparkController(UseCaseFactory factory, JSONSerializer serializer,
-                           RestResponseConverter restResponseConverter, RestResponseConverter restGamesConverter) {
+                           RestResponseConverter<BoundaryGuessResponse, RestGuessResponse> restResponseConverter,
+                           RestResponseConverter<List<BoundaryGame>, List<RestGame>> restGamesConverter) {
         this.factory = factory;
         this.serializer = serializer;
         this.restResponseConverter = restResponseConverter;
