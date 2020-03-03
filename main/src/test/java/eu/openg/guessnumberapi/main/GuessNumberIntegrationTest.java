@@ -2,7 +2,6 @@ package eu.openg.guessnumberapi.main;
 
 import eu.openg.guessnumberapi.domain.Game;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
-import eu.openg.guessnumberapi.gateway.fake.FakeGameIdProvider;
 import eu.openg.guessnumberapi.gateway.fake.FakeInMemoryGameRepo;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
@@ -22,7 +21,7 @@ class GuessNumberIntegrationTest {
     @BeforeEach
     void setUp() {
         GuessValidator gateway = new GuessValidator();
-        gameRepository = new FakeInMemoryGameRepo(new FakeGameIdProvider());
+        gameRepository = new FakeInMemoryGameRepo();
         id = gameRepository.saveNewGameAndReturnId(new Game(1, 1, 3));
         guessNumberUseCase = new GuessNumberInteractor(gateway, gameRepository);
     }

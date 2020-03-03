@@ -32,7 +32,7 @@ class GetGamesIntegrationTest {
         storage.put(22, new Game(22, 2, 22));
         storage.put(11, new Game(11, 1, 11));
 
-        GameRepository gameRepository = new FakeInMemoryGameRepo(new FakeGameIdProvider());
+        GameRepository gameRepository = new FakeInMemoryGameRepo();
         GetGamesUseCase getGamesUseCase = new GetGamesInteractor(gameRepository);
 
         List<BoundaryGame> actualBoundaryGames = getGamesUseCase.fetchGames();

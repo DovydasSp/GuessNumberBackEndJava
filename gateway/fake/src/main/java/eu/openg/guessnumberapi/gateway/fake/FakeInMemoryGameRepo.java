@@ -1,26 +1,12 @@
 package eu.openg.guessnumberapi.gateway.fake;
 
 import eu.openg.guessnumberapi.domain.Game;
-import eu.openg.guessnumberapi.gateway.api.GameIdProvider;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FakeInMemoryGameRepo implements GameRepository {
-    private final Map<Integer, Game> gameIdToGameMap;
-    private final GameIdProvider gameIdProvider;
-
-    public FakeInMemoryGameRepo(GameIdProvider gameIdProvider) {
-        this(new HashMap<>(), gameIdProvider);
-    }
-
-    public FakeInMemoryGameRepo(Map<Integer, Game> storage, GameIdProvider gameIdProvider) {
-        gameIdToGameMap = storage;
-        this.gameIdProvider = gameIdProvider;
-    }
 
     @Override
     public int saveNewGameAndReturnId(Game game) {
