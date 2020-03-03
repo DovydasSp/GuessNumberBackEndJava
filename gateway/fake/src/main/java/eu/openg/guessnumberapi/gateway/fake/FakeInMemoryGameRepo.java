@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FakeInMemoryGameRepo implements GameRepository {
+    public static final int GAME_ID = 1;
 
     @Override
     public int saveNewGameAndReturnId(Game game) {
-        return 1;
+        return GAME_ID;
     }
 
     @Override
@@ -20,7 +21,7 @@ public class FakeInMemoryGameRepo implements GameRepository {
 
     @Override
     public Game fetchGame(int gameId) {
-        return new Game(1, 1, 2);
+        return new Game(GAME_ID, 1, 2);
     }
 
     @Override
