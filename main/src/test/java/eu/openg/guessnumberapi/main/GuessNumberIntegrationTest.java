@@ -3,7 +3,7 @@ package eu.openg.guessnumberapi.main;
 import eu.openg.guessnumberapi.domain.Game;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
 import eu.openg.guessnumberapi.gateway.fake.FakeGameIdProvider;
-import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameRepo;
+import eu.openg.guessnumberapi.gateway.fake.FakeInMemoryGameRepo;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
@@ -22,7 +22,7 @@ class GuessNumberIntegrationTest {
     @BeforeEach
     void setUp() {
         GuessValidator gateway = new GuessValidator();
-        gameRepository = new InMemoryGameRepo(new FakeGameIdProvider());
+        gameRepository = new FakeInMemoryGameRepo(new FakeGameIdProvider());
         id = gameRepository.saveNewGameAndReturnId(new Game(1, 1, 3));
         guessNumberUseCase = new GuessNumberInteractor(gateway, gameRepository);
     }
@@ -34,12 +34,12 @@ class GuessNumberIntegrationTest {
 
     @Test
     void checkHigherGuessAndReturnedResponse() {
-        checkGuessAndReturnedResponse(5, BoundaryGuessResultStatus.LESS, 2);
+        checkGuessAndReturnedResponse(3, BoundaryGuessResultStatus.LESS, 2);
     }
 
     @Test
     void checkCorrectGuessAndReturnedResponse() {
-        checkGuessAndReturnedResponse(3, BoundaryGuessResultStatus.CORRECT, 2);
+        checkGuessAndReturnedResponse(2, BoundaryGuessResultStatus.CORRECT, 2);
     }
 
     private void checkGuessAndReturnedResponse(int guessNumber, BoundaryGuessResultStatus expectedStatus,

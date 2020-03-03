@@ -12,6 +12,6 @@ class CreateGameAcceptanceTest extends AcceptanceTestSetUp {
     void createNewGameWithId0() {
         HttpResponse<String> response = Unirest.post("http://localhost:" + getPort() + RouteConstants.GAMES_PATH).asString();
 
-        assertThatJson(response.getBody()).node("gameId").isEqualTo(10);
+        assertThatJson(response.getBody()).node("gameId").isEqualTo(1);
     }
 }

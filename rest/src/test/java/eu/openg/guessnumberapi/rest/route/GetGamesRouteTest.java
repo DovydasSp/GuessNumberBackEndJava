@@ -55,10 +55,7 @@ class GetGamesRouteTest {
         assignResponseBody(gamesCount);
         assignRestGames(gamesCount);
         assignBoundaryGames(gamesCount);
-        when(useCaseFactory.buildGetGamesUseCase()).thenReturn(getGamesUseCase);
-        when(getGamesUseCase.fetchGames()).thenReturn(boundaryGames);
-        when(serializer.serialize(anyList())).thenReturn(Optional.of(responseBody));
-        when(restResponseConverter.convert(anyList())).thenReturn(restGames);
+        createMocks();
         getGamesRoute.handle(request, response);
         verify(response).body(responseBody);
     }
@@ -70,16 +67,23 @@ class GetGamesRouteTest {
     }
 
     private void assignBoundaryGames(int gamesCount) {
-        IntStream.range(1, gamesCount + 1).forEach(i -> boundaryGames.add(new BoundaryGame(i, i, i)));
+        IntStream.rangeClosed(1, gamesCount).forEach(i -> boundaryGames.add(new BoundaryGame(i, i, i)));
     }
 
     private void assignRestGames(int gamesCount) {
-        IntStream.range(1, gamesCount + 1).forEach(i -> restGames.add(new RestGame(i, i, i)));
+        IntStream.rangeClosed(1, gamesCount).forEach(i -> restGames.add(new RestGame(i, i, i)));
     }
 
     private void assignResponseBody(int gamesCount) {
-        IntStream.range(1, gamesCount)
+        IntStream.rangeClosed(1, gamesCount)
                 .forEach(i -> responseBody += "{\"gameId\":" + i + ",\"guessCount\":" + i + ",\"actualNumber\":" + i + "},");
-        responseBody += "{\"gameId\":" + gamesCount + ",\"guessCount\":" + gamesCount + ",\"actualNumber\":" + gamesCount + "}";
+        responseBody = responseBody.substring(0, responseBody.lastIndexOf(','));
+    }
+
+    private void createMocks() {
+        when(useCaseFactory.buildGetGamesUseCase()).thenReturn(getGamesUseCase);
+        when(getGamesUseCase.fetchGames()).thenReturn(boundaryGames);
+        when(serializer.serialize(anyList())).thenReturn(Optional.of(responseBody));
+        when(restResponseConverter.convert(anyList())).thenReturn(restGames);
     }
 }

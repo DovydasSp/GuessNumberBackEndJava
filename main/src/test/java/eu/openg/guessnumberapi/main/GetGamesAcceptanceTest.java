@@ -12,18 +12,18 @@ class GetGamesAcceptanceTest extends AcceptanceTestSetUp {
     @Test
     void getGamesFromDb() {
         String url = "http://localhost:" + getPort() + RouteConstants.GAMES_PATH;
-        postNewGame(url);
         HttpResponse<String> response = sendGetGamesRequest(url);
-        assertThatJson(response.getBody()).node("[0]").node("gameId").isEqualTo(10);
-        assertThatJson(response.getBody()).node("[0]").node("guessCount").isEqualTo(0);
-        assertThatJson(response.getBody()).node("[0]").node("guessCount").isNumber();
+        checkResponse(response, 0, 11, 1, 11);
+        checkResponse(response, 1, 22, 2, 22);
     }
 
     private HttpResponse<String> sendGetGamesRequest(String url) {
         return Unirest.get(url).asString();
     }
 
-    private void postNewGame(String url) {
-        Unirest.post(url).asString();
+    private void checkResponse(HttpResponse<String> response, int node, int gameId, int guessCount, int actualNumber) {
+        assertThatJson(response.getBody()).node("[" + node + "]").node("gameId").isEqualTo(gameId);
+        assertThatJson(response.getBody()).node("[" + node + "]").node("guessCount").isEqualTo(guessCount);
+        assertThatJson(response.getBody()).node("[" + node + "]").node("actualNumber").isEqualTo(actualNumber);
     }
 }
