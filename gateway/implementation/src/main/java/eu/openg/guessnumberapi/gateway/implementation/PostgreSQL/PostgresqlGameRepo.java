@@ -112,7 +112,7 @@ public class PostgresqlGameRepo implements GameRepository {
     }
 
     private List<Game> putGamesToListFromResultSet(ResultSet resultSet) throws SQLException {
-        ArrayList<Game> games = new ArrayList();
+        List<Game> games = new ArrayList<>();
         while (resultSet.next()) {
             int id = resultSet.getInt(QueryUtils.GAME_ID);
             int count = resultSet.getInt(QueryUtils.GUESS_COUNT);
