@@ -49,8 +49,8 @@ class GetGamesRouteTest {
     void returnGamesWhenDbIsNotEmpty() {
         int gamesCount = 4;
         String responseBody = assignResponseBody(gamesCount);
-        List<RestGame> restGames = returnRestGames(gamesCount);
-        List<BoundaryGame> boundaryGames = returnBoundaryGames(gamesCount);
+        List<RestGame> restGames = mockRestGames(gamesCount);
+        List<BoundaryGame> boundaryGames = mockBoundaryGames(gamesCount);
         initMocks(restGames, boundaryGames, responseBody);
         getGamesRoute.handle(request, response);
         verify(response).body(responseBody);
@@ -62,13 +62,13 @@ class GetGamesRouteTest {
         assertThrows(ServerErrorException.class, () -> getGamesRoute.handle(request, response));
     }
 
-    private List<BoundaryGame> returnBoundaryGames(int gamesCount) {
+    private List<BoundaryGame> mockBoundaryGames(int gamesCount) {
         return IntStream.rangeClosed(1, gamesCount)
                 .mapToObj(i -> mock(BoundaryGame.class))
                 .collect(Collectors.toList());
     }
 
-    private List<RestGame> returnRestGames(int gamesCount) {
+    private List<RestGame> mockRestGames(int gamesCount) {
         return IntStream.rangeClosed(1, gamesCount)
                 .mapToObj(i -> mock(RestGame.class))
                 .collect(Collectors.toList());
