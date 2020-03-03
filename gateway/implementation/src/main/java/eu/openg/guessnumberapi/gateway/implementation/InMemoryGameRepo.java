@@ -5,7 +5,10 @@ import eu.openg.guessnumberapi.gateway.api.GameIdProvider;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
 import eu.openg.guessnumberapi.gateway.implementation.exception.NullGameException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.nonNull;
 
@@ -49,11 +52,6 @@ public class InMemoryGameRepo implements GameRepository {
 
     @Override
     public List<Game> fetchGames() {
-        if (gameIdToGameMap.size() == 0)
-            return Collections.emptyList();
-        else {
-            return new ArrayList<>(gameIdToGameMap.values());
-        }
-
+        return new ArrayList<>(gameIdToGameMap.values());
     }
 }
