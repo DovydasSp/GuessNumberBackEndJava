@@ -15,9 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import spark.Request;
 import spark.Response;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,9 +40,6 @@ class GetGamesRouteTest {
     private static Response response;
     @Mock
     private static RestResponseConverter restResponseConverter;
-    private List<BoundaryGame> boundaryGames = new ArrayList<>();
-    private List<RestGame> restGames = new ArrayList<>();
-    private String responseBody = "";
 
     @BeforeEach
     void setUp() {
@@ -52,10 +49,10 @@ class GetGamesRouteTest {
     @Test
     void returnGamesWhenDbIsNotEmpty() {
         int gamesCount = 4;
-        assignResponseBody(gamesCount);
-        assignRestGames(gamesCount);
-        assignBoundaryGames(gamesCount);
-        createMocks();
+        String responseBody = assignResponseBody(gamesCount);
+        List<RestGame> restGames = returnRestGames(gamesCount);
+        List<BoundaryGame> boundaryGames = returnBoundaryGames(gamesCount);
+        initMocks(restGames, boundaryGames, responseBody);
         getGamesRoute.handle(request, response);
         verify(response).body(responseBody);
     }
@@ -66,21 +63,27 @@ class GetGamesRouteTest {
         assertThrows(ServerErrorException.class, () -> getGamesRoute.handle(request, response));
     }
 
-    private void assignBoundaryGames(int gamesCount) {
-        IntStream.rangeClosed(1, gamesCount).forEach(i -> boundaryGames.add(new BoundaryGame(i, i, i)));
+    private List<BoundaryGame> returnBoundaryGames(int gamesCount) {
+        return IntStream.rangeClosed(1, gamesCount)
+                .mapToObj(i -> new BoundaryGame(i, i, i))
+                .collect(Collectors.toList());
     }
 
-    private void assignRestGames(int gamesCount) {
-        IntStream.rangeClosed(1, gamesCount).forEach(i -> restGames.add(new RestGame(i, i, i)));
+    private List<RestGame> returnRestGames(int gamesCount) {
+        return IntStream.rangeClosed(1, gamesCount)
+                .mapToObj(i -> new RestGame(i, i, i))
+                .collect(Collectors.toList());
     }
 
-    private void assignResponseBody(int gamesCount) {
-        IntStream.rangeClosed(1, gamesCount)
-                .forEach(i -> responseBody += "{\"gameId\":" + i + ",\"guessCount\":" + i + ",\"actualNumber\":" + i + "},");
+    private String assignResponseBody(int gamesCount) {
+        String responseBody = IntStream.rangeClosed(1, gamesCount)
+                .mapToObj(i -> "{\"gameId\":" + i + ",\"guessCount\":" + i + ",\"actualNumber\":" + i + "},")
+                .collect(Collectors.joining());
         responseBody = responseBody.substring(0, responseBody.lastIndexOf(','));
+        return responseBody;
     }
 
-    private void createMocks() {
+    private void initMocks(List<RestGame> restGames, List<BoundaryGame> boundaryGames, String responseBody) {
         when(useCaseFactory.buildGetGamesUseCase()).thenReturn(getGamesUseCase);
         when(getGamesUseCase.fetchGames()).thenReturn(boundaryGames);
         when(serializer.serialize(anyList())).thenReturn(Optional.of(responseBody));

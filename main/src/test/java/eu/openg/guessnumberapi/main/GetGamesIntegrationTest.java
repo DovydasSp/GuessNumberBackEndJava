@@ -17,13 +17,10 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class GetGamesIntegrationTest {
-    private GetGamesUseCase getGamesUseCase;
-    private GameRepository gameRepository;
-
     @Test
     void getGamesWhenDbIsEmpty() {
-        gameRepository = new InMemoryGameRepo(new FakeGameIdProvider());
-        getGamesUseCase = new GetGamesInteractor(gameRepository);
+        GameRepository gameRepository = new InMemoryGameRepo(new FakeGameIdProvider());
+        GetGamesUseCase getGamesUseCase = new GetGamesInteractor(gameRepository);
 
         List<BoundaryGame> boundaryGames = getGamesUseCase.fetchGames();
         assertThat(boundaryGames).isEmpty();
@@ -35,8 +32,8 @@ class GetGamesIntegrationTest {
         storage.put(22, new Game(22, 2, 22));
         storage.put(11, new Game(11, 1, 11));
 
-        gameRepository = new FakeInMemoryGameRepo(new FakeGameIdProvider());
-        getGamesUseCase = new GetGamesInteractor(gameRepository);
+        GameRepository gameRepository = new FakeInMemoryGameRepo(new FakeGameIdProvider());
+        GetGamesUseCase getGamesUseCase = new GetGamesInteractor(gameRepository);
 
         List<BoundaryGame> actualBoundaryGames = getGamesUseCase.fetchGames();
 

@@ -29,7 +29,7 @@ class GuessNumberAcceptanceTest extends AcceptanceTestSetUp {
 
     private HttpResponse<String> createNewGameAndSendGuess(int guessNumber) {
         String url = "http://localhost:" + getPort() + RouteConstants.GAMES_PATH;
-        Unirest.post(url).asString();
+        Unirest.post(url);
 
         return Unirest
                 .post(url + "/" + 1 + "/guesses")
