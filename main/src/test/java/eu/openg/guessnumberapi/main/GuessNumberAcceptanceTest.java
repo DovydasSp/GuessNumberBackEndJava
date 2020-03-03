@@ -1,6 +1,5 @@
 package eu.openg.guessnumberapi.main;
 
-import eu.openg.guessnumberapi.gateway.fake.FakeInMemoryGameRepo;
 import eu.openg.guessnumberapi.rest.route.RouteConstants;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 import kong.unirest.HttpResponse;
@@ -33,7 +32,7 @@ class GuessNumberAcceptanceTest extends AcceptanceTestSetUp {
         Unirest.post(url);
 
         return Unirest
-                .post(url + "/" + FakeInMemoryGameRepo.GAME_ID + "/guesses")
+                .post(url + "/" + 1 + RouteConstants.GUESSES_PATH)
                 .body("{\"guessNumber\":\"" + guessNumber + "\"}").asString();
     }
 }

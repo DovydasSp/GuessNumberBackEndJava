@@ -43,6 +43,6 @@ class GuessNumberIntegrationTest {
     private void checkGuessAndReturnedResponse(int guessNumber, BoundaryGuessResultStatus expectedStatus) {
         BoundaryGuessResponse guessResponse = guessNumberUseCase.checkGuessAndReturnResponse(id, guessNumber);
         assertEquals(expectedStatus, guessResponse.getStatus());
-        assertEquals((Integer) 2, guessResponse.getNumberOfGuesses());
+        assertEquals(2, guessResponse.getNumberOfGuesses());
     }
 }
