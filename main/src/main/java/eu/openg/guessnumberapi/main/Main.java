@@ -12,6 +12,7 @@ import eu.openg.guessnumberapi.gateway.implementation.PostgreSQL.PostgresqlGameR
 import eu.openg.guessnumberapi.gateway.implementation.RandomNumberGateway;
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.JacksonJSONSerializer;
+import eu.openg.guessnumberapi.rest.entity.converter.GamesResponseConverter;
 import eu.openg.guessnumberapi.rest.entity.converter.GuessResponseConverter;
 import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
@@ -33,7 +34,8 @@ public class Main {
         UseCaseFactory factory = new UseCaseFactoryImpl(new RandomNumberGateway(), new GuessValidator(), gameRepository);
         JSONSerializer serializer = createSerializer();
         RestResponseConverter restResponseConverter = new GuessResponseConverter();
-        sparkController = new SparkController(factory, serializer, restResponseConverter);
+        RestResponseConverter restGamesConverter = new GamesResponseConverter();
+        sparkController = new SparkController(factory, serializer, restResponseConverter, restGamesConverter);
         sparkController.matchRoutes(4568);
 
         Runtime.getRuntime().addShutdownHook(new Thread(Main::stop));

@@ -2,8 +2,7 @@ package eu.openg.guessnumberapi.main;
 
 import eu.openg.guessnumberapi.domain.Game;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
-import eu.openg.guessnumberapi.gateway.fake.FakeGameIdProvider;
-import eu.openg.guessnumberapi.gateway.implementation.InMemoryGameRepo;
+import eu.openg.guessnumberapi.gateway.fake.FakeInMemoryGameRepo;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
@@ -16,36 +15,34 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GuessNumberIntegrationTest {
     private GuessNumberUseCase guessNumberUseCase;
-    private GameRepository gameRepository;
     private int id;
 
     @BeforeEach
     void setUp() {
         GuessValidator gateway = new GuessValidator();
-        gameRepository = new InMemoryGameRepo(new FakeGameIdProvider());
+        GameRepository gameRepository = new FakeInMemoryGameRepo();
         id = gameRepository.saveNewGameAndReturnId(new Game(1, 1, 3));
         guessNumberUseCase = new GuessNumberInteractor(gateway, gameRepository);
     }
 
     @Test
     void checkLowerGuessAndReturnedResponse() {
-        checkGuessAndReturnedResponse(1, BoundaryGuessResultStatus.MORE, 2);
+        checkGuessAndReturnedResponse(1, BoundaryGuessResultStatus.MORE);
     }
 
     @Test
     void checkHigherGuessAndReturnedResponse() {
-        checkGuessAndReturnedResponse(5, BoundaryGuessResultStatus.LESS, 2);
+        checkGuessAndReturnedResponse(3, BoundaryGuessResultStatus.LESS);
     }
 
     @Test
     void checkCorrectGuessAndReturnedResponse() {
-        checkGuessAndReturnedResponse(3, BoundaryGuessResultStatus.CORRECT, 2);
+        checkGuessAndReturnedResponse(2, BoundaryGuessResultStatus.CORRECT);
     }
 
-    private void checkGuessAndReturnedResponse(int guessNumber, BoundaryGuessResultStatus expectedStatus,
-                                               Integer expectedNumberOfGuesses) {
+    private void checkGuessAndReturnedResponse(int guessNumber, BoundaryGuessResultStatus expectedStatus) {
         BoundaryGuessResponse guessResponse = guessNumberUseCase.checkGuessAndReturnResponse(id, guessNumber);
         assertEquals(expectedStatus, guessResponse.getStatus());
-        assertEquals(expectedNumberOfGuesses, guessResponse.getNumberOfGuesses());
+        assertEquals(2, guessResponse.getNumberOfGuesses());
     }
 }

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
-public class GuessResponseConverter implements RestResponseConverter {
+public class GuessResponseConverter implements RestResponseConverter<BoundaryGuessResponse, RestGuessResponse> {
 
     public RestGuessResponse convert(BoundaryGuessResponse guessResponse) {
         if (isNull(guessResponse))

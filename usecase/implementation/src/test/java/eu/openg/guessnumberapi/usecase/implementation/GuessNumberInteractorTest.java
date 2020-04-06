@@ -3,7 +3,6 @@ package eu.openg.guessnumberapi.usecase.implementation;
 import eu.openg.guessnumberapi.domain.Game;
 import eu.openg.guessnumberapi.gateway.api.GameRepository;
 import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
-import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResultStatus;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,6 @@ class GuessNumberInteractorTest {
     @Mock
     private GameRepository gameRepository;
     private GuessNumberUseCase guessNumberInteractor;
-    private Game game;
 
     @BeforeEach
     void setUp() {
@@ -33,41 +31,39 @@ class GuessNumberInteractorTest {
     }
 
     private void createEntityAndMockRepository() {
-        game = new Game(1, 0, 3);
+        Game game = new Game(1, 0, 3);
         when(gameRepository.fetchGame(1)).thenReturn(game);
         when(gameRepository.incrementThenReturnGuessCount(any(int.class))).thenReturn(1);
     }
 
     @Test
     void checkLowerGuessAndGuessResponse() {
-        checkIncorrectGuessAndGuessResponse(false, 1, BoundaryGuessResultStatus.MORE);
+        checkIncorrectGuessAndGuessResponse(1);
     }
 
     @Test
     void checkHigherGuessAndGuessResponse() {
-        checkIncorrectGuessAndGuessResponse(true, 5, BoundaryGuessResultStatus.LESS);
+        checkIncorrectGuessAndGuessResponse(5);
     }
 
     @Test
     void checkCorrectGuessAndGuessResponse() {
-        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(3, true);
+        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(3);
         assertEquals(response.getNumberOfGuesses(), 1);
         assertNull(response.getStatus());
     }
 
-    private void checkIncorrectGuessAndGuessResponse(boolean biggerThanGenerated, int guessedNumber,
-                                                     BoundaryGuessResultStatus boundaryGuessResultStatus) {
-        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(guessedNumber, false);
-        verifyAndAssertResponse(guessedNumber, response, boundaryGuessResultStatus);
+    private void checkIncorrectGuessAndGuessResponse(int guessedNumber) {
+        BoundaryGuessResponse response = checkGuessAndReturnGuessResponse(guessedNumber);
+        verifyAndAssertResponse(guessedNumber, response);
     }
 
-    private void verifyAndAssertResponse(int guessedNumber, BoundaryGuessResponse response,
-                                         BoundaryGuessResultStatus boundaryGuessResultStatus) {
+    private void verifyAndAssertResponse(int guessedNumber, BoundaryGuessResponse response) {
         verify(gateway).checkGuessAndReturnBoundaryGuessResponse(guessedNumber, 3);
         assertEquals(1, response.getNumberOfGuesses());
     }
 
-    private BoundaryGuessResponse checkGuessAndReturnGuessResponse(int guessedNumber, boolean isCorrect) {
+    private BoundaryGuessResponse checkGuessAndReturnGuessResponse(int guessedNumber) {
         BoundaryGuessResponse response = guessNumberInteractor.checkGuessAndReturnResponse(1, guessedNumber);
 
         verifyCallsHaveBeenMadeAndCaptureGame(guessedNumber);
@@ -78,11 +74,6 @@ class GuessNumberInteractorTest {
         verify(gameRepository).incrementThenReturnGuessCount(1);
         verify(gameRepository).fetchGame(1);
         verify(gateway).checkGuessAndReturnBoundaryGuessResponse(guessedNumber, 3);
-    }
-
-    private void assertReturnedAnswers(int gameId, int actualNumber) {
-        assertEquals(1, gameId);
-        assertEquals(3, actualNumber);
     }
 
 }

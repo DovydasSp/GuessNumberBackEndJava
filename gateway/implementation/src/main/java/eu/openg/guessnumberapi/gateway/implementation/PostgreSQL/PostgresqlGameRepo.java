@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PostgresqlGameRepo implements GameRepository {
     private static final Logger LOGGER = LogManager.getLogger(PostgresqlGameRepo.class);
@@ -95,5 +97,28 @@ public class PostgresqlGameRepo implements GameRepository {
     private PostgresqlException logErrorAndReturnNewException(String message, Exception e) {
         LOGGER.error(message, e);
         return new PostgresqlException(message);
+    }
+
+    @Override
+    public List<Game> fetchGames() {
+        try (PreparedStatement statement = createQuery(QueryUtils.SELECT_GAMES_QUERY);
+             ResultSet resultSet = statement.executeQuery()) {
+            List<Game> returnedGames = putGamesToListFromResultSet(resultSet);
+            LOGGER.info("PostgreSql [{}] games fetched successfully.", returnedGames.size());
+            return returnedGames;
+        } catch (SQLException e) {
+            throw logErrorAndReturnNewException("SELECT failed. Games could not be fetched from database.", e);
+        }
+    }
+
+    private List<Game> putGamesToListFromResultSet(ResultSet resultSet) throws SQLException {
+        List<Game> games = new ArrayList<>();
+        while (resultSet.next()) {
+            int id = resultSet.getInt(QueryUtils.GAME_ID);
+            int count = resultSet.getInt(QueryUtils.GUESS_COUNT);
+            int number = resultSet.getInt(QueryUtils.ACTUAL_NUMBER);
+            games.add(new Game(id, count, number));
+        }
+        return games;
     }
 }

@@ -2,11 +2,13 @@ package eu.openg.guessnumberapi.rest.route;
 
 import eu.openg.guessnumberapi.rest.entity.JSONSerializer;
 import eu.openg.guessnumberapi.rest.entity.RestGuessRequest;
+import eu.openg.guessnumberapi.rest.entity.RestGuessResponse;
 import eu.openg.guessnumberapi.rest.entity.converter.RestResponseConverter;
 import eu.openg.guessnumberapi.rest.exception.GameNotFoundException;
 import eu.openg.guessnumberapi.rest.exception.InvalidParamException;
 import eu.openg.guessnumberapi.rest.exception.MissingParamException;
 import eu.openg.guessnumberapi.rest.exception.ServerErrorException;
+import eu.openg.guessnumberapi.usecase.api.BoundaryGuessResponse;
 import eu.openg.guessnumberapi.usecase.api.GuessNumberUseCase;
 import eu.openg.guessnumberapi.usecase.api.UseCaseFactory;
 import org.apache.logging.log4j.LogManager;
@@ -22,10 +24,10 @@ public class GuessNumberRoute implements Route {
     private static final String PARAM_ID = "id";
     private final UseCaseFactory useCaseFactory;
     private final JSONSerializer serializer;
-    private final RestResponseConverter restResponseConverter;
+    private final RestResponseConverter<BoundaryGuessResponse, RestGuessResponse> restResponseConverter;
 
     public GuessNumberRoute(UseCaseFactory useCaseFactory, JSONSerializer serializer,
-                            RestResponseConverter restResponseConverter) {
+                            RestResponseConverter<BoundaryGuessResponse, RestGuessResponse> restResponseConverter) {
         this.useCaseFactory = useCaseFactory;
         this.serializer = serializer;
         this.restResponseConverter = restResponseConverter;

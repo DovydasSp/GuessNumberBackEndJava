@@ -11,7 +11,7 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 class GuessNumberAcceptanceTest extends AcceptanceTestSetUp {
     @Test
     void createNewGameWithId10AndSendHigherGuess() {
-        HttpResponse<String> response = createNewGameAndSendGuess(5);
+        HttpResponse<String> response = createNewGameAndSendGuess(3);
         assertThatJson(response.getBody()).node("message").isEqualTo(BoundaryGuessResultStatus.LESS.toString());
     }
 
@@ -23,16 +23,16 @@ class GuessNumberAcceptanceTest extends AcceptanceTestSetUp {
 
     @Test
     void createNewGameWithId10AndSendCorrectGuess() {
-        HttpResponse<String> response = createNewGameAndSendGuess(3);
-        assertThatJson(response.getBody()).node("numberOfGuesses").isEqualTo("1");
+        HttpResponse<String> response = createNewGameAndSendGuess(2);
+        assertThatJson(response.getBody()).node("numberOfGuesses").isEqualTo("2");
     }
 
     private HttpResponse<String> createNewGameAndSendGuess(int guessNumber) {
         String url = "http://localhost:" + getPort() + RouteConstants.GAMES_PATH;
-        Unirest.post(url).asString();
+        Unirest.post(url);
 
         return Unirest
-                .post(url + "/" + 10 + "/guesses")
+                .post(url + "/" + 1 + RouteConstants.GUESSES_PATH)
                 .body("{\"guessNumber\":\"" + guessNumber + "\"}").asString();
     }
 }

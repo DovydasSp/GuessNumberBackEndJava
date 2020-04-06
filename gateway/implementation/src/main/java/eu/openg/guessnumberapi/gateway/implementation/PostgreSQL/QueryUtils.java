@@ -18,4 +18,6 @@ class QueryUtils {
             + GUESS_COUNT + " + 1 WHERE " + GAME_ID + " = ? RETURNING " + GUESS_COUNT + ";";
 
     static final String SELECT_GAME_QUERY = "SELECT * FROM " + GAME_TABLE_NAME + " WHERE " + GAME_ID + " = ?;";
+
+    static final String SELECT_GAMES_QUERY = "SELECT * FROM " + GAME_TABLE_NAME + ";";
 }
