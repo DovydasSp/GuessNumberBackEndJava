@@ -1,2 +1,10 @@
-rootProject.name = 'untitled'
+rootProject.name = 'guess-number-api'
 
+include 'main',
+        'domain',
+        'gateway:api',
+        'gateway:implementation',
+        'gateway:fake',
+        'usecase:api',
+        'usecase:implementation',
+        'rest'

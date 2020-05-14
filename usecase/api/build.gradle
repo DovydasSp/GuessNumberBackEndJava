@@ -1,0 +1,5 @@
+archivesBaseName = "usecaseApi"
+dependencies {
+    implementation project(':domain'),
+            project(':gateway:api')
+}
